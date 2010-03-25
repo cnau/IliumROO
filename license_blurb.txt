@@ -1,0 +1,4 @@
+Ilium MUD Copyright (C) 2009  Christian T. Nau <chrisnau@yahoo.com>
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to 
+redistribute it under certain conditions.
