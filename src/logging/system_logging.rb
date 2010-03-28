@@ -14,13 +14,25 @@
   You should have received a copy of the GNU General Public License
   along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 =end
-require 'log4r'
-include Log4r
+require 'singleton'
+require 'database/cassandra_dao'
+require 'logging/logging'
 
-module LoggingMixins
-  def setup_logging
-    @logger = Logger.new "#{self.class.name} (\##{self.object_id})"
-    @logger.outputters = Outputter.stdout
-    @logger.outputters.each {|o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m")}
+class SystemLogging
+  include Singleton
+  
+  def initialize
+    @logger = Logging.logger
+  end
+  
+  def self.add_log_entry(msg)
+    SystemLogging.instance.add_log_entry msg
+  end
+  
+  def add_log_entry(msg)
+    Thread.new {
+      @logger.debug msg
+      CassandraDao.insert_log({'msg' => msg})
+    }
   end
 end

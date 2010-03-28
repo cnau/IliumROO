@@ -14,3 +14,15 @@
   You should have received a copy of the GNU General Public License
   along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 =end
+require 'logging/logging'
+require 'minitest/autorun'
+require 'database/cassandra_dao'
+
+class TestDatabase < MiniTest::Unit::TestCase
+  include Logging
+
+  def test_cassandra
+    log_debug "inserting system log"
+    #CassandraDao.insert_log("test log entry")
+  end
+end
