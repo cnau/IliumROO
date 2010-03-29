@@ -32,7 +32,8 @@ class SystemLogging
   def add_log_entry(msg)
     Thread.new {
       @logger.debug msg
-      CassandraDao.insert_log({'msg' => msg})
+      row_id = UUID.new
+      CassandraDao.insert(:log, row_id.to_guid.to_s, {'msg' => msg})
     }
   end
 end

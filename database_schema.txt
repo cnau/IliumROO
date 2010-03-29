@@ -1,0 +1,36 @@
+log : {             // CF
+    row_id  : {     // time guid string
+        log_id  : log id guid,
+        msg     : the log message
+    }
+}
+
+log_tags : {    // CF
+    all : {     // SC id -- tag name
+        time_uuid_1 : log entry guid string,
+        time_uuid_2 : log entry guid string
+    },
+
+    source_object_id : row key -- source object id tag 
+        time_uuid_3  : log entry guid string,
+        time_uuid_4  : log entry guid string
+    },
+
+    target_object_id : row key -- target object id tag
+        time_uuid_5  : log entry guid string,
+        time_uuid_6  : log entry guid string
+    }
+}
+
+objects : {     // CF
+    object_number : {   // row key -- unique number
+        object_id : object_number,
+        ...             // additional columns
+    }
+}
+
+object_tags : {         // SCF
+    player_names : {    // SC id -- tag name
+        object_id : player_name
+    }
+}

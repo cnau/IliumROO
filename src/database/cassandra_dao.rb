@@ -25,25 +25,36 @@ class CassandraDao
   include Singleton
   include Logging
 
-  def insert(column_family, row_id, row_hash)
-    dao = Cassandra.new('IliumROO')
-    #dao.insert(column_family, row_id, row_hash)
-    log_debug 'inserting into #{column_family} : #{row_id} : #{row_hash}'
+  def initialize
+    @dao = Cassandra.new('IliumROO')
+  end
+
+  def insert(column_family, key, row_hash, options = {})
+    @dao.insert(column_family, key, row_hash, options)
+    log_debug "inserting into #{column_family} : #{key} : #{row_hash}"
   end
   
-  def self.insert(column_family, row_id, row_hash)
-    CassandraDao.instance.insert(column_family, row_id, row_hash)
+  def self.insert(column_family, key, row_hash, options = {})
+    CassandraDao.instance.insert(column_family, key, row_hash, options)
   end
-  
-  def self.insert_by_uuid(column_family, row_hash)
-    CassandraDao.instance.insert(column_family, UUID.new, row_hash)
+
+  def get(column_family, key, *columns_and_options)
+    log_debug "getting #{column_family} : #{key} : #{columns_and_options}"
+    rows = @dao.get column_family, key, *columns_and_options
+    log_debug "get returned #{rows}"
+    rows
   end
-  
-  def self.insert_log(row_hash)
-    CassandraDao.insert_by_uuid(:log, row_hash)
+
+  def self.get(column_family, key, *columns_and_options)
+    CassandraDao.instance.get(column_family, key, *columns_and_options)
   end
-  
-  def self.insert_object(object_id, row_hash)
-    CassandraDao.insert(:objects, object_id, row_hash)
+
+  def remove(column_family, key, *columns_and_options)
+    log_debug "removing #{column_family} : #{key} : #{columns_and_options}"
+    @dao.remove column_family, key, *columns_and_options
+  end
+
+  def self.remove(column_family, key, *columns_and_options)
+    CassandraDao.instance.remove(column_family, key, *columns_and_options)
   end
 end
