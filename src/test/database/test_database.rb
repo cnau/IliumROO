@@ -68,14 +68,23 @@ class TestDatabase < MiniTest::Unit::TestCase
     log_debug 'beginning basic object_tags scf tests'
     CassandraDao.remove :object_tags, 'unit_testing'
 
+    start_count = CassandraDao.count_columns :object_tags, 'unit_testing'
+    assert_equal start_count, 0, 'make sure starting column count is 0'
+
     CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_1' => {'player_name' => 'unit test 1'}}
     CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_2' => {'player_name' => 'unit test 2'}}
 
     row = CassandraDao.get :object_tags, 'unit_testing'
     assert row.length == 2, 'make sure 2 rows were returned'
 
+    mid_count = CassandraDao.count_columns :object_tags, 'unit_testing'
+    assert_equal mid_count, 2, 'make sure there are 2 columns returned'
+
     CassandraDao.remove :object_tags, 'unit_testing'
     row = CassandraDao.get :object_tags, 'unit_testing'
     assert_empty row, 'make sure row was removed'
+
+    end_count = CassandraDao.count_columns :object_tags, 'unit_testing'
+    assert_equal end_count, 0, 'make sure ending column count is 0'
   end
 end

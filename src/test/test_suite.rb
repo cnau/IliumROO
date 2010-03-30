@@ -16,3 +16,4 @@
 $: << File.expand_path(File.dirname(__FILE__) + "/../")
 
 require 'database/test_database'
+require 'logging/test_system_logging'

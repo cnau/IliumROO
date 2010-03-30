@@ -83,4 +83,39 @@ class CassandraDao
   def self.remove(column_family, key, *columns_and_options)
     CassandraDao.instance.remove(column_family, key, *columns_and_options)
   end
+
+  # returns a column count from a column family
+  # [column_family] the column family to count
+  # [key] the key to count
+  # [columns_and_options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
+  def count_columns(column_family, key, *columns_and_options)
+    log_debug "counting columns for #{column_family} : #{key} : #{columns_and_options}"
+    log_count = @dao.count_columns column_family, key, *columns_and_options
+    log_debug "found #{log_count} for #{column_family} : #{key}"
+    log_count
+  end
+
+  # returns a column count from a column family
+  # [column_family] the column family to count
+  # [key] the key to count
+  # [columns_and_options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
+  def self.count_columns(column_family, key, *columns_and_options)
+    CassandraDao.instance.count_columns column_family, key, *columns_and_options
+  end
+
+  def clear_keyspace!(options = {})
+    @dao.clear_keyspace! options
+  end
+
+  def self.clear_keyspace!(options = {})
+    CassandraDao.instance.clear_keyspace! options
+  end
+
+  def clear_column_family!(column_family, options = {})
+    @dao.clear_column_family column_family, options
+  end
+
+  def self.clear_column_family!(column_family, options = {})
+    CassandraDao.instance.clear_column_family column_family, options
+  end
 end
