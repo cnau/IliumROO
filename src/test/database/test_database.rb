@@ -27,8 +27,7 @@ class TestDatabase < MiniTest::Unit::TestCase
     CassandraDao.remove :log, 'test'    # clean out test tag in scf
 
     row_id = UUID.new
-    ins = CassandraDao.insert :log, 'test', {row_id => {'log_id' => row_id.to_guid.to_s, 'msg' => 'test msg'}}
-    assert ins, 'insert operation should return true'
+    CassandraDao.insert :log, 'test', {row_id => {'log_id' => row_id.to_guid.to_s, 'msg' => 'test msg'}}
 
     rows = CassandraDao.get :log, 'test'
     refute_empty rows, 'make sure returned row is not empty'
@@ -37,8 +36,8 @@ class TestDatabase < MiniTest::Unit::TestCase
     row = CassandraDao.get :log, 'test', row_id
     refute_empty row
 
-    assert_equal row['log_id'],  row_id.to_guid.to_s, 'make sure returned row matches sent row'
-    assert_equal row['msg'],    'test msg',           'make sure returned row matches sent row'
+    assert_equal row['log_id'], row_id.to_guid.to_s, 'make sure returned row matches sent row'
+    assert_equal row['msg'], 'test msg', 'make sure returned row matches sent row'
 
     CassandraDao.remove :log, 'test'
     row = CassandraDao.get :log, 'test'
@@ -50,13 +49,12 @@ class TestDatabase < MiniTest::Unit::TestCase
     log_debug 'beginning basic object cf tests'
     CassandraDao.remove :objects, 'unit_test_key_1'
 
-    ins = CassandraDao.insert :objects, 'unit_test_key_1', {'object_id' => 'unit test 1', 'columns' => 'additional'}
-    assert ins, 'insert operation should return true'
+    CassandraDao.insert :objects, 'unit_test_key_1', {'object_id' => 'unit test 1', 'columns' => 'additional'}
 
     row = CassandraDao.get :objects, 'unit_test_key_1'
     refute_empty row, 'make sure returned row is not empty'
-    assert_equal row['object_id'],  'unit test 1',  'make sure returned row matches sent row'
-    assert_equal row['columns'],    'additional',   'make sure returned row matches sent row'
+    assert_equal row['object_id'], 'unit test 1', 'make sure returned row matches sent row'
+    assert_equal row['columns'], 'additional', 'make sure returned row matches sent row'
 
     CassandraDao.remove :objects, 'unit_test_key_1'
     row = CassandraDao.get :objects, 'unit_test_key_1'
@@ -68,11 +66,8 @@ class TestDatabase < MiniTest::Unit::TestCase
     log_debug 'beginning basic object_tags scf tests'
     CassandraDao.remove :object_tags, 'unit_testing'
 
-    ins = CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_1' => {'player_name' => 'unit test 1'}}
-    assert ins, 'insert operation should return true'
-
-    ins = CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_2' => {'player_name' => 'unit test 2'}}
-    assert ins, 'insert operation should return true'
+    CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_1' => {'player_name' => 'unit test 1'}}
+    CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_2' => {'player_name' => 'unit test 2'}}
 
     row = CassandraDao.get :object_tags, 'unit_testing'
     assert row.length == 2, 'make sure 2 rows were returned'

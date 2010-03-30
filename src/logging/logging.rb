@@ -29,19 +29,26 @@ module Logging
   end
 
   def setup_logging()
+    if @logger_level.nil?
+      @logger_level = Logger::INFO
+    end
     if !@logger_setup
       @logger_setup = true
       if $use_log4r
         @logger = Logger.new("#{self.who_am_i?}")
-        @logger.level = Logger::DEBUG
+        @logger.level = @logger_level
         @logger.outputters = Outputter.stdout
         @logger.outputters.each {|o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m")}
       else
         @logger = Logger.new(STDOUT)
-        @logger.level = Logger::DEBUG
+        @logger.level = @logger_level
         @logger.datetime_format = "%Y-%m-%d %H:%M:%S"
       end
     end
+  end
+
+  def log_level=(level)
+    @logger_level = level
   end
 
   def log_debug(msg)
