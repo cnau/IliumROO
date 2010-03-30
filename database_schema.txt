@@ -1,24 +1,27 @@
-log : {             // CF
-    row_id  : {     // time guid string
-        log_id  : log id guid,
-        msg     : the log message
-    }
-}
-
-log_tags : {    // CF
+log : {    // SCF
     all : {     // SC id -- tag name
-        time_uuid_1 : log entry guid string,
-        time_uuid_2 : log entry guid string
+        time_uuid_1 : {
+            'log_id' : log entry guid string,
+            'msg'    : log message
+        }
+        time_uuid_2 : {
+            'log_id' : log entry guid string,
+            'msg'    : log message
+        }
     },
 
-    source_object_id : row key -- source object id tag 
-        time_uuid_3  : log entry guid string,
-        time_uuid_4  : log entry guid string
+    source_object_id : { //row key -- source object id tag
+        time_uuid_3  : {
+            'log_id' : log entry guid string,
+            'msg'    : log message
+        }
     },
 
-    target_object_id : row key -- target object id tag
-        time_uuid_5  : log entry guid string,
-        time_uuid_6  : log entry guid string
+    target_object_id : { //row key -- target object id tag
+        time_uuid_5  : {
+            'log_id' : log entry guid string,
+            'msg'    : log message
+        }
     }
 }
 

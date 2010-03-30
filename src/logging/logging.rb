@@ -1,19 +1,17 @@
-=begin
-  This file is part of Ilium MUD.
-
-  Ilium MUD is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  Ilium MUD is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
-=end
+#  This file is part of Ilium MUD.
+#
+#  Ilium MUD is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Ilium MUD is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 $use_log4r = false
 
 if $use_log4r
@@ -23,11 +21,15 @@ else
   require 'logger'
 end
 
+# Logging mixin. Include this module to set up any class with Logging capability
 module Logging
+
+  # formats a string to return a class name/object id for log entries
   def who_am_i?
     "#{self.class.name} (\##{self.object_id})"
   end
 
+  # private method to configure the loggers
   def setup_logging()
     if @logger_level.nil?
       @logger_level = Logger::INFO
@@ -47,10 +49,14 @@ module Logging
     end
   end
 
+  # set the current log level
+  # [level] the Logger:: level to show in the log
   def log_level=(level)
     @logger_level = level
   end
 
+  # log a debug message
+  # [msg] the message to log
   def log_debug(msg)
     setup_logging
     if @logger.debug?
@@ -62,6 +68,8 @@ module Logging
     end
   end
 
+  # log an info message
+  # [msg] the message to log
   def log_info(msg)
     setup_logging
     if @logger.info?
@@ -73,6 +81,8 @@ module Logging
     end
   end
 
+  # log a warning message
+  # [msg] the message to log
   def log_warn(msg)
     setup_logging
     if @logger.warn?
@@ -84,6 +94,8 @@ module Logging
     end
   end
 
+  # log an error message
+  # [msg] the message to log
   def log_error(msg)
     setup_logging
     if @logger.error?
@@ -95,6 +107,8 @@ module Logging
     end
   end
 
+  # log a fatal message
+  # [msg] the message to log
   def log_fatal(msg)
     setup_logging
     if @logger.fatal?
@@ -105,4 +119,6 @@ module Logging
       end
     end
   end
+
+  private :setup_logging
 end

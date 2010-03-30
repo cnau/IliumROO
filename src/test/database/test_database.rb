@@ -1,26 +1,26 @@
-=begin
-  This file is part of Ilium MUD.
-
-  Ilium MUD is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  Ilium MUD is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
-=end
+#  This file is part of Ilium MUD.
+#
+#  Ilium MUD is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Ilium MUD is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 require 'logging/logging'
 require 'minitest/autorun'
 require 'database/cassandra_dao'
 
+# database unit tests
 class TestDatabase < MiniTest::Unit::TestCase
   include Logging
 
+  # test 'log' super column family
   def test_log_cf
     # begin basic log cf tests
     log_debug 'beginning basic log cf tests'
@@ -44,6 +44,7 @@ class TestDatabase < MiniTest::Unit::TestCase
     assert_empty row, 'make sure row was removed'
   end
 
+  # test 'objects' column family
   def test_objects_cf
     # begin basic object cf tests
     log_debug 'beginning basic object cf tests'
@@ -61,6 +62,7 @@ class TestDatabase < MiniTest::Unit::TestCase
     assert_empty row, 'make sure row was removed'
   end
 
+  # test 'object_tags' super column family
   def test_object_tags_scf
     # begin basic object_tags scf tests
     log_debug 'beginning basic object_tags scf tests'
