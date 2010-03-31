@@ -14,7 +14,7 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 require 'logging/logging'
 require 'minitest/autorun'
-require 'logging/system_logging'
+require 'database/system_logging'
 require 'database/cassandra_dao'
 
 # database unit tests
