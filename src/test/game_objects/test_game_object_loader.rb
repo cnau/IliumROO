@@ -23,10 +23,14 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
 
   def test_load_by_object_hash
     log.debug 'testing load by object hash'
-    obj_hash = {'object_id'  => 'test_class_1',
-                'super'      => 'BasicGameObject',
-                'properties' => 'foo,bar,foo_text,foo_obj',
-                'foo_bar'    => 'self.foo + self.bar'}
+    obj_hash = {'object_id'     => 'test_class_1',
+                'super'         => 'BasicGameObject',
+                'mixins'        => 'Logging',
+                'properties'    => 'foo,bar,foo_text,foo_obj',
+                'foo_bar'       => 'self.foo + self.bar',
+                'foo_log'       => 'log.info "some info"',
+                'initialize'    => 'foo_m "currently in initialize"',
+                'foo_m(param)'  => 'puts param'}
     obj_c = GameObjectLoader.load_object nil, obj_hash
     refute_nil obj_c
 
@@ -34,6 +38,8 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
     assert obj_c.instance_methods.include?(:foo), "make sure new class contains foo method"
     assert obj_c.instance_methods.include?(:bar), "make sure new class contains bar method"
     assert obj_c.instance_methods.include?(:foo_bar), "make sure new class contains foo_bar method"
+    assert obj_c.instance_methods.include?(:foo_log), "make sure new class contains foo_log method"
+    assert obj_c.included_modules.include?(Logging), "make sure logging mixin was included in class"
 
     obj_hash = {'object_id'  => 'test_object_1',
                 'parent'     => 'test_class_1',

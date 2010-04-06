@@ -109,9 +109,16 @@ class GameObjectLoader
       new_class.class_eval "def #{prop};@#{prop};end;def #{prop}=(val);@#{prop} = val;end;"
     end if (object_hash.has_key? 'properties')
 
+    # add mixins to the class
+    object_hash['mixins'].split(',').map do |mixin|
+      #TODO:make this next part sandbox safe
+      log.debug {"adding mixin #{mixin} to #{new_class}"}
+      new_class.class_eval "include #{mixin}"
+    end if (object_hash.has_key? 'mixins')
+
     # add methods to class
     object_hash.each do |key, value|
-      unless key.match(/object_id|super|parent|properties/)
+      unless key.match(/object_id|super|parent|properties|mixins/)
         #TODO:make this next part sandbox safe
         log.debug {"adding method #{key} => #{value} to #{new_class}"}
         new_class.class_eval "def #{key};#{value};end;"
