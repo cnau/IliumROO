@@ -1,0 +1,35 @@
+class GameObjectLoader
+
+load_object object_id = nil, object_hash = nil
+
+    obj_hash = {'object_id'  => 'test_class_1',
+                'super'      => 'BasicClass',
+                'properties' => 'foo,bar',
+                'foo_bar'    => 'foo + bar'}
+
+{'object_id'  => 'test_object_1',
+ 'parent'     => 'test_class_1',
+ 'foo'        => '1',
+ 'bar'        => '2'
+}
+
+
+
+
+
+
+
+sequence:
+get_object
+    return object in cache if in cache
+    get object from database if not in cache
+
+
+    load_class if class object      'super'
+        load super class
+        create class
+        build class
+
+    load_object if object instance  'parent'
+        load parent class
+        set object properties

@@ -15,7 +15,7 @@
 require 'singleton'
 require 'logging/logging'
 require 'database/game_objects'
-require 'game_objects/basic_class'
+require 'game_objects/basic_game_object'
 
 # loads game objects and caches them
 class GameObjectLoader
@@ -30,8 +30,20 @@ class GameObjectLoader
   # [object_id] the object id to load
   # [object_hash] the hash describing the object
   def load_object(object_id = nil, object_hash = nil)
-    return load_object_by_id object_id unless object_id.nil?
-    return load_object_by_hash object_hash unless object_hash.nil? or !object_id.nil?
+    new_obj = load_object_by_id object_id unless object_id.nil?
+    new_obj = load_object_by_hash object_hash unless object_hash.nil? or !object_id.nil?
+
+    if !new_obj.nil?
+      #todo:make this sandbox safe
+      object_id = object_hash['object_id'] unless object_hash.nil?
+      new_obj.instance_eval "def game_object_id;return @game_object_id;end;"
+      new_obj.instance_variable_set "@game_object_id", object_id
+      
+      log.debug {"caching object #{new_obj} as #{new_obj.game_object_id}" }
+      @cache[new_obj.game_object_id] = new_obj
+    end
+
+    return new_obj
   end
 
   # loads game objects and stores them in cache
@@ -43,8 +55,10 @@ class GameObjectLoader
 
   def load_object_by_id(object_id)
     # look for object in cache
-    log.debug {"looking for #{object_id} in cache"}
-    return @cache[object_id] if @cache.has_key? object_id       # object has already been loaded
+    log.debug {"found #{object_id} in #{@cache}"} if @cache.has_key? object_id
+    obj = @cache[object_id] if @cache.has_key? object_id
+    log.debug {"found #{obj} in #{@cache}"}
+    return obj unless obj.nil?     # object has already been loaded
 
     # load the object from the database
     log.debug {"loading game object #{object_id} from database"}
@@ -55,8 +69,6 @@ class GameObjectLoader
     # build the object
     log.debug {"building object by hash #{obj_hash}"}
     new_obj = build_object_by_hash obj_hash
-    log.debug {"caching object #{new_obj}"}
-    @cache[object_id] = new_obj
     return new_obj
   end
 
@@ -64,8 +76,13 @@ class GameObjectLoader
     # look for class in Kernel
     # only check Kernel if the class name is properly capitalized
     if object_id.match(/^[A-Z][A-Za-z0-9_]*$/)
-      log.debug {"looking for #{object_id} in Kernel object"}
-      return Kernel.const_get object_id if Kernel.const_defined? object_id
+      if Kernel.const_defined? object_id
+        log.debug {"found #{object_id} in Kernel object"}
+        return Kernel.const_get object_id
+      elsif Object.const_defined? object_id
+        log.debug {"found #{object_id} in Object object"}
+        return Object.const_get object_id
+      end
     end
 
     # not a pre made class so load the object
@@ -76,11 +93,13 @@ class GameObjectLoader
     # get the object's super class
     log.debug {"getting super class for #{object_hash}"}
     super_c = load_class_by_id(object_hash['super'])
+    return nil if super_c.nil?
     log.debug {"found super class #{super_c}"}
 
     # create a new class derived from the super class
     log.info {"building class #{object_hash} derived from #{super_c}"}
     new_class = Class.new super_c
+
     log.debug {"built class #{new_class}"}
 
     # add properties to the class
@@ -105,15 +124,11 @@ class GameObjectLoader
     # get the parent class for this object
     log.info {"setting up object #{object_hash}"}
     parent_c = load_class_by_id object_hash['parent']
-    log.debug {"creating default class for #{object_hash}"} unless object_hash.has_key? 'parent'
-    parent_c = BasicClass.new unless object_hash.has_key? 'parent'
-
+    log.debug {"found parent class #{parent_c}"}
     return nil if parent_c.nil?
 
     new_obj = parent_c.new
-
-    #todo:make this sandbox safe
-    new_obj.instance_eval "@game_object_id = '#{object_hash['object_id']}'"
+    log.debug {"created class instance #{new_obj}"}
 
     object_hash.each do |key,value|
       unless key.match(/object_id|parent/)
@@ -157,11 +172,6 @@ class GameObjectLoader
   def build_object_by_hash(object_hash)
     new_obj = build_class_by_hash object_hash if object_hash.has_key? 'super'
     new_obj = setup_object_by_hash object_hash if object_hash.has_key? 'parent'
-
-    if !new_obj.nil?
-      log.debug {"caching object #{new_obj}" }
-      @cache[object_hash['object_id']] = new_obj
-    end
     return new_obj
   end
 
@@ -170,7 +180,6 @@ class GameObjectLoader
     return nil unless object_hash.has_key? 'object_id'
     return @cache[object_hash['object_id']] if @cache.has_key? object_hash['object_id']
     new_obj = build_object_by_hash object_hash
-    @cache[object_hash['object_id']] = new_obj
     return new_obj
   end
 

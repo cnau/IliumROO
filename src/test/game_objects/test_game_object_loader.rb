@@ -16,6 +16,7 @@ require 'logging/logging'
 require 'minitest/autorun'
 require 'database/game_objects'
 require 'game_objects/game_object_loader'
+require 'game_objects/basic_game_object'
 
 class TestGameObjectLoader < MiniTest::Unit::TestCase
   include Logging
@@ -23,13 +24,13 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
   def test_load_by_object_hash
     log.debug 'testing load by object hash'
     obj_hash = {'object_id'  => 'test_class_1',
-                'super'      => 'BasicClass',
+                'super'      => 'BasicGameObject',
                 'properties' => 'foo,bar,foo_text,foo_obj',
                 'foo_bar'    => 'self.foo + self.bar'}
     obj_c = GameObjectLoader.load_object nil, obj_hash
     refute_nil obj_c
 
-    assert_equal 'BasicClass', obj_c.superclass.name, "make sure #{obj_c} is derived from BasicClass"
+    assert_equal 'BasicGameObject', obj_c.superclass.name, "make sure #{obj_c} is derived from BasicGameObject"
     assert obj_c.instance_methods.include?(:foo), "make sure new class contains foo method"
     assert obj_c.instance_methods.include?(:bar), "make sure new class contains bar method"
     assert obj_c.instance_methods.include?(:foo_bar), "make sure new class contains foo_bar method"
@@ -39,13 +40,13 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
                 'foo'        => '1',
                 'bar'        => '2',
                 'foo_text'   => 'some text',
-                'foo_obj'    => '$${BasicClass}.new'}
+                'foo_obj'    => '$${BasicGameObject}.new'}
     obj = GameObjectLoader.load_object nil, obj_hash
     assert obj.is_a?(obj_c), "make sure #{obj} is a #{obj_c}"
     assert_equal 1, obj.foo, "make sure obj.foo = 1"
     assert_equal 2, obj.bar, "make sure obj.bar = 2"
     assert_equal 3, obj.foo_bar, "make sure foo + bar = 3"
     assert_equal 'some text', obj.foo_text, "make sure text value was set properly"
-    assert obj.foo_obj.is_a?(BasicClass), "make sure foo_obj is an instance of BasicClass"
+    assert obj.foo_obj.is_a?(BasicGameObject), "make sure foo_obj is an instance of BasicGameObject"
   end
 end

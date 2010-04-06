@@ -41,7 +41,7 @@ class TestGameObjects < MiniTest::Unit::TestCase
     assert_equal 0, obj.length, 'make sure this object id was removed'
 
     obj_hash = {'object_id'  => object_id,
-                'super'      => 'BasicClass',
+                'super'      => 'BasicObject.rb',
                 'properties' => 'foo,bar',
                 'foo_bar'    => 'foo + bar'}
 
