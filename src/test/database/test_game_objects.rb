@@ -39,6 +39,16 @@ class TestGameObjects < MiniTest::Unit::TestCase
     GameObjects.remove object_id
     obj = GameObjects.get object_id
     assert_equal 0, obj.length, 'make sure this object id was removed'
+
+    obj_hash = {'object_id'  => object_id,
+                'super'      => 'BasicClass',
+                'properties' => 'foo,bar',
+                'foo_bar'    => 'foo + bar'}
+
+    GameObjects.save object_id, obj_hash
+    obj = GameObjects.get object_id
+    assert_equal obj_hash, obj, 'make sure returned hash is identical'
+    GameObjects.remove object_id
   end
 
   def test_object_tags

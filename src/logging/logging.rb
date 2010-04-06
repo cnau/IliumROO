@@ -31,28 +31,24 @@ module Logging
 
   # private method to configure the loggers
   def setup_logging()
-    if @logger_level.nil?
-      @logger_level = Logger::INFO
-    end
     if !@logger_setup
       @logger_setup = true
       if $use_log4r
         @logger = Logger.new("#{self.who_am_i?}")
-        @logger.level = @logger_level
+        @logger.level = Logger::INFO
         @logger.outputters = Outputter.stdout
         @logger.outputters.each {|o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m")}
       else
         @logger = Logger.new(STDOUT)
-        @logger.level = @logger_level
+        @logger.level = Logger::INFO
         @logger.datetime_format = "%Y-%m-%d %H:%M:%S"
       end
     end
   end
 
-  # set the current log level
-  # [level] the Logger:: level to show in the log
-  def log_level=(level)
-    @logger_level = level
+  def log
+    setup_logging
+    @logger
   end
 
   # log a debug message
