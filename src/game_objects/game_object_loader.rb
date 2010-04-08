@@ -118,7 +118,7 @@ class GameObjectLoader
 
     # add methods to class
     object_hash.each do |key, value|
-      unless key.match(/object_id|super|parent|properties|mixins/)
+      unless key.match(/super|parent|properties|mixins/)
         #TODO:make this next part sandbox safe
         log.debug {"adding method #{key} => #{value} to #{new_class}"}
         new_class.class_eval "def #{key};#{value};end;"
@@ -138,7 +138,7 @@ class GameObjectLoader
     log.debug {"created class instance #{new_obj}"}
 
     object_hash.each do |key,value|
-      unless key.match(/object_id|parent/)
+      unless key.match(/parent/)
         # check if value is a number
         log.debug "checking '#{value}' for known cases"
         if value.match(/^\d*$/)

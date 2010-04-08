@@ -26,7 +26,7 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
 
   def test_load_by_object_hash
     log.debug 'testing load by object hash'
-    obj_hash = {'object_id'     => 'test_class_1',
+    obj_hash = {'game_object_id'=> 'test_class_1',
                 'super'         => 'BasicGameObject',
                 'mixins'        => 'Logging',
                 'properties'    => 'foo,bar,foo_text,foo_obj',
@@ -44,16 +44,18 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
     assert_equal 'BasicGameObject', obj_c.superclass.name, "make sure #{obj_c} is derived from BasicGameObject"
     assert obj_c.instance_methods.include?(:foo), "make sure new class contains foo method"
     assert obj_c.instance_methods.include?(:bar), "make sure new class contains bar method"
+    assert obj_c.instance_methods.include?(:game_object_id), "make sure new class contains game_object_id method"
     assert obj_c.instance_methods.include?(:foo_bar), "make sure new class contains foo_bar method"
     assert obj_c.instance_methods.include?(:foo_log), "make sure new class contains foo_log method"
     assert obj_c.included_modules.include?(Logging), "make sure logging mixin was included in class"
+    assert_equal 'test_class_1', obj_c.game_object_id, "make sure game object id was set"
 
-    obj_hash = {'object_id'  => 'test_object_1',
-                'parent'     => 'test_class_1',
-                'foo'        => '1',
-                'bar'        => '2',
-                'foo_text'   => 'some text',
-                'foo_obj'    => '$${BasicGameObject}.new'}
+    obj_hash = {'game_object_id'  => 'test_object_1',
+                'parent'          => 'test_class_1',
+                'foo'             => '1',
+                'bar'             => '2',
+                'foo_text'        => 'some text',
+                'foo_obj'         => '$${BasicGameObject}.new'}
 
     # setup mock game object to prevent database hit
     GameObjects.expects(:get).with('test_object_1').once.returns(obj_hash)
@@ -65,5 +67,6 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
     assert_equal 3, obj.foo_bar, "make sure foo + bar = 3"
     assert_equal 'some text', obj.foo_text, "make sure text value was set properly"
     assert obj.foo_obj.is_a?(BasicGameObject), "make sure foo_obj is an instance of BasicGameObject"
+    assert_equal 'test_object_1', obj.game_object_id, "make sure game object id was set"
   end
 end
