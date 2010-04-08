@@ -12,6 +12,8 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+
 require 'logging/logging'
 require 'minitest/autorun'
 require 'database/cassandra_dao'
