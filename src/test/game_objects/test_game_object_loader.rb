@@ -17,6 +17,7 @@ require 'minitest/autorun'
 require 'database/game_objects'
 require 'game_objects/game_object_loader'
 require 'game_objects/basic_game_object'
+require 'mocha'
 
 class TestGameObjectLoader < MiniTest::Unit::TestCase
   include Logging
@@ -31,7 +32,11 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
                 'foo_log'       => 'log.info "some info"',
                 'initialize'    => 'foo_m "currently in initialize"',
                 'foo_m(param)'  => 'puts param'}
-    obj_c = GameObjectLoader.load_object nil, obj_hash
+
+    # setup mock game object to prevent database hit
+    GameObjects.expects(:get).with('test_class_1').once.returns(obj_hash)
+
+    obj_c = GameObjectLoader.load_object 'test_class_1'
     refute_nil obj_c
 
     assert_equal 'BasicGameObject', obj_c.superclass.name, "make sure #{obj_c} is derived from BasicGameObject"
@@ -47,7 +52,11 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
                 'bar'        => '2',
                 'foo_text'   => 'some text',
                 'foo_obj'    => '$${BasicGameObject}.new'}
-    obj = GameObjectLoader.load_object nil, obj_hash
+
+    # setup mock game object to prevent database hit
+    GameObjects.expects(:get).with('test_object_1').once.returns(obj_hash)
+
+    obj = GameObjectLoader.load_object 'test_object_1'
     assert obj.is_a?(obj_c), "make sure #{obj} is a #{obj_c}"
     assert_equal 1, obj.foo, "make sure obj.foo = 1"
     assert_equal 2, obj.bar, "make sure obj.bar = 2"

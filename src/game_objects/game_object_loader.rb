@@ -29,13 +29,13 @@ class GameObjectLoader
   # loads game objects and stores them in cache
   # [object_id] the object id to load
   # [object_hash] the hash describing the object
-  def load_object(object_id = nil, object_hash = nil)
-    new_obj = load_object_by_id object_id unless object_id.nil?
-    new_obj = load_object_by_hash object_hash unless object_hash.nil? or !object_id.nil?
+  def load_object(object_id)
+    return nil if object_id.nil?
+
+    new_obj = load_object_by_id(object_id)
 
     if !new_obj.nil?
       #todo:make this sandbox safe
-      object_id = object_hash['object_id'] unless object_hash.nil?
       new_obj.instance_eval "def game_object_id;return @game_object_id;end;"
       new_obj.instance_variable_set "@game_object_id", object_id
       
@@ -49,8 +49,8 @@ class GameObjectLoader
   # loads game objects and stores them in cache
   # [object_id] the object id to load
   # [object_hash] the hash describing the object
-  def self.load_object(object_id = nil, object_hash = nil)
-    GameObjectLoader.instance.load_object object_id, object_hash
+  def self.load_object(object_id)
+    GameObjectLoader.instance.load_object object_id
   end
 
   def load_object_by_id(object_id)
@@ -182,13 +182,5 @@ class GameObjectLoader
     return new_obj
   end
 
-  def load_object_by_hash(object_hash)
-    log.info {"loading object as hash #{object_hash}"}
-    return nil unless object_hash.has_key? 'object_id'
-    return @cache[object_hash['object_id']] if @cache.has_key? object_hash['object_id']
-    new_obj = build_object_by_hash object_hash
-    return new_obj
-  end
-
-  private :load_object_by_id, :load_object_by_hash, :build_object_by_hash, :build_class_by_hash, :setup_object_by_hash, :load_class_by_id
+  private :load_object_by_id, :build_object_by_hash, :build_class_by_hash, :setup_object_by_hash, :load_class_by_id
 end
