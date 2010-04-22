@@ -29,11 +29,10 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
     obj_hash = {'game_object_id'=> 'test_class_1',
                 'super'         => 'BasicGameObject',
                 'mixins'        => 'Logging',
-                'properties'    => 'foo,bar,foo_text,foo_obj',
+                'properties'    => 'game_object_id,foo,bar,foo_text,foo_obj',
                 'foo_bar'       => 'self.foo + self.bar',
                 'foo_log'       => 'log.info "some info"',
-                'initialize'    => 'foo_m "currently in initialize"',
-                'foo_m(param)'  => 'puts param'}
+                'foo_m(param)'  => 'log.info param'}
 
     # setup mock game object to prevent database hit
     GameObjects.expects(:get).with('test_class_1').once.returns(obj_hash)
@@ -42,13 +41,13 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
     refute_nil obj_c
 
     assert_equal 'BasicGameObject', obj_c.superclass.name, "make sure #{obj_c} is derived from BasicGameObject"
-    assert obj_c.instance_methods.include?(:foo), "make sure new class contains foo method"
-    assert obj_c.instance_methods.include?(:bar), "make sure new class contains bar method"
-    assert obj_c.instance_methods.include?(:game_object_id), "make sure new class contains game_object_id method"
-    assert obj_c.instance_methods.include?(:foo_bar), "make sure new class contains foo_bar method"
-    assert obj_c.instance_methods.include?(:foo_log), "make sure new class contains foo_log method"
+    assert obj_c.public_instance_methods.include?(:foo), "make sure new class contains foo method"
+    assert obj_c.public_instance_methods.include?(:bar), "make sure new class contains bar method"
+    assert obj_c.public_instance_methods.include?(:game_object_id), "make sure new class contains game_object_id method"
+    assert obj_c.public_instance_methods.include?(:foo_bar), "make sure new class contains foo_bar method"
+    assert obj_c.public_instance_methods.include?(:foo_log), "make sure new class contains foo_log method"
+    assert obj_c.public_instance_methods.include?(:foo_obj), "make sure new class contains foo_obj method"
     assert obj_c.included_modules.include?(Logging), "make sure logging mixin was included in class"
-    assert_equal 'test_class_1', obj_c.game_object_id, "make sure game object id was set"
 
     obj_hash = {'game_object_id'  => 'test_object_1',
                 'parent'          => 'test_class_1',
@@ -59,14 +58,15 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
 
     # setup mock game object to prevent database hit
     GameObjects.expects(:get).with('test_object_1').once.returns(obj_hash)
-
+    GameObjects.expects(:get).with(regexp_matches(/^[a-z0-9]{6}$/)).at_least_once.returns({})
+    
     obj = GameObjectLoader.load_object 'test_object_1'
+    assert_equal 'test_object_1', obj.game_object_id
     assert obj.is_a?(obj_c), "make sure #{obj} is a #{obj_c}"
     assert_equal 1, obj.foo, "make sure obj.foo = 1"
     assert_equal 2, obj.bar, "make sure obj.bar = 2"
     assert_equal 3, obj.foo_bar, "make sure foo + bar = 3"
     assert_equal 'some text', obj.foo_text, "make sure text value was set properly"
-    assert obj.foo_obj.is_a?(BasicGameObject), "make sure foo_obj is an instance of BasicGameObject"
-    assert_equal 'test_object_1', obj.game_object_id, "make sure game object id was set"
+    assert obj.foo_obj.is_a?(BasicGameObject), "make sure foo_obj is a BasicGameObject"
   end
 end

@@ -32,18 +32,14 @@ class GameObjectLoader
   def load_object(object_id)
     return nil if object_id.nil?
 
-    new_obj = load_object_by_id(object_id)
+    new_o = load_object_by_id(object_id)
 
-    if !new_obj.nil?
-      #todo:make this sandbox safe
-      new_obj.instance_eval "def game_object_id;return @game_object_id;end;"
-      new_obj.instance_variable_set "@game_object_id", object_id
-      
-      log.debug {"caching object #{new_obj} as #{new_obj.game_object_id}" }
-      @cache[new_obj.game_object_id] = new_obj
+    if !new_o.nil?
+      log.debug {"caching object #{new_o} as #{object_id}" }
+      @cache[object_id] = new_o
     end
 
-    return new_obj
+    return new_o
   end
 
   # loads game objects and stores them in cache
@@ -56,9 +52,7 @@ class GameObjectLoader
   def load_object_by_id(object_id)
     # look for object in cache
     log.debug {"found #{object_id} in #{@cache}"} if @cache.has_key? object_id
-    obj = @cache[object_id] if @cache.has_key? object_id
-    log.debug {"found #{obj} in #{@cache}"}
-    return obj unless obj.nil?     # object has already been loaded
+    return @cache[object_id] if @cache.has_key? object_id
 
     # load the object from the database
     log.debug {"loading game object #{object_id} from database"}
@@ -68,8 +62,8 @@ class GameObjectLoader
     
     # build the object
     log.debug {"building object by hash #{obj_hash}"}
-    new_obj = build_object_by_hash obj_hash
-    return new_obj
+    new_o = build_object_by_hash obj_hash
+    return new_o
   end
 
   def load_class_by_id(object_id)
@@ -89,98 +83,106 @@ class GameObjectLoader
     return load_object_by_id object_id
   end
 
-  def build_class_by_hash(object_hash)
+  def setup_class_by_hash(object_hash)
     # get the object's super class
     log.debug {"getting super class for #{object_hash}"}
     super_c = load_class_by_id(object_hash['super'])
-    return nil if super_c.nil?
+    super_c = BasicGameObject if super_c.nil?
     log.debug {"found super class #{super_c}"}
 
     # create a new class derived from the super class
-    log.info {"building class #{object_hash} derived from #{super_c}"}
-    new_class = Class.new super_c
-
-    log.debug {"built class #{new_class}"}
-
+    log.debug {"building class #{object_hash} derived from #{super_c}"}
+    new_c = Class.new super_c
+    log.debug {"setting kernel class name C#{object_hash['game_object_id']} to #{new_c}"}
+    Kernel.const_set "C#{object_hash['game_object_id']}", new_c
+    log.debug {"built class #{new_c}"}
+    
     # add properties to the class
+    prop_array = ""
     object_hash['properties'].split(',').map do |prop|
       #TODO:make this next part sandbox safe
-      log.debug {"adding property #{prop} to #{new_class}"}
-      new_class.class_eval "def #{prop};@#{prop};end;def #{prop}=(val);@#{prop} = val;end;"
+      unless new_c.public_instance_methods.include?(eval(":#{prop}"))
+        log.debug {"adding property #{prop} to #{new_c}"}
+        new_c.class_eval "def #{prop};@#{prop};end;def #{prop}=(val);@#{prop} = val;end;"
+      end
+      prop_array += "," if prop_array.length > 0
+      prop_array += ":#{prop}"
+      
     end if (object_hash.has_key? 'properties')
+
+    new_c.const_set :PROPERTIES, eval("[#{prop_array}]")
 
     # add mixins to the class
     object_hash['mixins'].split(',').map do |mixin|
       #TODO:make this next part sandbox safe
-      log.debug {"adding mixin #{mixin} to #{new_class}"}
-      new_class.class_eval "include #{mixin}"
+      log.debug {"adding mixin #{mixin} to #{new_c}"}
+      new_c.instance_eval "include #{mixin}"
     end if (object_hash.has_key? 'mixins')
 
     # add methods to class
     object_hash.each do |key, value|
-      unless key.match(/super|parent|properties|mixins/)
+      unless key.match(/super|parent|properties|mixins|game_object_id/)
         #TODO:make this next part sandbox safe
-        log.debug {"adding method #{key} => #{value} to #{new_class}"}
-        new_class.class_eval "def #{key};#{value};end;"
+        log.debug {"adding method #{key} => #{value} to #{new_c}"}
+        #new_c.class_eval { define_method key, eval("def #{key};#{value};end;") }
+        new_c.class_eval "def #{key};#{value};end;"
       end
     end
-    return new_class
+    return new_c
   end
 
   def setup_object_by_hash(object_hash)
     # get the parent class for this object
-    log.info {"setting up object #{object_hash}"}
+    log.debug {"setting up object #{object_hash}"}
     parent_c = load_class_by_id object_hash['parent']
     log.debug {"found parent class #{parent_c}"}
-    return nil if parent_c.nil?
+    parent_c = BasicGameObject if parent_c.nil?
 
-    new_obj = parent_c.new
-    log.debug {"created class instance #{new_obj}"}
+    new_o = parent_c.new(object_hash['game_object_id'])
+    log.debug {"created class instance #{new_o}"}
 
     object_hash.each do |key,value|
       unless key.match(/parent/)
         # check if value is a number
-        log.debug "checking '#{value}' for known cases"
+        log.debug {"checking '#{value}' for known cases"}
         if value.match(/^\d*$/)
           log.debug "#{value} is a number"
-          new_obj.instance_variable_set "@#{key}", value.to_i
+          new_o.instance_variable_set "@#{key}", value.to_i
 
         elsif value.match(/^\$\$\{(\w*)\}.?(new|instance)?$/)
           log.debug "#{value} is an object"
           results = value.match(/^\$\$\{(\w*)\}.?(new|instance)?$/)
           new_c = load_class_by_id(results[1])
-          new_o = nil
+          sub_o = nil
           if(results[2] == 'new')
             log.debug "#{value} requires a new object"
-            new_o = new_c.new
+            sub_o = new_c.new
 
           elsif(results[2] == 'instance')
             log.debug "#{value} requires a singleton instance"
             if new_c.included_modules.include? Singleton
-              new_o = new_c.instance
+              sub_o = new_c.instance
             else
-              new_o = new_c.new
+              sub_o = new_c.new
             end
           end
 
-          log.debug "setting #{key} to #{new_o}"
-          new_obj.instance_variable_set "@#{key}", new_o
+          log.debug "setting #{key} to #{sub_o}"
+          new_o.instance_variable_set "@#{key}", sub_o
 
         else
           log.debug "setting #{key} to #{value}"
-          new_obj.instance_variable_set "@#{key}", value
+          new_o.instance_variable_set "@#{key}", value
         end
       end
     end
-
-    return new_obj
+    return new_o
   end
 
   def build_object_by_hash(object_hash)
-    new_obj = build_class_by_hash object_hash if object_hash.has_key? 'super'
-    new_obj = setup_object_by_hash object_hash if object_hash.has_key? 'parent'
-    return new_obj
+    return setup_class_by_hash object_hash if (object_hash.has_key? 'super' or object_hash.has_key? :super)
+    return setup_object_by_hash object_hash if (object_hash.has_key? 'parent' or object_hash.has_key? :parent)
   end
 
-  private :load_object_by_id, :build_object_by_hash, :build_class_by_hash, :setup_object_by_hash, :load_class_by_id
+  private :load_object_by_id, :build_object_by_hash, :setup_class_by_hash, :setup_object_by_hash, :load_class_by_id
 end
