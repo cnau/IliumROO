@@ -21,8 +21,6 @@ class BasicPersistentGameObject < BasicGameObject
   def save
     obj_hash = self.to_hash
     obj_id = obj_hash[:game_object_id]
-    unless obj_id.nil?
-      GameObjects.save obj_id, obj_hash
-    end
+    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
   end
 end

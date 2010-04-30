@@ -13,14 +13,18 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require "game/game"
-require "game_objects/game_object_loader"
+class ClientMaster
+  @@client_list ||= []
+  
+  def self.register_client(client)
+    @@client_list.push client
+  end
 
-the_game = GameObjectLoader.load_object "game"
-if the_game.nil?
-  the_game = Game.new("game")
-  the_game.port_list = "6666"
-  the_game.save
+  def self.remove_client(client)
+    @@client_list.delete client
+  end
+
+  def self.client_list
+    @@client_list
+  end
 end
-
-the_game.start

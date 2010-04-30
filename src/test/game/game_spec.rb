@@ -12,15 +12,24 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+$: << File.expand_path(File.dirname(__FILE__) + "/../../")
 
-require "game/game"
+require "../spec/spec_helper.rb"
 require "game_objects/game_object_loader"
+require "game/game"
 
-the_game = GameObjectLoader.load_object "game"
-if the_game.nil?
-  the_game = Game.new("game")
-  the_game.port_list = "6666"
-  the_game.save
+describe "Game" do
+  it "should create a new Game" do
+    obj_hash = {'game_object_id'  => 'game',
+                'parent'          => 'Game',
+                'port_list'       => '6666'}
+
+    GameObjects.expects(:get).with('game').once.returns(obj_hash)
+
+    the_game = GameObjectLoader.load_object "game"
+    the_game.nil?.should == false
+    the_game.port_list.should == 6666
+    the_game.is_a?(Game).should == true
+    the_game.start
+  end
 end
-
-the_game.start
