@@ -25,8 +25,7 @@ class Game < BasicPersistentGameObject
 
   PROPERTIES = [:port_list].freeze
 
-  def initialize(game_object_id)
-    super
+  def initialize
     log.level = Logger::DEBUG
     log.debug "initializing game object"
     @socket_servers ||= []

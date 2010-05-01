@@ -138,7 +138,8 @@ class GameObjectLoader
     log.debug {"found parent class #{parent_c}"}
     parent_c = BasicGameObject if parent_c.nil?
 
-    new_o = parent_c.new(object_hash['game_object_id'])
+    new_o = parent_c.new
+    new_o.game_object_id = object_hash['game_object_id']
     log.debug {"created class instance #{new_o}"}
 
     object_hash.each do |key,value|

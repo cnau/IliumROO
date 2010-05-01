@@ -16,19 +16,24 @@
 require 'database/game_objects'
 
 class BasicGameObject
-  attr_reader :game_object_id
+  @game_object_id = nil
+
+  def game_object_id
+    if @game_object_id.nil?
+      @game_object_id = BasicGameObject.generate_game_object_id
+    end
+    @game_object_id
+  end
+
+  def game_object_id=(val)
+    # one time setter
+    @game_object_id = val if @game_object_id.nil?
+  end
+  
   # to add additional persisted fields, simply add this constant to your classes that inherit from BasicGameObject.
   # then add symbols for each property you want to persist.  Classes built using the GameObjectLoader will
   # generate this property for child classes automatically based on the "properties" tag in the database.
   PROPERTIES = [:game_object_id].freeze
-
-  def initialize(game_object_id = nil)
-    if game_object_id.nil?
-      @game_object_id = BasicGameObject.generate_game_object_id
-    else
-      @game_object_id = game_object_id
-    end
-  end
 
   def self.generate_game_object_id
     #verify game object id is unique

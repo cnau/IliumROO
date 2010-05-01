@@ -22,8 +22,8 @@ class ClientConnection < EventMachine::Connection
 
   def post_init
     log.level = Logger::DEBUG
-    port, ip = Socket.unpack_sockaddr_in(get_peername)
-    log.debug "accepted client connection from #{ip}"
+    @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+    log.debug "accepted client connection from #{@ip}"
 
     # register this client connection
     ClientMaster.register_client self
@@ -48,4 +48,6 @@ class ClientConnection < EventMachine::Connection
    # remove this client connection
     ClientMaster.remove_client self
   end
+
+  private :send_license_blurb
 end

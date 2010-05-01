@@ -58,7 +58,6 @@ class TestGameObjectLoader < MiniTest::Unit::TestCase
 
     # setup mock game object to prevent database hit
     GameObjects.expects(:get).with('test_object_1').once.returns(obj_hash)
-    GameObjects.expects(:get).with(regexp_matches(/^[a-z0-9]{6}$/)).at_least_once.returns({})
     
     obj = GameObjectLoader.load_object 'test_object_1'
     assert_equal 'test_object_1', obj.game_object_id
