@@ -13,23 +13,25 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game_objects/basic_game_object'
-
-class BasicPersistentGameObject < BasicGameObject
-  PROPERTIES = [:parent].freeze
-
-  def initialize
-    matches = self.class.name.match(/Kernel::C(.*)/)
-    if matches
-      @parent = matches[1]
-    else
-      @parent = self.class.name
-    end
+module ClientWrapper
+  attr_reader :last_client_data, :client
+  
+  def attach_client(client)
+    @client = client
+    @client.add_client_listener method(:receive_data)
   end
 
-  def save
-    obj_hash = self.to_hash
-    obj_id = obj_hash[:game_object_id]
-    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
+  def receive_data(data)
+    @last_client_data = data
+    self.update   # this implies that anything including this module requires StateMachine as well
+  end
+  
+  def send_to_client(message)
+    @client.send_data message
+  end
+
+  def detach_client
+    @client.remove_client_listener method(:receive_data)
+    @client = nil
   end
 end

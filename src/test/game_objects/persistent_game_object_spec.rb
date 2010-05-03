@@ -31,8 +31,7 @@ describe "Persistent Game Object" do
 
     obj_c.nil?.should == false
     obj_c.superclass.should == BasicPersistentGameObject
-
-    obj_c.properties.sort.eql?([:game_object_id, :foo, :bar, :foo_text].sort).should == true
+    obj_c.properties.sort.eql?([:game_object_id, :foo, :bar, :foo_text, :parent].sort).should == true
   end
 
   it "should create a new persistent object instance" do
@@ -49,7 +48,7 @@ describe "Persistent Game Object" do
 
     obj.nil?.should == false
     obj.is_a?(BasicPersistentGameObject).should == true
-    obj.to_hash.eql?({:game_object_id=>"test_object_1", :foo=>"1", :bar=>"2", :foo_text=>"some text"}).should == true
+    obj.to_hash.eql?({:game_object_id=>"test_object_1", :foo=>"1", :bar=>"2", :foo_text=>"some text", :parent=>"test_class_1"}).should == true
   end
 
   it "should save a new persistent object instance" do
@@ -61,7 +60,7 @@ describe "Persistent Game Object" do
 
     # setup mock game object to prevent database hit
     GameObjects.expects(:get).with('test_object_2').once.returns(obj_hash)
-    GameObjects.expects(:save).with('test_object_2', {:foo => '1', :bar => '2', :foo_text => 'some text', :game_object_id => 'test_object_2'}).once
+    GameObjects.expects(:save).with('test_object_2', {:foo => '1', :bar => '2', :foo_text => 'some text', :game_object_id => 'test_object_2', :parent => 'test_class_1'}).once
 
     obj = GameObjectLoader.load_object 'test_object_2'
     obj.nil?.should == false
@@ -89,7 +88,7 @@ describe "Persistent Game Object" do
     new_obj.foo = 5
     new_obj.bar = 6
 
-    GameObjects.expects(:save).with(new_obj.game_object_id, {:foo => '5', :bar => '6', :foo_text => '', :game_object_id => new_obj.game_object_id}).once
+    GameObjects.expects(:save).with(new_obj.game_object_id, {:foo => '5', :bar => '6', :foo_text => '', :game_object_id => new_obj.game_object_id, :parent => 'test_class_2'}).once
     new_obj.save
   end
 end

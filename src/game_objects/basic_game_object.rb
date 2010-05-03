@@ -14,14 +14,17 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'database/game_objects'
+require 'game/utils/state_machine'
+require 'game/utils/client_wrapper'
 
 class BasicGameObject
+  include StateMachine
+  include ClientWrapper
+  
   @game_object_id = nil
 
   def game_object_id
-    if @game_object_id.nil?
-      @game_object_id = BasicGameObject.generate_game_object_id
-    end
+    @game_object_id ||= BasicGameObject.generate_game_object_id
     @game_object_id
   end
 
@@ -56,6 +59,7 @@ class BasicGameObject
   end
 
   def to_hash
+    @game_object_id ||= BasicGameObject.generate_game_object_id
     ret = {}
     self.class.properties.each do |prop|
       ret[prop] = self.instance_variable_get("@#{prop}").to_s

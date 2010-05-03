@@ -13,14 +13,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require "game/game"
-require "game_objects/game_object_loader"
+require 'game/game'
+require 'game_objects/game_object_loader'
+require 'database/game_objects'
 
-the_game = GameObjectLoader.load_object "game"
-if the_game.nil?
-  the_game = Game.new("game")
-  the_game.port_list = "6666"
-  the_game.save
+game = nil
+
+# get the game_object_id for the game object
+game_info = GameObjects.get_tag 'startup', 'game'
+
+if game_info.empty?
+  # create the game
+  game = Game.new
+  game.port_list = "6666"
+  game.save
+else
+  # load the game
+  game = GameObjectLoader.load_object game_info['object_id']
 end
 
-the_game.start
+game.start

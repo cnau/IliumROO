@@ -12,24 +12,32 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+require 'logging/logging'
 
-require 'game_objects/basic_game_object'
+module StateMachine
+  include Logging
 
-class BasicPersistentGameObject < BasicGameObject
-  PROPERTIES = [:parent].freeze
+  attr_accessor :previous_state, :current_state, :global_state
 
-  def initialize
-    matches = self.class.name.match(/Kernel::C(.*)/)
-    if matches
-      @parent = matches[1]
-    else
-      @parent = self.class.name
-    end
+  def update
+    @current_state.execute(self)  unless @current_state.nil?
+    @global_state.execute(self)   unless @global_state.nil?
   end
 
-  def save
-    obj_hash = self.to_hash
-    obj_id = obj_hash[:game_object_id]
-    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
+  def change_state(new_state)
+    raise Exception.new "Attempting to set a nil state" if new_state.nil?
+
+    @previous_state = @current_state
+    @current_state.exit(self) unless @current_state.nil?
+    @current_state = new_state
+    @current_state.enter(self) unless @current_state.nil?
+  end
+
+  def revert_to_previous_state
+    change_state @previous_state
+  end
+
+  def in_state?(st)
+    st == @current_state.class
   end
 end

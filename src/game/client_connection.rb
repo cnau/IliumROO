@@ -16,20 +16,42 @@
 require 'logging/logging'
 require 'game/client_master'
 require 'eventmachine'
+require 'game/login_wrapper'
 
 class ClientConnection < EventMachine::Connection
   include Logging
 
+  attr_reader :client_ip, :client_port
+
+  @client_listeners
+
+  def initialize
+    @client_listeners ||= []
+  end
+
+  def add_client_listener(callback)
+    @client_listeners.push callback
+  end
+
+  def remove_client_listener(callback)
+    @client_listeners.delete callback
+  end
+
   def post_init
     log.level = Logger::DEBUG
-    @port, @ip = Socket.unpack_sockaddr_in(get_peername)
-    log.debug "accepted client connection from #{@ip}"
+    @client_port, @client_ip = Socket.unpack_sockaddr_in(get_peername)
+    log.debug "accepted client connection from #{@client_ip}"
 
     # register this client connection
     ClientMaster.register_client self
 
     # post license blurb
     send_license_blurb
+
+    # attach to login object
+    lw = LoginWrapper.new
+    lw.attach_client self
+    lw.do_login
   end
 
   def send_license_blurb
@@ -41,7 +63,10 @@ class ClientConnection < EventMachine::Connection
   end
 
   def receive_data(data)
-    
+    new_data = data.strip
+    @client_listeners.each do |callback|
+      callback.call(new_data)
+    end
   end
 
   def unbind

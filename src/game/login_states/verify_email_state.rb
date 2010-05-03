@@ -13,23 +13,25 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game_objects/basic_game_object'
+require 'singleton'
+require 'database/game_objects'
+require 'game/signup_states/start_signup_state'
 
-class BasicPersistentGameObject < BasicGameObject
-  PROPERTIES = [:parent].freeze
+class VerifyEmailState
+  include Singleton
 
-  def initialize
-    matches = self.class.name.match(/Kernel::C(.*)/)
-    if matches
-      @parent = matches[1]
-    else
-      @parent = self.class.name
-    end
+  def enter(entity)
+    entity.send_to_client "#{entity.email_address}, did I get that right?"
   end
 
-  def save
-    obj_hash = self.to_hash
-    obj_id = obj_hash[:game_object_id]
-    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
+  def exit(entity)
+  end
+
+  def execute(entity)
+    if entity.last_client_data.match(/^[y](?:es)?$/i)
+      entity.change_state StartSignupState.instance
+    else
+      entity.revert_to_previous_state
+    end
   end
 end

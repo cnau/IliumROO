@@ -143,7 +143,11 @@ class GameObjectLoader
     log.debug {"created class instance #{new_o}"}
 
     object_hash.each do |key,value|
-      unless key.match(/parent/)
+      if key.match(/parent/)
+        log.debug {"setting parent to #{value}"}
+        new_o.instance_variable_set "@#{key}", value
+        
+      else
         # check if value is a number
         log.debug {"checking '#{value}' for known cases"}
         if value.match(/^\d*$/)
