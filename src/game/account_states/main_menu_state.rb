@@ -25,8 +25,7 @@ class MainMenuState
     # build main menu string
     main_menu = ""
     if entity.display_type == "ANSI"
-      main_menu << "[blue]0.[white] enter world\n"
-      main_menu << "[blue]1.[white] display characters\n"
+      main_menu << "[blue]1.[white] enter world\n"
       main_menu << "[blue]2.[white] add character\n"
       main_menu << "[blue]3.[white] delete character\n"
       main_menu << "[blue]4.[white] set display options\n"
@@ -34,8 +33,7 @@ class MainMenuState
       main_menu << "[white]choose and perish:"
       main_menu = colorize(main_menu)
     else
-      main_menu << "0. enter world\n"
-      main_menu << "1. display characters\n"
+      main_menu << "1. enter world\n"
       main_menu << "2. add character\n"
       main_menu << "3. delete character\n"
       main_menu << "4. set display options\n"
@@ -51,6 +49,9 @@ class MainMenuState
 
   def execute(entity)
     case entity.last_client_data
+      when '2' then
+        entity.change_state AddCharacterState.instance
+
       when '5' then
         entity.send_to_client "bye\n"
         entity.client.close_connection_after_writing

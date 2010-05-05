@@ -15,21 +15,19 @@
 
 require 'game/game'
 require 'game_objects/game_object_loader'
-require 'database/game_objects'
 
 game = nil
 
-# get the game_object_id for the game object
-game_info = GameObjects.get_tag 'startup', 'game'
+game_id = Game.get_game_id
 
-if game_info.empty?
+if game_id.nil? 
   # create the game
   game = Game.new
   game.port_list = "6666"
   game.save
 else
   # load the game
-  game = GameObjectLoader.load_object game_info['object_id']
+  game = GameObjectLoader.load_object game_id
 end
 
 game.start

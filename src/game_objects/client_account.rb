@@ -33,4 +33,11 @@ class ClientAccount < BasicPersistentGameObject
     super
     GameObjects.add_tag 'accounts', self.email, {'object_id' => self.game_object_id}
   end
+
+  def self.get_account_id(email_address)
+    account = GameObjects.get_tag 'accounts', email_address
+    puts account.inspect
+    return nil if account.empty?
+    account['object_id']
+  end
 end

@@ -13,7 +13,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'database/game_objects'
 require 'game/utils/state_machine'
 require 'game/utils/client_wrapper'
 

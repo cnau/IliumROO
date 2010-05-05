@@ -13,6 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
+require 'database/game_objects'
 require 'game_objects/basic_persistent_game_object'
 require 'logging/logging'
 require 'game/client_connection'
@@ -24,6 +25,12 @@ class Game < BasicPersistentGameObject
   attr_accessor :port_list
 
   PROPERTIES = [:port_list].freeze
+
+  def self.get_game_id
+    game_info = GameObjects.get_tag 'startup', 'game'
+    return nil if game_info.empty?
+    game_info['object_id']
+  end
 
   def save
     super

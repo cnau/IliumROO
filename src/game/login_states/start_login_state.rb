@@ -14,9 +14,9 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'singleton'
-require 'database/game_objects'
 require 'game/login_states/verify_email_state'
 require 'game/login_states/get_password_state'
+require 'game_objects/client_account'
 
 class StartLoginState
   include Singleton
@@ -32,12 +32,12 @@ class StartLoginState
   def execute(entity)
     if entity.last_client_data.match(/^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       entity.email_address = entity.last_client_data
-      account = GameObjects.get_tag 'accounts', entity.email_address 
+      account_id = ClientAccount.get_account_id entity.email_address
 
-      if account.empty? 
+      if account_id.nil?
         entity.change_state VerifyEmailState.instance
       else
-        entity.account = account
+        entity.account = account_id
         entity.change_state GetPasswordState.instance
       end
     else

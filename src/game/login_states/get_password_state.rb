@@ -29,7 +29,7 @@ class GetPasswordState
   end
 
   def execute(entity)
-    client_account = GameObjectLoader.load_object entity.account['object_id']
+    client_account = GameObjectLoader.load_object entity.account
     if Password::check(entity.last_client_data, client_account.password)
       entity.send_to_client "Last login from #{client_account.last_login_ip} on #{client_account.last_login_date}\n"
       client_account.last_login_ip = entity.client.client_ip

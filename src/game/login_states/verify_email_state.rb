@@ -14,7 +14,6 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'singleton'
-require 'database/game_objects'
 require 'game/signup_states/start_signup_state'
 
 class VerifyEmailState
