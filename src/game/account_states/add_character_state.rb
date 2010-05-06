@@ -14,33 +14,38 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'singleton'
-require 'game/signup_states/start_signup_state'
+require 'game/utils/colorizer'
 require 'game/account_states/main_menu_state'
-require 'game_objects/client_account'
-require 'game/utils/password'
+require 'game_objects/player_character'
 
-class StartSignupState  
+class AddCharacterState
   include Singleton
+  include Colorizer
 
   def enter(entity)
-    entity.send_to_client "Give me a password for #{entity.email_address}:"
+    entity.send_to_client "Enter new character's name:"
   end
 
   def exit(entity)
   end
 
   def execute(entity)
-    if entity.last_client_data.length == 0
-      entity.send_to_client "Invalid password.  Please try again."
-      entity.change_state self
+    name = entity.last_client_data.capitalize
+    if name.empty?
+      entity.change_state MainMenuState.instance
+
+    elsif name.match(/^[A-Z][a-z]*$/)
+      if PlayerCharacter.name_available? name
+        entity.add_new_character name
+        entity.send_to_client "Added new character named #{name}.\n"
+        entity.change_state MainMenuState.instance
+      else
+        entity.send_to_client "That name is already taken.\n"
+        entity.change_state AddCharacterState.instance
+      end
     else
-      client_account = ClientAccount.create_new_account entity.email_address, Password::update(entity.last_client_data)
-      client_account.set_last_login entity.client.client_ip
-      
-      client_account.attach_client entity.client
-      entity.detach_client
-      
-      client_account.change_state MainMenuState.instance
+      entity.send_to_client "Invalid character name.  Name should start with a capital letter.\n"
+      entity.change_state AddCharacterState.instance
     end
   end
 end

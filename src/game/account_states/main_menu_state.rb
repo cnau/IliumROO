@@ -16,6 +16,8 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/client_master'
+require 'game/account_states/logout_state'
+require 'game/account_states/add_character_state'
 
 class MainMenuState
   include Singleton
@@ -24,22 +26,13 @@ class MainMenuState
   def enter(entity)
     # build main menu string
     main_menu = ""
-    if entity.display_type == "ANSI"
-      main_menu << "[blue]1.[white] enter world\n"
-      main_menu << "[blue]2.[white] add character\n"
-      main_menu << "[blue]3.[white] delete character\n"
-      main_menu << "[blue]4.[white] set display options\n"
-      main_menu << "[blue]5.[white] quit\n"
-      main_menu << "[white]choose and perish:"
-      main_menu = colorize(main_menu)
-    else
-      main_menu << "1. enter world\n"
-      main_menu << "2. add character\n"
-      main_menu << "3. delete character\n"
-      main_menu << "4. set display options\n"
-      main_menu << "5. quit\n"
-      main_menu << "choose and perish:"
-    end
+    main_menu << "[blue]1.[white] enter world\n"
+    main_menu << "[blue]2.[white] add character\n"
+    main_menu << "[blue]3.[white] delete character\n"
+    main_menu << "[blue]4.[white] set display options\n"
+    main_menu << "[blue]5.[white] quit\n"
+    main_menu << "[white]choose and perish:"
+    main_menu = colorize(main_menu, entity.display_type)
 
     entity.send_to_client main_menu
   end
@@ -53,10 +46,11 @@ class MainMenuState
         entity.change_state AddCharacterState.instance
 
       when '5' then
-        entity.send_to_client "bye\n"
-        entity.client.close_connection_after_writing
-        ClientMaster.remove_client entity.client
-        entity.detach_client
+        entity.change_state LogoutState.instance
+
+      else
+        entity.send_to_client "invalid option\n"
+        entity.change_state MainMenuState.instance
     end
   end
 end

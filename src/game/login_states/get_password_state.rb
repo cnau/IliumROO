@@ -17,6 +17,7 @@ require 'singleton'
 require 'game_objects/client_account'
 require 'game/utils/password'
 require 'game/account_states/main_menu_state'
+require 'game/account_states/logout_state'
 
 class GetPasswordState
   include Singleton
@@ -29,18 +30,23 @@ class GetPasswordState
   end
 
   def execute(entity)
-    client_account = GameObjectLoader.load_object entity.account
+    client_account = ClientAccount.get_account entity.account
     if Password::check(entity.last_client_data, client_account.password)
       entity.send_to_client "Last login from #{client_account.last_login_ip} on #{client_account.last_login_date}\n"
-      client_account.last_login_ip = entity.client.client_ip
-      client_account.last_login_date = DateTime.now.strftime
-      client_account.save      
+      client_account.set_last_login entity.client.client_ip
+
       client_account.attach_client entity.client
       entity.detach_client
+      
       client_account.change_state MainMenuState.instance
     else
-      entity.send_to_client "Invalid password.\n"
-      entity.change_state self
+      entity.ctr += 1
+      if entity.ctr >= 3
+        entity.change_state LogoutState.instance
+      else
+        entity.send_to_client "Invalid password.\n"
+        entity.change_state GetPasswordState.instance
+      end
     end
   end
 end

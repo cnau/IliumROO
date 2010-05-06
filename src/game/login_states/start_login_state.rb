@@ -16,6 +16,7 @@
 require 'singleton'
 require 'game/login_states/verify_email_state'
 require 'game/login_states/get_password_state'
+require 'game/account_states/logout_state'
 require 'game_objects/client_account'
 
 class StartLoginState
@@ -34,6 +35,7 @@ class StartLoginState
       entity.email_address = entity.last_client_data
       account_id = ClientAccount.get_account_id entity.email_address
 
+      entity.ctr = 0
       if account_id.nil?
         entity.change_state VerifyEmailState.instance
       else
@@ -41,8 +43,13 @@ class StartLoginState
         entity.change_state GetPasswordState.instance
       end
     else
+      entity.ctr += 1
       entity.send_to_client "invalid email\n"
-      entity.change_state self
+      if entity.ctr >= 3
+        entity.change_state LogoutState.instance
+      else
+        entity.change_state StartLoginState.instance
+      end
     end
   end
 end

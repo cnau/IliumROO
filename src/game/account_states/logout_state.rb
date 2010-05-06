@@ -12,18 +12,22 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
-require 'game/utils/state_machine'
-require 'game/utils/client_wrapper'
-require 'game/login_states/start_login_state'
 
-class LoginWrapper
-  include StateMachine
-  include ClientWrapper
+require 'singleton'
 
-  attr_accessor :account, :email_address, :ctr
+class LogoutState
+  include Singleton
+  
+  def enter(entity)
+    entity.send_to_client "bye\n"
+    entity.client.close_connection_after_writing
+    ClientMaster.remove_client entity.client
+    entity.detach_client
+  end
 
-  def do_login
-    @ctr = 0
-    change_state StartLoginState.instance
+  def execute(entity)
+  end
+
+  def exit(entity)
   end
 end

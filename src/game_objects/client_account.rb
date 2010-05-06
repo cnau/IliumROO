@@ -13,16 +13,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'logging/logging'
 require 'database/game_objects'
+require 'database/system_logging'
+require 'game_objects/game_object_loader'
 require 'game_objects/basic_persistent_game_object'
+require 'game_objects/player_character'
+require 'date'
 
 class ClientAccount < BasicPersistentGameObject
-  include Logging
+  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters].freeze
 
-  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type].freeze
-
-  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type
+  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters
 
   def initialize
     super
@@ -34,10 +35,48 @@ class ClientAccount < BasicPersistentGameObject
     GameObjects.add_tag 'accounts', self.email, {'object_id' => self.game_object_id}
   end
 
+  def add_new_character(name)
+    # create the new character object
+    new_character = PlayerCharacter.new
+    new_character.name = name
+    new_character.owner = self.game_object_id
+    new_character.save
+
+    # add new character to our collection
+    @characters << "," unless @characters.empty?
+    @characters <<  new_character.game_object_id
+    save
+
+    # add the log entry
+    SystemLogging.add_log_entry "created new character", self.game_object_id, new_character.game_object_id
+  end
+
+  def set_last_login(client_ip)
+    @last_login_ip = client_ip
+    @last_login_date = DateTime.now.strftime
+    save
+
+    # add the log entry
+    SystemLogging.add_log_entry "logged in account", self.game_object_id
+  end
+
   def self.get_account_id(email_address)
     account = GameObjects.get_tag 'accounts', email_address
-    puts account.inspect
     return nil if account.empty?
     account['object_id']
+  end
+
+  def self.create_new_account(email_address, password)
+    client_account = ClientAccount.new
+    client_account.password = password
+    client_account.email = email_address
+    client_account.save
+
+    SystemLogging.add_log_entry "created new account", client_account.game_object_id
+    client_account
+  end
+
+  def self.get_account(email_address)
+    GameObjectLoader.load_object email_address
   end
 end
