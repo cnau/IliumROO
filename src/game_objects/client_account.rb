@@ -51,6 +51,15 @@ class ClientAccount < BasicPersistentGameObject
     SystemLogging.add_log_entry "created new character", self.game_object_id, new_character.game_object_id
   end
 
+  def remove_character(character_id)
+    c_list = @characters.split(",")
+    c_name = PlayerCharacter.get_player_name(character_id)
+    SystemLogging.add_log_entry "deleted character #{c_name}", self.game_object_id, character_id
+    c_list.delete character_id
+    @characters = c_list.join(",")
+    save
+  end
+
   def set_last_login(client_ip)
     @last_login_ip = client_ip
     @last_login_date = DateTime.now.strftime

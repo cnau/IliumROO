@@ -189,5 +189,16 @@ class GameObjectLoader
     return setup_object_by_hash object_hash if (object_hash.has_key? 'parent' or object_hash.has_key? :parent)
   end
 
+  # removes an object id from the cache
+  # [object_id] the object id to remove from cache
+  def self.remove_from_cache(object_id)
+    GameObjectLoader.instance.remove_from_cache object_id
+  end
+
+  # removes an object id from the cache
+  # [object_id] the object id to remove from cache
+  def remove_from_cache(object_id)
+    @cache.delete object_id
+  end
   private :load_object_by_id, :build_object_by_hash, :setup_class_by_hash, :setup_object_by_hash, :load_class_by_id
 end

@@ -14,6 +14,7 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'database/game_objects'
+require 'game_objects/game_object_loader'
 require 'game_objects/basic_persistent_game_object'
 
 class PlayerCharacter < BasicPersistentGameObject
@@ -30,5 +31,17 @@ class PlayerCharacter < BasicPersistentGameObject
     player_name = GameObjects.get_tag 'player_names', the_name
     return true if player_name.empty?
     return false
+  end
+
+  def self.get_player_name(game_object_id)
+    player_hash = GameObjects.get game_object_id
+    player_hash['name']
+  end
+
+  def self.delete_character(game_object_id)
+    c_name = PlayerCharacter.get_player_name game_object_id
+    GameObjects.remove game_object_id
+    GameObjectLoader.remove_from_cache game_object_id
+    GameObjects.remove_tag 'player_names', c_name
   end
 end

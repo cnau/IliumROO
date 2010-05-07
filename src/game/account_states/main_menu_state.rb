@@ -18,6 +18,7 @@ require 'game/utils/colorizer'
 require 'game/client_master'
 require 'game/account_states/logout_state'
 require 'game/account_states/add_character_state'
+require 'game/account_states/delete_character_state'
 
 class MainMenuState
   include Singleton
@@ -44,6 +45,9 @@ class MainMenuState
     case entity.last_client_data
       when '2' then
         entity.change_state AddCharacterState.instance
+
+      when '3' then
+        entity.change_state DeleteCharacterState.instance
 
       when '5' then
         entity.change_state LogoutState.instance
