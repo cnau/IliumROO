@@ -19,6 +19,7 @@ require 'game/client_master'
 require 'game/account_states/logout_state'
 require 'game/account_states/add_character_state'
 require 'game/account_states/delete_character_state'
+require 'game/account_states/display_options_state'
 
 class MainMenuState
   include Singleton
@@ -48,6 +49,9 @@ class MainMenuState
 
       when '3' then
         entity.change_state DeleteCharacterState.instance
+
+      when '4' then
+        entity.change_state DisplayOptionsState.instance
 
       when '5' then
         entity.change_state LogoutState.instance

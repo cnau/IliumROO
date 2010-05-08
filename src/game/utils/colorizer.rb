@@ -37,9 +37,10 @@ module Colorizer
       color = to_colorize[(pos+1)..(next_pos-1)] unless next_pos.nil?
       the_rest = to_colorize[(next_pos + 1)..to_colorize.length] unless next_pos.nil?
 
-      color = "" << ESC << COLORS[color.downcase] if ((COLORS.include?(color.downcase)) && (display_type == 'ANSI'))
+      ansi_color = ""
+      ansi_color = "" << ESC << COLORS[color.downcase] if ((COLORS.include?(color.downcase)) && (display_type == 'ANSI'))
 
-      return pre << color << colorize(the_rest, display_type)
+      return pre << ansi_color << colorize(the_rest, display_type)
     end
   end
 end
