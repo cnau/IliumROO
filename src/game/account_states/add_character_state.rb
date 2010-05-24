@@ -32,20 +32,19 @@ class AddCharacterState
   def execute(entity)
     name = entity.last_client_data.capitalize
     if name.empty?
-      entity.change_state MainMenuState.instance
-
+      entity.change_state MainMenuState 
     elsif name.match(/^[A-Z][a-z]*$/)
       if PlayerCharacter.name_available? name
         entity.add_new_character name
         entity.send_to_client "Added new character named #{name}.\n"
-        entity.change_state MainMenuState.instance
+        entity.change_state MainMenuState
       else
         entity.send_to_client "That name is already taken.\n"
-        entity.change_state AddCharacterState.instance
+        entity.change_state AddCharacterState
       end
     else
       entity.send_to_client "Invalid character name.  Name should start with a capital letter.\n"
-      entity.change_state AddCharacterState.instance
+      entity.change_state AddCharacterState
     end
   end
 end

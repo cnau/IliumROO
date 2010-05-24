@@ -12,32 +12,17 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
-require 'logging/logging'
 
-module StateMachine
-  include Logging
-
-  attr_accessor :previous_state, :current_state, :global_state
-
-  def update
-    @current_state.execute(self)  unless @current_state.nil?
-    @global_state.execute(self)   unless @global_state.nil?
+class SparseMatrix
+  def initialize
+    @data ||= {}
   end
 
-  def change_state(new_state)
-    raise Exception.new "Attempting to set a nil state" if new_state.nil?
-
-    @previous_state = @current_state
-    @current_state.exit(self) unless @current_state.nil?
-    @current_state = new_state.instance
-    @current_state.enter(self) unless @current_state.nil?
+  def [](first_dimension, second_dimension, third_dimension)
+    @data[[first_demension, second_dimension, third_dimension]]
   end
 
-  def revert_to_previous_state
-    change_state @previous_state.class
-  end
-
-  def in_state?(st)
-    st == @current_state.class
+  def []=(first_dimension, second_dimension, third_dimension, new_value)
+    @data[[first_dimension, second_dimension, third_dimension]] = new_value
   end
 end

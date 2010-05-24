@@ -23,7 +23,10 @@ class DeleteCharacterState
   include Colorizer
 
   def enter(entity)
-    entity.change_state MainMenuState.instance if entity.characters.empty?
+    if entity.characters.nil?
+      entity.change_state MainMenuState
+      return
+    end
 
     del_menu = ""
     ctr = 1
@@ -43,7 +46,7 @@ class DeleteCharacterState
 
   def execute(entity)
     if entity.last_client_data.empty?
-      entity.change_state MainMenuState.instance
+      entity.change_state MainMenuState
     else
       c_idx = entity.last_client_data.to_i
       c_list = entity.characters.split(",")
@@ -52,9 +55,9 @@ class DeleteCharacterState
         c_name = PlayerCharacter.get_player_name(c_list[c_idx - 1])
         PlayerCharacter.delete_character c_list[c_idx - 1]
         entity.send_to_client "Deleted #{c_name}.\n"
-        entity.change_state MainMenuState.instance
+        entity.change_state MainMenuState
       else
-        entity.change_state DeleteCharacterState.instance
+        entity.change_state DeleteCharacterState
       end
     end
   end

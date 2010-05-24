@@ -24,6 +24,6 @@ class LoginWrapper
 
   def do_login
     @ctr = 0
-    change_state StartLoginState.instance
+    change_state StartLoginState
   end
 end

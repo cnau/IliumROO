@@ -18,9 +18,9 @@ require 'game_objects/game_object_loader'
 require 'game_objects/basic_persistent_game_object'
 
 class PlayerCharacter < BasicPersistentGameObject
-  PROPERTIES = [:name, :owner].freeze
+  PROPERTIES = [:name, :owner, :map, :location].freeze
 
-  attr_accessor :name, :owner
+  attr_accessor :name, :owner, :map, :location
 
   def save
     super

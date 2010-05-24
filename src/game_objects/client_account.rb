@@ -43,8 +43,11 @@ class ClientAccount < BasicPersistentGameObject
     new_character.save
 
     # add new character to our collection
-    @characters << "," unless @characters.empty?
-    @characters <<  new_character.game_object_id
+    if @characters.nil?
+      @characters = new_character.game_object_id
+    else
+      @characters << "," << new_character.game_object_id
+    end
     save
 
     # add the log entry
@@ -57,6 +60,7 @@ class ClientAccount < BasicPersistentGameObject
     SystemLogging.add_log_entry "deleted character #{c_name}", self.game_object_id, character_id
     c_list.delete character_id
     @characters = c_list.join(",")
+    @characters = nil if @characters.empty?
     save
   end
 

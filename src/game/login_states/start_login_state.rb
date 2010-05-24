@@ -37,18 +37,18 @@ class StartLoginState
 
       entity.ctr = 0
       if account_id.nil?
-        entity.change_state VerifyEmailState.instance
+        entity.change_state VerifyEmailState
       else
         entity.account = account_id
-        entity.change_state GetPasswordState.instance
+        entity.change_state GetPasswordState
       end
     else
       entity.ctr += 1
       entity.send_to_client "invalid email\n"
       if entity.ctr >= 3
-        entity.change_state LogoutState.instance
+        entity.change_state LogoutState
       else
-        entity.change_state StartLoginState.instance
+        entity.change_state StartLoginState
       end
     end
   end

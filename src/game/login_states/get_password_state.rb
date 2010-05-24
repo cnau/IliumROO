@@ -38,14 +38,14 @@ class GetPasswordState
       client_account.attach_client entity.client
       entity.detach_client
       
-      client_account.change_state MainMenuState.instance
+      client_account.change_state MainMenuState
     else
       entity.ctr += 1
       if entity.ctr >= 3
-        entity.change_state LogoutState.instance
+        entity.change_state LogoutState
       else
         entity.send_to_client "Invalid password.\n"
-        entity.change_state GetPasswordState.instance
+        entity.change_state GetPasswordState
       end
     end
   end

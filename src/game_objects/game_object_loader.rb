@@ -150,7 +150,10 @@ class GameObjectLoader
       else
         # check if value is a number
         log.debug {"checking '#{value}' for known cases"}
-        if value.match(/^\d*$/)
+        if value.empty?
+          log.debug "value is empty"
+          new_o.instance_variable_set "@#{key}", nil
+        elsif value.match(/^\d*$/)
           log.debug "#{value} is a number"
           new_o.instance_variable_set "@#{key}", value.to_i
 

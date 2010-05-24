@@ -28,7 +28,7 @@ class VerifyEmailState
 
   def execute(entity)
     if entity.last_client_data.match(/^[y](?:es)?$/i)
-      entity.change_state StartSignupState.instance
+      entity.change_state StartSignupState
     else
       entity.revert_to_previous_state
     end

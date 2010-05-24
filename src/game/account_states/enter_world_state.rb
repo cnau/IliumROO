@@ -15,22 +15,30 @@
 
 require 'singleton'
 require 'game/utils/colorizer'
+require 'game_objects/player_character'
+require 'game_objects/game_object_loader'
 
-class DisplayOptionsState
+class EnterWorldState
   include Singleton
   include Colorizer
 
   def enter(entity)
-    menu = ""
-    if entity.display_type == 'ANSI'
-      menu << "[blue]1.[white] turn off ANSI color\n"
-    else
-      menu << "[blue]1.[white] turn on ANSI color\n"
+    if entity.characters.nil?
+      entity.change_state MainMenuState
+      return
     end
-    menu << "[white]choose and perish:"
-    menu = colorize(menu, entity.display_type)
 
-    entity.send_to_client menu
+    enter_menu = ""
+    ctr = 1
+    c_list = entity.characters.split(",")
+    c_list.each do |character_id|
+      character_name = PlayerCharacter.get_player_name(character_id)
+      enter_menu << "[blue]#{ctr}.[white] #{character_name}\n"
+      ctr += 1
+    end
+
+    enter_menu = colorize(enter_menu, entity.display_type)
+    entity.send_to_client enter_menu << "Choose a character to play: "
   end
 
   def exit(entity)
@@ -40,18 +48,12 @@ class DisplayOptionsState
     if entity.last_client_data.empty?
       entity.change_state MainMenuState
     else
-      case entity.last_client_data
-        when '1'
-          if entity.display_type == 'ANSI'
-            entity.display_type = 'NONE'
-          else
-            entity.display_type = 'ANSI'
-          end
-          entity.save
-          entity.change_state MainMenuState
-        else
-          entity.send_to_client "invalid choice\n"
-          entity.change_state DisplayOptionsState
+      c_idx = entity.last_client_data.to_i
+      c_list = entity.characters.split(",")
+      if (c_idx >= 1) and (c_idx <= c_list.length)
+
+      else
+        entity.change_state EnterWorldState
       end
     end
   end

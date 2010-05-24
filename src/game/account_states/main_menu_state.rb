@@ -20,6 +20,7 @@ require 'game/account_states/logout_state'
 require 'game/account_states/add_character_state'
 require 'game/account_states/delete_character_state'
 require 'game/account_states/display_options_state'
+require 'game/account_states/enter_world_state'
 
 class MainMenuState
   include Singleton
@@ -44,21 +45,24 @@ class MainMenuState
 
   def execute(entity)
     case entity.last_client_data
+      when '1' then
+        entity.change_state EnterWorldState
+        
       when '2' then
-        entity.change_state AddCharacterState.instance
+        entity.change_state AddCharacterState
 
       when '3' then
-        entity.change_state DeleteCharacterState.instance
+        entity.change_state DeleteCharacterState
 
       when '4' then
-        entity.change_state DisplayOptionsState.instance
+        entity.change_state DisplayOptionsState
 
       when '5' then
-        entity.change_state LogoutState.instance
+        entity.change_state LogoutState
 
       else
         entity.send_to_client "invalid option\n"
-        entity.change_state MainMenuState.instance
+        entity.change_state MainMenuState
     end
   end
 end

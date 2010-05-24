@@ -40,7 +40,7 @@ class StartSignupState
       client_account.attach_client entity.client
       entity.detach_client
       
-      client_account.change_state MainMenuState.instance
+      client_account.change_state MainMenuState
     end
   end
 end

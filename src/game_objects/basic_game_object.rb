@@ -39,8 +39,8 @@ class BasicGameObject
 
   def self.generate_game_object_id
     #verify game object id is unique
-    start_range = 0x100000
-    end_range   = 0xFFFFFF
+    start_range = 0x10000000
+    end_range   = 0xFFFFFFFF
     dup_obj = {}
     begin
       new_obj_id = (start_range + rand(end_range - start_range + 1)).to_s(16)     # generate hex game object id

@@ -12,32 +12,29 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+
 require 'logging/logging'
+require 'database/game_objects'
 
-module StateMachine
+class Universe < BasicPersistentGameObject
   include Logging
+  
+  PROPERTIES = [:name].freeze
 
-  attr_accessor :previous_state, :current_state, :global_state
+  attr_accessor :name
 
-  def update
-    @current_state.execute(self)  unless @current_state.nil?
-    @global_state.execute(self)   unless @global_state.nil?
+  def initialize
+    super
+    @name ||= "Universe"
+    log.level = Logger::DEBUG
   end
 
-  def change_state(new_state)
-    raise Exception.new "Attempting to set a nil state" if new_state.nil?
-
-    @previous_state = @current_state
-    @current_state.exit(self) unless @current_state.nil?
-    @current_state = new_state.instance
-    @current_state.enter(self) unless @current_state.nil?
+  def save
+    super
+    GameObjects.add_tag 'maps', self.name, {'object_id' => self.game_object_id}
   end
 
-  def revert_to_previous_state
-    change_state @previous_state.class
-  end
-
-  def in_state?(st)
-    st == @current_state.class
+  def let_there_be_light
+    log.debug "and there was light"
   end
 end
