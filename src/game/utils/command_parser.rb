@@ -26,8 +26,8 @@ module CommandParser
       @caller = self
 
       # locate objects
-      @dobj = locate_object(self, room, @command['direct_object'])
-      @iobj = locate_object(self, room, @command['indirect_object'])
+      @dobj = locate_object(@player, @player.room, @command['direct_object'])
+      @iobj = locate_object(@player, @player.room, @command['indirect_object'])
 
       # locate verb
       @this = nil
