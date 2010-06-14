@@ -57,6 +57,14 @@ class BasicGameObject
     ret
   end
 
+  def self.verbs
+    ret = {}
+    self.ancestors.each do |ancestor|
+      ret.merge! ancestor::VERBS if ancestor.const_defined? "VERBS"
+    end
+    ret
+  end
+
   def to_hash
     @game_object_id ||= BasicGameObject.generate_game_object_id
     ret = {}

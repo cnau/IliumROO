@@ -13,30 +13,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-module ClientWrapper
-  attr_reader :last_client_data, :client
-  
-  def attach_client(client)
-    @client = client
-    @client.add_client_listener method(:receive_data)
+require 'singleton'
+require 'game/utils/colorizer'
+require 'game_objects/player_character'
+
+class PlayerPromptState
+  include Singleton
+  include Colorizer
+
+  def enter(entity)
+    entity.send_to_client "\ncommand prompt > "
   end
 
-  def receive_data(data)
-    @last_client_data = data
-    self.update   # this implies that anything including this module requires StateMachine as well
-  end
-  
-  def send_to_client(message)
-    @client.send_data message
+  def exit(entity)
   end
 
-  def detach_client
-    @client.remove_client_listener method(:receive_data)
-    @client = nil
-  end
-
-  def disconnect
-    @client.close_connection_after_writing
-    detach_client
+  def execute(entity)
+    entity.process_command entity.last_client_data
+    entity.change_state PlayerPromptState unless entity.client.nil?
   end
 end

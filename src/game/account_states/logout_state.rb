@@ -21,7 +21,6 @@ class LogoutState
   def enter(entity)
     entity.send_to_client "bye\n"
     entity.client.close_connection_after_writing
-    ClientMaster.remove_client entity.client
     entity.detach_client
   end
 

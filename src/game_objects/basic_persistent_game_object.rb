@@ -17,6 +17,7 @@ require 'game_objects/basic_game_object'
 
 class BasicPersistentGameObject < BasicGameObject
   PROPERTIES = [:parent].freeze
+  VERBS = {:save => nil}.freeze
 
   def initialize
     matches = self.class.name.match(/Kernel::C(.*)/)

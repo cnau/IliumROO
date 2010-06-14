@@ -17,6 +17,7 @@ require 'singleton'
 require 'game/utils/colorizer'
 require 'game_objects/player_character'
 require 'game_objects/game_object_loader'
+require 'game/player_states/player_prompt_state'
 
 class EnterWorldState
   include Singleton
@@ -51,6 +52,18 @@ class EnterWorldState
       c_idx = entity.last_client_data.to_i
       c_list = entity.characters.split(",")
       if (c_idx >= 1) and (c_idx <= c_list.length)
+        # attach client to a player character game object
+        p_char = GameObjectLoader.load_object c_list[c_idx - 1]
+
+        p_char.attach_client entity.client
+        entity.detach_client
+
+        unless p_char.map.nil?
+          p_map = GameObjectLoader.load_object p_char.map
+          p_map.insert_character p_char
+        end
+
+        p_char.change_state PlayerPromptState
 
       else
         entity.change_state EnterWorldState

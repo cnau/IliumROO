@@ -23,9 +23,8 @@ require 'eventmachine'
 class Game < BasicPersistentGameObject
   include Logging
 
-  attr_accessor :port_list, :universe
-
-  PROPERTIES = [:port_list, :universe].freeze
+  attr_accessor :port_list
+  PROPERTIES = [:port_list].freeze
 
   def self.get_game_id
     game_info = GameObjects.get_tag 'startup', 'game'
@@ -62,27 +61,12 @@ class Game < BasicPersistentGameObject
     end
   end
 
-  def let_there_be_light
-    if @universe.nil?
-      # create a new universe
-      universe = Universe.new
-      universe.save
-      @universe = universe.game_object_id
-      save
-    end
-
-    universe = GameObjectLoader.load_object @universe
-    universe.let_there_be_light
-  end
-
   # starts the game
   def start
     EventMachine.run do
       log.debug {"spinning up socket servers"}
       # startup the socket servers
       start_socket_servers
-
-      let_there_be_light
     end
   end
 

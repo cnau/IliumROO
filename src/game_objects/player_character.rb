@@ -16,17 +16,28 @@
 require 'database/game_objects'
 require 'game_objects/game_object_loader'
 require 'game_objects/basic_persistent_game_object'
+require 'game/utils/command_parser'
 
 class PlayerCharacter < BasicPersistentGameObject
+  include CommandParser
+  
   PROPERTIES = [:name, :owner, :map, :location].freeze
+  VERBS = {:quit => nil}
 
-  attr_accessor :name, :owner, :map, :location
+  attr_accessor :name, :owner, :map, :location, :room
 
   def save
     super
     GameObjects.add_tag 'player_names', self.name, {'object_id' => self.game_object_id}
+    send_to_client "#{@name} saved.\n"
   end
 
+  def quit
+    send_to_client "bye.\n"
+    save
+    disconnect
+  end
+  
   def self.name_available?(the_name)
     player_name = GameObjects.get_tag 'player_names', the_name
     return true if player_name.empty?
