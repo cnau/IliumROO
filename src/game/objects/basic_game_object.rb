@@ -14,7 +14,7 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'game/utils/state_machine'
-require 'game/utils/client_wrapper'
+require 'client/client_wrapper'
 
 class BasicGameObject
   include StateMachine
@@ -50,19 +50,23 @@ class BasicGameObject
   end
 
   def self.properties
-    ret = []
-    self.ancestors.each do |ancestor|
-      ret += ancestor::PROPERTIES if ancestor.const_defined? "PROPERTIES"
+    @properties ||= []
+    if @properties.empty?
+      self.ancestors.each do |ancestor|
+        @properties += ancestor::PROPERTIES if ancestor.const_defined? "PROPERTIES"
+      end
     end
-    ret
+    @properties
   end
 
   def self.verbs
-    ret = {}
-    self.ancestors.each do |ancestor|
-      ret.merge! ancestor::VERBS if ancestor.const_defined? "VERBS"
+    @verbs ||= {}
+    if @verbs.empty?
+      self.ancestors.each do |ancestor|
+        @verbs.merge! ancestor::VERBS if ancestor.const_defined? "VERBS"
+      end
     end
-    ret
+    @verbs
   end
 
   def to_hash

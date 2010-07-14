@@ -15,7 +15,6 @@
 
 require 'singleton'
 require 'game/utils/colorizer'
-require 'game_objects/player_character'
 require 'game_objects/game_object_loader'
 require 'game/player_states/player_prompt_state'
 

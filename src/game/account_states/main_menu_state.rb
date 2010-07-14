@@ -15,7 +15,7 @@
 
 require 'singleton'
 require 'game/utils/colorizer'
-require 'game/client_master'
+require 'client/client_master'
 require 'game/account_states/logout_state'
 require 'game/account_states/add_character_state'
 require 'game/account_states/delete_character_state'

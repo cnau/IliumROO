@@ -16,8 +16,6 @@
 require 'database/game_objects'
 require 'database/system_logging'
 require 'game_objects/game_object_loader'
-require 'game_objects/basic_persistent_game_object'
-require 'game_objects/player_character'
 require 'date'
 
 class ClientAccount < BasicPersistentGameObject

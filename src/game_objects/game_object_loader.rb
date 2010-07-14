@@ -15,7 +15,13 @@
 require 'singleton'
 require 'logging/logging'
 require 'database/game_objects'
-require 'game_objects/basic_game_object'
+require 'game/objects/basic_game_object'
+require 'game/objects/basic_persistent_game_object'
+require 'game/objects/client_account'
+require 'game/objects/game'
+require 'game/objects/player_character'
+require 'game/objects/player_admin'
+require 'game/objects/basic_game_item'
 
 # loads game objects and caches them
 class GameObjectLoader

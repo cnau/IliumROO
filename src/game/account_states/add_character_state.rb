@@ -16,7 +16,7 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/account_states/main_menu_state'
-require 'game_objects/player_character'
+require 'game/objects/player_character'
 
 class AddCharacterState
   include Singleton

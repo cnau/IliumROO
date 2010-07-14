@@ -90,7 +90,7 @@ module CommandParser
       sentence.gsub! /^;/, "eval"
 
       # break up sentence
-      matches = sentence.match(/\A([a-z]*)(?: ([a-z ]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z ]+))\Z|\A([a-z]*) ([a-z ]+)\Z|\A([a-z]*)\Z/i)
+      matches = sentence.match(/\A([a-z][a-z_?]*)(?: ([a-z ]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z ]+))\Z|\A([a-z][a-z_?]*) ([a-z ]+)\Z|\A([a-z][a-z_?]*)\Z/i)
       matches = matches.to_a
       matches.delete_at 0
 

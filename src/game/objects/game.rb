@@ -13,12 +13,11 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'database/game_objects'
-require 'game_objects/basic_persistent_game_object'
-require 'game/maps/universe'
 require 'logging/logging'
-require 'game/client_connection'
 require 'eventmachine'
+require 'database/game_objects'
+require 'client/client_connection'
+require 'game/objects/basic_persistent_game_object'
 
 class Game < BasicPersistentGameObject
   include Logging

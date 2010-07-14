@@ -16,7 +16,7 @@
 require 'singleton'
 require 'game/signup_states/start_signup_state'
 require 'game/account_states/main_menu_state'
-require 'game_objects/client_account'
+require 'game/objects/client_account'
 require 'game/utils/password'
 
 class StartSignupState  

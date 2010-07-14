@@ -15,7 +15,7 @@
 
 require 'singleton'
 require 'game/utils/colorizer'
-require 'game_objects/player_character'
+require 'game/objects/player_character'
 
 class PlayerPromptState
   include Singleton

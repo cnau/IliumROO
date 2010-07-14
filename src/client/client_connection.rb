@@ -13,10 +13,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'logging/logging'
-require 'game/client_master'
 require 'eventmachine'
-require 'game/login_wrapper'
+require 'logging/logging'
+require 'client/client_master'
+require 'client/login_wrapper'
 
 class ClientConnection < EventMachine::Connection
   include Logging

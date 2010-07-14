@@ -14,7 +14,7 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'singleton'
-require 'game_objects/client_account'
+require 'game/objects/client_account'
 require 'game/utils/password'
 require 'game/account_states/main_menu_state'
 require 'game/account_states/logout_state'

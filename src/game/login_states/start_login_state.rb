@@ -17,7 +17,7 @@ require 'singleton'
 require 'game/login_states/verify_email_state'
 require 'game/login_states/get_password_state'
 require 'game/account_states/logout_state'
-require 'game_objects/client_account'
+require 'game/objects/client_account'
 
 class StartLoginState
   include Singleton

@@ -13,24 +13,18 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game_objects/basic_game_object'
+require 'game/utils/state_machine'
+require 'client/client_wrapper'
+require 'game/login_states/start_login_state'
 
-class BasicPersistentGameObject < BasicGameObject
-  PROPERTIES = [:parent].freeze
-  VERBS = {:save => nil}.freeze
+class LoginWrapper
+  include StateMachine
+  include ClientWrapper
 
-  def initialize
-    matches = self.class.name.match(/Kernel::C(.*)/)
-    if matches
-      @parent = matches[1]
-    else
-      @parent = self.class.name
-    end
-  end
+  attr_accessor :account, :email_address, :ctr
 
-  def save
-    obj_hash = self.to_hash
-    obj_id = obj_hash[:game_object_id]
-    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
+  def do_login
+    @ctr = 0
+    change_state StartLoginState
   end
 end
