@@ -60,29 +60,32 @@ class TestGameObjects < MiniTest::Unit::TestCase
     object_id_2 = 'test_object_id_2'
     object_name_2 = 'test_name_2'
 
-    GameObjects.remove_tag 'player_names', object_name_1
-    GameObjects.remove_tag 'player_names', object_name_2
+    GameObjects.remove_tag 'test', object_name_1
+    GameObjects.remove_tag 'test', object_name_2
 
-    obj = GameObjects.get_tag 'player_names', object_name_1
+    obj = GameObjects.get_tag 'test', object_name_1
     assert_equal 0, obj.length
 
-    obj = GameObjects.get_tag 'player_names', object_name_2
+    obj = GameObjects.get_tag 'test', object_name_2
     assert_equal 0, obj.length
 
-    GameObjects.add_tag 'player_names', object_name_1, {'object_id' => object_id_1}
-    obj = GameObjects.get_tag 'player_names', object_name_1
+    GameObjects.add_tag 'test', object_name_1, {'object_id' => object_id_1}
+    obj = GameObjects.get_tag 'test', object_name_1
     assert_equal 1, obj.length
 
-    GameObjects.add_tag 'player_names', object_name_2, {'object_id' => object_id_2}
-    obj = GameObjects.get_tag 'player_names', object_name_2
+    GameObjects.add_tag 'test', object_name_2, {'object_id' => object_id_2}
+    obj = GameObjects.get_tag 'test', object_name_2
     assert_equal 1, obj.length
 
-    GameObjects.remove_tag 'player_names', object_name_1
-    obj = GameObjects.get_tag 'player_names', object_name_1
+    tags = GameObjects.get_tags 'test'
+    assert_equal 2, tags.length
+
+    GameObjects.remove_tag 'test', object_name_1
+    obj = GameObjects.get_tag 'test', object_name_1
     assert_equal 0, obj.length
 
-    GameObjects.remove_tag 'player_names', object_name_2
-    obj = GameObjects.get_tag 'player_names', object_name_2
+    GameObjects.remove_tag 'test', object_name_2
+    obj = GameObjects.get_tag 'test', object_name_2
     assert_equal 0, obj.length
   end
 end

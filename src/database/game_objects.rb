@@ -81,6 +81,21 @@ class GameObjects
     GameObjects.instance.get_tag tag_name, val
   end
 
+  # retrieves all object tags for a given tag name
+  # [tag_name] object tag name to retrieve
+  def self.get_tags(tag_name)
+    GameObjects.instance.get_tags tag_name
+  end
+
+  # retrieves all object tags for a given tag name
+  # [tag_name] object tag name to retrieve
+  def get_tags(tag_name)
+    log_debug "getting tags for #{tag_name}"
+    tags = CassandraDao.get :object_tags, tag_name
+    log_debug "retrieved #{tags}"
+    tags
+  end
+
   # removes an object tag for a given tag name and value
   # [tag_name] object tag name to remove
   # [val] specific tag to remove
