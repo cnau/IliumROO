@@ -30,7 +30,7 @@ class VerifyEmailState
     if entity.last_client_data.match(/^[y](?:es)?$/i)
       entity.change_state StartSignupState
     else
-      entity.revert_to_previous_state
+      entity.change_state StartLoginState
     end
   end
 end

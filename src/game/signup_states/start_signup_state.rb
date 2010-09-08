@@ -32,13 +32,20 @@ class StartSignupState
   def execute(entity)
     if entity.last_client_data.length == 0
       entity.send_to_client "Invalid password.  Please try again."
-      entity.change_state self
+      entity.change_state StartSignupState
+      
     else
       client_account = ClientAccount.create_new_account entity.email_address, Password::update(entity.last_client_data)
       client_account.set_last_login entity.client.client_ip
       
       client_account.attach_client entity.client
       entity.detach_client
+
+      if ClientAccount.account_count == 1
+        client_account.send_to_client "This is the first account created in this database.  Setting account as admin.\n"
+        client_account.account_type = :admin
+        client_account.save
+      end
       
       client_account.change_state MainMenuState
     end

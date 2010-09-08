@@ -19,13 +19,14 @@ require 'game_objects/game_object_loader'
 require 'date'
 
 class ClientAccount < BasicPersistentGameObject
-  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters].freeze
+  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type].freeze
 
-  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters
+  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type
 
   def initialize
     super
     @display_type ||= "ANSI"
+    @account_type ||= :normal 
   end
 
   def save
@@ -87,7 +88,12 @@ class ClientAccount < BasicPersistentGameObject
     client_account
   end
 
-  def self.get_account(email_address)
-    GameObjectLoader.load_object email_address
+  def self.get_account(account_object_id)
+    GameObjectLoader.load_object account_object_id
+  end
+
+  def self.account_count()
+    accounts = GameObjects.get_tags 'accounts'
+    accounts.length
   end
 end

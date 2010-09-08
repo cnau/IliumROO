@@ -21,6 +21,7 @@ require 'game/account_states/add_character_state'
 require 'game/account_states/delete_character_state'
 require 'game/account_states/display_options_state'
 require 'game/account_states/enter_world_state'
+require 'game/account_states/list_accounts_state'
 
 class MainMenuState
   include Singleton
@@ -34,6 +35,7 @@ class MainMenuState
     main_menu << "[blue]3.[white] delete character\n"
     main_menu << "[blue]4.[white] set display options\n"
     main_menu << "[blue]5.[white] quit\n"
+    main_menu << "[blue]6.[white] list accounts\n" if entity.account_type.to_sym == :admin
     main_menu << "[white]choose and perish:"
     main_menu = colorize(main_menu, entity.display_type)
 
@@ -60,6 +62,9 @@ class MainMenuState
       when '5' then
         entity.change_state LogoutState
 
+      when '6' then
+        entity.change_state ListAccountsState
+        
       else
         entity.send_to_client "invalid option\n"
         entity.change_state MainMenuState
