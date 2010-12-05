@@ -35,8 +35,8 @@ class CassandraDao
   # [row_hash] the hash table of the row to insert
   # [options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
   def insert(column_family, key, row_hash, options = {})
-    @dao.insert(column_family, key, row_hash, options)
     log_debug "inserting into #{column_family} : #{key} : #{row_hash}"
+    @dao.insert(column_family, key, row_hash, options)
   end
   
   # inserts into a column family

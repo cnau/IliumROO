@@ -67,7 +67,7 @@ class BasicGameObject
     @game_object_id ||= UUID.new.to_guid.to_s
     ret = {}
     self.class.properties.each do |prop|
-      ret[prop] = self.instance_variable_get("@#{prop}").to_s
+      ret[prop.to_s] = self.instance_variable_get("@#{prop}").to_s
     end
     ret
   end

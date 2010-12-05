@@ -19,8 +19,6 @@ require 'game/objects/basic_persistent_game_object'
 require 'game/objects/mixins/humanoid_body'
 
 class PlayerCharacter < BasicPersistentGameObject
-  include HumanoidBody
-  
   PROPERTIES = [:name, :owner, :map, :location].freeze
   VERBS = {:quit => nil, :what_am_i? => nil, :list_verbs => nil}
 
