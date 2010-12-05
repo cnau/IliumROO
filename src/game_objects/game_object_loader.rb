@@ -31,7 +31,6 @@ class GameObjectLoader
 
   def initialize
     @cache ||= {}
-    log.level = Logger::DEBUG
   end
 
   # loads game objects and stores them in cache

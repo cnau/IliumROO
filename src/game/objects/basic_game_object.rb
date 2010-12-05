@@ -59,10 +59,6 @@ class BasicGameObject
     @verbs
   end
 
-  def self.inherited(subclass)
-    puts "New subclass: #{subclass}"
-  end
-
   def on_load
     log.debug "loaded game object #{@game_object_id}"
   end
