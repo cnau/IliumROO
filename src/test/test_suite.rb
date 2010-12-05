@@ -13,7 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-$: << File.expand_path(File.dirname(__FILE__) + "/../")
+$: << File.expand_path(File.dirname(__FILE__))
 
 require 'database/test_database'
 require 'database/test_system_logging'

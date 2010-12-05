@@ -15,15 +15,17 @@
 
 require 'game/utils/state_machine'
 require 'client/client_wrapper'
+require 'logging/logging'
 
 class BasicGameObject
   include StateMachine
   include ClientWrapper
-  
+  include Logging
+
   @game_object_id = nil
 
   def game_object_id
-    @game_object_id ||= BasicGameObject.generate_game_object_id
+    @game_object_id ||= UUID.new.to_guid.to_s
     @game_object_id
   end
 
@@ -31,23 +33,11 @@ class BasicGameObject
     # one time setter
     @game_object_id = val if @game_object_id.nil?
   end
-  
+
   # to add additional persisted fields, simply add this constant to your classes that inherit from BasicGameObject.
   # then add symbols for each property you want to persist.  Classes built using the GameObjectLoader will
   # generate this property for child classes automatically based on the "properties" tag in the database.
   PROPERTIES = [:game_object_id].freeze
-
-  def self.generate_game_object_id
-    #verify game object id is unique
-    start_range = 0x10000000
-    end_range   = 0xFFFFFFFF
-    dup_obj = {}
-    begin
-      new_obj_id = (start_range + rand(end_range - start_range + 1)).to_s(16)     # generate hex game object id
-      dup_obj = GameObjects.get new_obj_id
-    end until dup_obj.empty?
-    new_obj_id
-  end
 
   def self.properties
     @properties ||= []
@@ -69,8 +59,16 @@ class BasicGameObject
     @verbs
   end
 
+  def self.inherited(subclass)
+    puts "New subclass: #{subclass}"
+  end
+
+  def on_load
+    log.debug "loaded game object #{@game_object_id}"
+  end
+
   def to_hash
-    @game_object_id ||= BasicGameObject.generate_game_object_id
+    @game_object_id ||= UUID.new.to_guid.to_s
     ret = {}
     self.class.properties.each do |prop|
       ret[prop] = self.instance_variable_get("@#{prop}").to_s

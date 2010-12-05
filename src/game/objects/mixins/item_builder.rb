@@ -13,11 +13,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game/objects/basic_named_object'
+require 'game_objects/game_object_loader'
 
-class BasicGameItem < BasicNamedObject
-  def initialize
-    super
-    self.object_tag = :items
+module ItemBuilder
+  VERBS = {:create => {:prepositions => [:as]}}.freeze
+
+  def create
+    # try to get the class for the new item
+    new_item_c = GameObjectLoader.load_object @iobjstr
+    if new_item_c.nil?
+      @player.send_to_client "#{@iobjstr} is not a known Class.\n"
+
+    elsif new_item_c.is_a? Class
+      @player.send_to_client "creating #{@dobjstr} as #{new_item_c}\n"
+      new_item_o = new_item_c.new
+
+    else
+      @player.send_to_client "#{@iobjstr} is an Object, not a Class.\n"
+    end
   end
 end

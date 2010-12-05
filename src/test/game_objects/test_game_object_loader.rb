@@ -18,7 +18,7 @@ require 'logging/logging'
 require 'minitest/autorun'
 require 'database/game_objects'
 require 'game_objects/game_object_loader'
-require 'game_objects/basic_game_object'
+require 'game/objects/basic_game_object'
 require 'mocha'
 
 class TestGameObjectLoader < MiniTest::Unit::TestCase

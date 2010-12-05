@@ -12,22 +12,26 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+
 module CommandParser
-    def process_command(sentence)
+    def process_command(sentence, entity)
       # parse the command string
       @command = parse_to_words sentence
       @verb = @command['verb']
-      @verbsym = @verb.to_sym
+      @verbsym = @verb.to_sym unless @verb.nil?
+      @alias = @verb
+      @aliassym = @verbsym
       @dobjstr = @command['direct_object']
       @iobjstr = @command['indirect_object']
       @prepstr = @command['preposition']
       @prepsym = @prepstr.to_sym unless @prepstr.nil?
-      @player = self
-      @caller = self
+      @player = entity
+      @caller = entity
+      @room = @player.room
 
       # locate objects
-      @dobj = locate_object(@player, @player.room, @command['direct_object'])
-      @iobj = locate_object(@player, @player.room, @command['indirect_object'])
+      @dobj = locate_object(@player, @room, @dobjstr)
+      @iobj = locate_object(@player, @room, @iobjstr)
 
       # locate verb
       @this = nil
@@ -41,8 +45,11 @@ module CommandParser
         @this = @iobj
       end
 
-      @this.send @verb unless @this.nil?
-      huh if @this.nil?
+      if @this.nil? or @verb.nil?
+        huh
+      else
+        @this.send @alias
+      end
     end
 
     def huh
@@ -56,11 +63,15 @@ module CommandParser
         if verbs[@verbsym].nil?
           return true
         else
+          if verbs[@verbsym].has_key? :alias
+            @aliassym = verbs[@verbsym][:alias]
+            @alias = @aliassym.to_s
+          end
           if verbs[@verbsym].has_key? :prepositions
             if verbs[@verbsym][:prepositions].nil?
               return true
             else
-              if verbs[@verbsym][:prepositions].has_key? @prepsym
+              if verbs[@verbsym][:prepositions].include? @prepsym
                 return true
               end
             end
@@ -90,7 +101,7 @@ module CommandParser
       sentence.gsub! /^;/, "eval"
 
       # break up sentence
-      matches = sentence.match(/\A([a-z][a-z_?]*)(?: ([a-z ]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z ]+))\Z|\A([a-z][a-z_?]*) ([a-z ]+)\Z|\A([a-z][a-z_?]*)\Z/i)
+      matches = sentence.match(/\A([a-z][a-z_?]*)(?: ([a-z 0-9]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z 0-9]+))\Z|\A([a-z][a-z_?]*) ([a-z 0-9]+)\Z|\A([a-z][a-z_?]*)\Z/i)
       matches = matches.to_a
       matches.delete_at 0
 
@@ -119,4 +130,6 @@ module CommandParser
 
     return ret
   end
+
+  private :huh, :test_verb, :locate_object, :parse_to_words
 end

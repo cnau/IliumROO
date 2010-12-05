@@ -52,15 +52,16 @@ class TestDatabase < MiniTest::Unit::TestCase
     log_debug 'beginning basic object cf tests'
     CassandraDao.remove :objects, 'unit_test_key_1'
 
-    CassandraDao.insert :objects, 'unit_test_key_1', {'object_id' => 'unit test 1', 'columns' => 'additional'}
+    new_id_1 = UUID.new.to_guid.to_s
+    CassandraDao.insert :objects, new_id_1, {'object_id' => new_id_1, 'columns' => 'additional'}
 
-    row = CassandraDao.get :objects, 'unit_test_key_1'
+    row = CassandraDao.get :objects, new_id_1
     refute_empty row, 'make sure returned row is not empty'
-    assert_equal row['object_id'], 'unit test 1', 'make sure returned row matches sent row'
+    assert_equal row['object_id'], new_id_1, 'make sure returned row matches sent row'
     assert_equal row['columns'], 'additional', 'make sure returned row matches sent row'
 
-    CassandraDao.remove :objects, 'unit_test_key_1'
-    row = CassandraDao.get :objects, 'unit_test_key_1'
+    CassandraDao.remove :objects, new_id_1
+    row = CassandraDao.get :objects, new_id_1
     assert_empty row, 'make sure row was removed'
   end
 

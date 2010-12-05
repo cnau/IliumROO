@@ -27,7 +27,7 @@ module ClientWrapper
   end
   
   def send_to_client(message)
-    @client.send_data message
+    @client.send_data message unless @client.nil?
   end
 
   def detach_client

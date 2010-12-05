@@ -14,29 +14,35 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'game_objects/game_object_loader'
+require 'game/objects/mixins/item_builder'
 
 class PlayerAdmin < PlayerCharacter
-  VERBS = {:list_items => nil, :list_players => nil, :summon_item => nil}.freeze
+  include ItemBuilder
+  
+  VERBS = {:list_items => nil, :list_players => nil, :inspect => {:alias => :inspect_object}}.freeze
 
-  def summon_item
+  def inspect_object
     if @dobjstr.nil?
-      @player.send_to_client "Summon what?\n" if @dobjstr.nil?
-      return
+      @client.send_to_client "Inspect what?\n"
     else
-      @player.send_to_client "Summoning #{@dobjstr}\n"
-      obj_c = GameObjectLoader.load_object @dobjstr
-      new_c = obj_c.new
-      new_c.save
-      if @player.right_hand.nil?
-        @player.right_hand = new_c
-      elsif @player.left_hand.nil?
-        @player.left_hand = new_c
+      obj_id = nil
+      if @dobj.nil?
+        obj_id = @dobjstr
       else
-        #drop the item
+        obj_id = @dobj.game_object_id
+      end
+      obj_hash = GameObjects.get obj_id
+      if obj_hash.nil? or obj_hash.empty?
+        @client.send_to_client "Can't find object #{@dobjstr}\n"
+      else
+        out = "Object #{@dobjstr}\n"
+        out << obj_hash.inspect
+        out << "\n"
+        @client.send_to_client out
       end
     end
   end
-  
+
   def list_players
     ret = "player name".ljust(25)
     ret << "     "
@@ -49,7 +55,7 @@ class PlayerAdmin < PlayerCharacter
       ret << object_hash['object_id'].center(10, " ")
       ret << "\n"
     end
-    @player.send_to_client ret
+    @client.send_to_client ret
   end
   
   def list_items
@@ -73,6 +79,6 @@ class PlayerAdmin < PlayerCharacter
         ret << "\n"
       end
     end
-    @player.send_to_client ret
+    @client.send_to_client ret
   end
 end

@@ -13,11 +13,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game/objects/basic_named_object'
+require 'game/objects/basic_persistent_game_object'
+require 'game_objects/game_item_manager'
 
-class BasicGameItem < BasicNamedObject
-  def initialize
+class BasicNamedObject < BasicPersistentGameObject
+  PROPERTIES = [:name, :alias, :master, :object_tag].freeze
+
+  attr_accessor :name, :alias, :master, :object_tag
+
+  VERBS = {:recycle => nil}.freeze
+
+  def save
     super
-    self.object_tag = :items
+    GameItemManager::register_game_item self
+  end
+
+  def recycle
+    @player.send_to_client "#{self.name} has been recycled."
+    GameItemManager::recycle_game_item self
   end
 end

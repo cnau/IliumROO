@@ -16,11 +16,9 @@
 require 'database/game_objects'
 require 'game_objects/game_object_loader'
 require 'game/objects/basic_persistent_game_object'
-require 'game/utils/command_parser'
 require 'game/objects/mixins/humanoid_body'
 
 class PlayerCharacter < BasicPersistentGameObject
-  include CommandParser
   include HumanoidBody
   
   PROPERTIES = [:name, :owner, :map, :location].freeze
@@ -31,11 +29,11 @@ class PlayerCharacter < BasicPersistentGameObject
   def save
     super
     GameObjects.add_tag 'player_names', self.name, {'object_id' => self.game_object_id}
-    @player.send_to_client "#{@name} saved.\n"
+    send_to_client "#{@name} saved.\n"
   end
 
   def quit
-    @player.send_to_client "bye.\n"
+    send_to_client "bye.\n"
     save
     disconnect
   end
@@ -47,11 +45,11 @@ class PlayerCharacter < BasicPersistentGameObject
       ret << ', ' if ret.length > 0
       ret << verb
     end
-    @player.send_to_client ret + "\n"
+    send_to_client ret + "\n"
   end
 
   def what_am_i?
-    @player.send_to_client "You are an instance of #{@player.class.name}.\n"
+    send_to_client "You are an instance of #{self.class.name}.\n"
   end
   
   def self.name_available?(the_name)

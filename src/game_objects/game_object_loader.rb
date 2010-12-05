@@ -22,6 +22,7 @@ require 'game/objects/game'
 require 'game/objects/player_character'
 require 'game/objects/player_admin'
 require 'game/objects/basic_game_item'
+require 'game/objects/basic_named_object'
 
 # loads game objects and caches them
 class GameObjectLoader
@@ -30,6 +31,7 @@ class GameObjectLoader
 
   def initialize
     @cache ||= {}
+    log.level = Logger::DEBUG
   end
 
   # loads game objects and stores them in cache
@@ -45,7 +47,10 @@ class GameObjectLoader
       @cache[object_id] = new_o
     end
 
-    return new_o
+    # call object's load method
+    new_o.on_load if new_o.is_a? BasicGameObject
+    
+    new_o
   end
 
   # loads game objects and stores them in cache
@@ -63,13 +68,29 @@ class GameObjectLoader
     # load the object from the database
     log.debug {"loading game object #{object_id} from database"}
     obj_hash = GameObjects.get object_id
-    log.debug {"found game object #{obj_hash}"}
-    return nil if obj_hash.nil? or obj_hash.empty?
+    if obj_hash.nil? or obj_hash.empty?
+      # find out if a ruby class is requested
+      if object_id.match(/^[A-Z][A-Za-z0-9_]*$/)
+        if Kernel.const_defined? object_id
+          return Kernel.const_get object_id
+
+        elsif Object.const_defined? object_id
+          return Object.const_get object_id
+        
+        else
+          return nil
+        end
+      else
+        return nil
+      end
+    else
+      log.debug {"found game object #{obj_hash}"}
+    end
     
     # build the object
     log.debug {"building object by hash #{obj_hash}"}
     new_o = build_object_by_hash obj_hash
-    return new_o
+    new_o
   end
 
   def load_class_by_id(object_id)
@@ -79,6 +100,7 @@ class GameObjectLoader
       if Kernel.const_defined? object_id
         log.debug {"found #{object_id} in Kernel object"}
         return Kernel.const_get object_id
+        
       elsif Object.const_defined? object_id
         log.debug {"found #{object_id} in Object object"}
         return Object.const_get object_id
@@ -86,7 +108,7 @@ class GameObjectLoader
     end
 
     # not a pre made class so load the object
-    return load_object_by_id object_id
+    load_object_by_id object_id
   end
 
   def setup_class_by_hash(object_hash)
@@ -134,7 +156,7 @@ class GameObjectLoader
         new_c.class_eval "def #{key};#{value};end;"
       end
     end
-    return new_c
+    new_c
   end
 
   def setup_object_by_hash(object_hash)
@@ -159,6 +181,7 @@ class GameObjectLoader
         if value.empty?
           log.debug "value is empty"
           new_o.instance_variable_set "@#{key}", nil
+          
         elsif value.match(/^\d*$/)
           log.debug "#{value} is a number"
           new_o.instance_variable_set "@#{key}", value.to_i
@@ -190,12 +213,12 @@ class GameObjectLoader
         end
       end
     end
-    return new_o
+    new_o
   end
 
   def build_object_by_hash(object_hash)
     return setup_class_by_hash object_hash if (object_hash.has_key? 'super' or object_hash.has_key? :super)
-    return setup_object_by_hash object_hash if (object_hash.has_key? 'parent' or object_hash.has_key? :parent)
+    setup_object_by_hash object_hash if (object_hash.has_key? 'parent' or object_hash.has_key? :parent)
   end
 
   # removes an object id from the cache

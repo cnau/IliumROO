@@ -16,10 +16,12 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/objects/player_character'
+require 'game/objects/mixins/command_parser'
 
 class PlayerPromptState
   include Singleton
   include Colorizer
+  include CommandParser
 
   def enter(entity)
     entity.send_to_client "\ncommand prompt > "
@@ -29,7 +31,7 @@ class PlayerPromptState
   end
 
   def execute(entity)
-    entity.process_command entity.last_client_data
+    process_command entity.last_client_data, entity
     entity.change_state PlayerPromptState unless entity.client.nil?
   end
 end
