@@ -27,7 +27,7 @@ module CommandParser
       @prepsym = @prepstr.to_sym unless @prepstr.nil?
       @player = entity
       @caller = entity
-      @room = @player.room
+      #@room = @player.room
 
       # locate objects
       @dobj = locate_object(@player, @room, @dobjstr)

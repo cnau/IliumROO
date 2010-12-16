@@ -16,7 +16,7 @@
 require 'game_objects/game_object_loader'
 require 'game/objects/mixins/item_builder'
 
-class PlayerAdmin < PlayerCharacter
+class PlayerAdmin 
   include ItemBuilder
   
   VERBS = {:list_items => nil, :list_players => nil, :inspect => {:alias => :inspect_object}}.freeze

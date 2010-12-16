@@ -15,7 +15,6 @@
 
 require 'singleton'
 require 'game/utils/colorizer'
-require 'game/objects/player_character'
 require 'game/objects/mixins/command_parser'
 
 class PlayerPromptState

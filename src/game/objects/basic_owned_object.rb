@@ -13,27 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game/objects/basic_owned_object'
+require 'game/objects/basic_game_object'
 
-class BasicPersistentGameObject < BasicOwnedObject
-  PROPERTIES = [:parent].freeze
-  attr_accessor :parent
-  
-  VERBS = {:save => nil}.freeze
-
-  def initialize
-    matches = self.class.name.match(/Kernel::C(.*)/)
-    if matches
-      @parent = matches[1]
-    else
-      @parent = self.class.name
-    end
-  end
-
-  def save
-    obj_hash = self.to_hash
-    log.debug "saving hash #{obj_hash}"
-    obj_id = obj_hash['game_object_id']
-    GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
-  end
+class BasicOwnedObject < BasicGameObject
+  PROPERTIES = [:owner].freeze
+  attr_accessor :owner
 end

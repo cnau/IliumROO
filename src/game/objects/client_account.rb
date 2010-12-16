@@ -20,13 +20,12 @@ require 'date'
 
 class ClientAccount < BasicPersistentGameObject
   PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type].freeze
-
   attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type
 
   def initialize
     super
     @display_type ||= "ANSI"
-    @account_type ||= :normal 
+    @account_type ||= "normal"
   end
 
   def save
@@ -36,9 +35,12 @@ class ClientAccount < BasicPersistentGameObject
 
   def add_new_character(name)
     # create the new character object
-    new_character = PlayerCharacter.new
+    # TODO: change this line to reflect new starting class
+    new_character = BasicNamedObject.new
     new_character.name = name
     new_character.owner = self.game_object_id
+    new_character.object_tag = :player_names
+    new_character.master = true
     new_character.save
 
     # add new character to our collection
@@ -55,7 +57,7 @@ class ClientAccount < BasicPersistentGameObject
 
   def remove_character(character_id)
     c_list = @characters.split(",")
-    c_name = PlayerCharacter.get_player_name(character_id)
+    c_name = get_player_name(character_id)
     SystemLogging.add_log_entry "deleted character #{c_name}", self.game_object_id, character_id
     c_list.delete character_id
     @characters = c_list.join(",")
@@ -63,6 +65,24 @@ class ClientAccount < BasicPersistentGameObject
     save
   end
 
+  def name_available?(the_name)
+    player_name = GameObjects.get_tag 'player_names', the_name
+    return true if player_name.empty?
+    false
+  end
+
+  def get_player_name(game_object_id)
+    player_hash = GameObjects.get game_object_id
+    player_hash['name']
+  end
+
+  def delete_character(game_object_id)
+    c_name = get_player_name game_object_id
+    GameObjects.remove game_object_id
+    GameObjectLoader.remove_from_cache game_object_id
+    GameObjects.remove_tag 'player_names', c_name
+  end
+  
   def set_last_login(client_ip)
     @last_login_ip = client_ip
     @last_login_date = DateTime.now.strftime

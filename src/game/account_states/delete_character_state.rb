@@ -16,7 +16,6 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/account_states/main_menu_state'
-require 'game/objects/player_character'
 
 class DeleteCharacterState
   include Singleton
@@ -32,7 +31,7 @@ class DeleteCharacterState
     ctr = 1
     c_list = entity.characters.split(",")
     c_list.each do |character_id|
-      character_name = PlayerCharacter.get_player_name(character_id)
+      character_name = entity.get_player_name(character_id)
       del_menu << "[blue]#{ctr}.[white] #{character_name}\n"
       ctr += 1
     end
@@ -52,8 +51,8 @@ class DeleteCharacterState
       c_list = entity.characters.split(",")
       if (c_idx >= 1) and (c_idx <= c_list.length)
         entity.remove_character c_list[c_idx - 1]
-        c_name = PlayerCharacter.get_player_name(c_list[c_idx - 1])
-        PlayerCharacter.delete_character c_list[c_idx - 1]
+        c_name = entity.get_player_name(c_list[c_idx - 1])
+        entity.delete_character c_list[c_idx - 1]
         entity.send_to_client "Deleted #{c_name}.\n"
         entity.change_state MainMenuState
       else

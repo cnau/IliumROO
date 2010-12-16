@@ -37,7 +37,10 @@ class BasicGameObject
   # to add additional persisted fields, simply add this constant to your classes that inherit from BasicGameObject.
   # then add symbols for each property you want to persist.  Classes built using the GameObjectLoader will
   # generate this property for child classes automatically based on the "properties" tag in the database.
-  PROPERTIES = [:game_object_id].freeze
+
+  # master properties indicates this object is a "template" object and is read-only
+  PROPERTIES = [:game_object_id, :master].freeze
+  attr_accessor :master
 
   def self.properties
     @properties ||= []

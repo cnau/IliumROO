@@ -16,7 +16,6 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/account_states/main_menu_state'
-require 'game/objects/player_character'
 
 class AddCharacterState
   include Singleton
@@ -34,7 +33,7 @@ class AddCharacterState
     if name.empty?
       entity.change_state MainMenuState 
     elsif name.match(/^[A-Z][a-z]*$/)
-      if PlayerCharacter.name_available? name
+      if entity.name_available? name
         entity.add_new_character name
         entity.send_to_client "Added new character named #{name}.\n"
         entity.change_state MainMenuState

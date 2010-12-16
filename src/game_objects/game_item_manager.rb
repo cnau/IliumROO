@@ -14,28 +14,38 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'game_objects/game_object_loader'
+require 'logging/logging'
+include Logging
 
 module GameItemManager
   def register_game_item(game_item)
     if game_item.master
-      @log.debug {"adding tag for #{game_item.name}"}
-      GameObjects.add_tag game_item.object_tag.to_s, game_item.name, {'object_id' => game_item.game_object_id}
+      unless game_item.name.nil?
+        Logging::log.debug {"adding tag for #{game_item.name}"}
+        GameObjects.add_tag game_item.object_tag.to_s, game_item.name, {'object_id' => game_item.game_object_id}
+      end
 
-      game_item.alias.split(" ").each do |an_alias|
-        @log.debug {"adding tag for #{an_alias}"}
-        GameObjects.add_tag game_item.object_tag.to_s, an_alias, {'object_id' => game_item.game_object_id}
+      unless game_item.alias.nil?
+        game_item.alias.split(" ").each do |an_alias|
+          Logging::log.debug {"adding tag for #{an_alias}"}
+          GameObjects.add_tag game_item.object_tag.to_s, an_alias, {'object_id' => game_item.game_object_id}
+        end
       end
     end
   end
 
   def unregister_game_item(game_item)
     if game_item.master
-      @log.debug {"removing tag for #{game_item.name}"}
-      GameObjects.remove_tag game_item.object_tag.to_s, game_item.name
+      unless game_item.name.nil?
+        Logging::log.debug {"removing tag for #{game_item.name}"}
+        GameObjects.remove_tag game_item.object_tag.to_s, game_item.name
+      end
 
-      game_item.alias.split(" ").each do |an_alias|
-        @log.debug {"removing tag for #{an_alias}"}
-        GameObjects.remove_tag game_item.object_tag.to_s, an_alias
+      unless game_item.alias.nil?
+        game_item.alias.split(" ").each do |an_alias|
+          Logging::log.debug {"removing tag for #{an_alias}"}
+          GameObjects.remove_tag game_item.object_tag.to_s, an_alias
+        end
       end
     end
   end

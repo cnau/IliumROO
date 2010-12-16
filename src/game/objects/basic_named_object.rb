@@ -17,19 +17,19 @@ require 'game/objects/basic_persistent_game_object'
 require 'game_objects/game_item_manager'
 
 class BasicNamedObject < BasicPersistentGameObject
-  PROPERTIES = [:name, :alias, :master, :object_tag].freeze
-
-  attr_accessor :name, :alias, :master, :object_tag
+  PROPERTIES = [:name, :alias, :object_tag].freeze
+  attr_accessor :name, :alias, :object_tag
 
   VERBS = {:recycle => nil}.freeze
 
   def save
     super
     GameItemManager::register_game_item self
+    send_to_client "#{self.name} saved."
   end
 
   def recycle
-    @player.send_to_client "#{self.name} has been recycled."
+    send_to_client "#{self.name} has been recycled."
     GameItemManager::recycle_game_item self
   end
 end

@@ -16,7 +16,6 @@
 require 'singleton'
 require 'game/utils/colorizer'
 require 'game/account_states/main_menu_state'
-require 'game/objects/player_character'
 
 class ViewAccountDetailsState
   include Singleton

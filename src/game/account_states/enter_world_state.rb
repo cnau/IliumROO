@@ -32,7 +32,7 @@ class EnterWorldState
     ctr = 1
     c_list = entity.characters.split(",")
     c_list.each do |character_id|
-      character_name = PlayerCharacter.get_player_name(character_id)
+      character_name = entity.get_player_name(character_id)
       enter_menu << "[blue]#{ctr}.[white] #{character_name}\n"
       ctr += 1
     end
@@ -57,10 +57,10 @@ class EnterWorldState
         p_char.attach_client entity.client
         entity.detach_client
 
-        unless p_char.map.nil?
-          p_map = GameObjectLoader.load_object p_char.map
-          p_map.insert_character p_char
-        end
+        #unless p_char.map.nil?
+        #  p_map = GameObjectLoader.load_object p_char.map
+        #  p_map.insert_character p_char
+        #end
 
         p_char.change_state PlayerPromptState
 
