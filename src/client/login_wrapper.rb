@@ -14,7 +14,7 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'game/utils/state_machine'
-require 'client/client_wrapper'
+require 'game/objects/mixins/client_wrapper'
 require 'game/login_states/start_login_state'
 
 class LoginWrapper
