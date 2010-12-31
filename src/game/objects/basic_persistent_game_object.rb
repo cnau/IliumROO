@@ -19,7 +19,7 @@ class BasicPersistentGameObject < BasicOwnedObject
   PROPERTIES = [:parent].freeze
   attr_accessor :parent
   
-  VERBS = {:save => nil}.freeze
+  VERBS = {:save => nil, :recycle => nil}.freeze
 
   def initialize
     matches = self.class.name.match(/Kernel::C(.*)/)
@@ -35,5 +35,9 @@ class BasicPersistentGameObject < BasicOwnedObject
     log.debug "saving hash #{obj_hash}"
     obj_id = obj_hash['game_object_id']
     GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
+  end
+
+  def recycle
+    GameObjects.add_tag 'recycled', self.name, {'object_id' => self.game_object_id}
   end
 end
