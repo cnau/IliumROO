@@ -22,6 +22,7 @@ class BasicPersistentGameObject < BasicOwnedObject
   VERBS = {:save => nil, :recycle => nil}.freeze
 
   def initialize
+    super
     matches = self.class.name.match(/Kernel::C(.*)/)
     if matches
       @parent = matches[1]
