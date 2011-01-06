@@ -39,8 +39,7 @@ class BasicGameObject
   # generate this property for child classes automatically based on the "properties" tag in the database.
 
   # master properties indicates this object is a "template" object and is read-only
-  PROPERTIES = [:game_object_id, :master].freeze
-  attr_accessor :master
+  PROPERTIES = [:game_object_id].freeze
 
   def self.properties
     @properties ||= []

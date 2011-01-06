@@ -40,7 +40,6 @@ class ClientAccount < BasicPersistentGameObject
     new_character.name = name
     new_character.owner = self.game_object_id
     new_character.object_tag = :player_names
-    new_character.master = true
     new_character.save
 
     # add new character to our collection
