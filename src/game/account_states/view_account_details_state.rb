@@ -37,7 +37,7 @@ class ViewAccountDetailsState
 
     ctr = 1
     accounts.each do |account_name,account_hash|
-      if ctr = idx
+      if ctr == idx
         account = ClientAccount.get_account account_hash['object_id']
         menu = "Account name: #{account.email}\n"
         menu << "Last login date: #{account.last_login_date}\n"
