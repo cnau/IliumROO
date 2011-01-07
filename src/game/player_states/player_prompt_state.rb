@@ -30,7 +30,7 @@ class PlayerPromptState
   end
 
   def execute(entity)
-    process_command entity.last_client_data, entity
+    process_command entity
     entity.change_state PlayerPromptState unless entity.client.nil?
   end
 end

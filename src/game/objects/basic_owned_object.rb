@@ -16,6 +16,11 @@
 require 'game/objects/basic_game_object'
 
 class BasicOwnedObject < BasicGameObject
-  PROPERTIES = [:owner].freeze
-  attr_accessor :owner
+  PROPERTIES = [:owner, :mode].freeze
+  attr_accessor :owner, :mode
+
+  VERBS = {:chmod => {:prepositions => [:to]}}.freeze
+
+  def chmod
+  end
 end

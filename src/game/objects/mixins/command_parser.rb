@@ -14,19 +14,19 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 module CommandParser
-    def process_command(sentence, entity)
+    def process_command(player)
       # parse the command string
-      @command = parse_to_words sentence
-      @verb = @command['verb']
-      @verbsym = @verb.to_sym unless @verb.nil?
-      @alias = @verb
+      @command  = parse_to_words player.last_client_data
+      @verb     = @command['verb']
+      @verbsym  = @verb.to_sym unless @verb.nil?
+      @alias    = @verb
       @aliassym = @verbsym
-      @dobjstr = @command['direct_object']
-      @iobjstr = @command['indirect_object']
-      @prepstr = @command['preposition']
-      @prepsym = @prepstr.to_sym unless @prepstr.nil?
-      @player = entity
-      @caller = entity
+      @dobjstr  = @command['direct_object']
+      @iobjstr  = @command['indirect_object']
+      @prepstr  = @command['preposition']
+      @prepsym  = @prepstr.to_sym unless @prepstr.nil?
+      @player   = player
+      @caller   = player
       #@room = @player.room
 
       # locate objects
@@ -48,7 +48,21 @@ module CommandParser
       if @this.nil? or @verb.nil?
         huh
       else
-        @this.send @alias
+        @ret = {}
+        @ret[:verb]     = @verb
+        @ret[:verbsym]  = @verbsym
+        @ret[:alias]    = @alias
+        @ret[:aliassym] = @aliassym
+        @ret[:dobjstr]  = @dobjstr
+        @ret[:iobjstr]  = @iobjstr
+        @ret[:prepstr]  = @prepstr
+        @ret[:prepsym]  = @prepsym
+        @ret[:player]   = @player
+        @ret[:caller]   = @caller
+        @ret[:dobj]     = @dobj
+        @ret[:iobj]     = @iobj
+
+        @this.send @alias, @ret
       end
     end
 
@@ -80,16 +94,15 @@ module CommandParser
           end
         end
       end
-
-      return false
+      false
     end
 
     def locate_object(player, room, object_name)
       if object_name =="me"
-        return player
+        player
 
       elsif object_name == "here"
-        return room
+        room
         
       end
     end
@@ -128,7 +141,7 @@ module CommandParser
       ret[key] = vals.join(" ")
     end
 
-    return ret
+    ret
   end
 
   private :huh, :test_verb, :locate_object, :parse_to_words
