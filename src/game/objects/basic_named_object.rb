@@ -24,13 +24,13 @@ class BasicNamedObject < BasicPersistentGameObject
   def save(args)
     super args
     register_game_object
-    args[:player].send_to_client "#{self.name} saved."
+    args[:player].send_to_client "#{self.name} saved.\n"
   end
 
   def recycle(args)
     super args
     unregister_game_object
-    args[:player].send_to_client "#{self.name} recycled."
+    args[:player].send_to_client "#{self.name} recycled.\n"
   end
 
   def register_game_object

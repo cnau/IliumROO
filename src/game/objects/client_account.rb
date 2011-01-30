@@ -38,7 +38,7 @@ class ClientAccount < BasicPersistentGameObject
     # TODO: change this line to reflect new starting class
     new_character = BasicNamedObject.new
     new_character.name = name
-    new_character.owner = self.game_object_id
+    new_character.set_owner self.game_object_id
     new_character.object_tag = :player_names
     new_character.save
 

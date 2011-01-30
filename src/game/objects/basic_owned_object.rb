@@ -16,11 +16,95 @@
 require 'game/objects/basic_game_object'
 
 class BasicOwnedObject < BasicGameObject
-  PROPERTIES = [:owner, :mode].freeze
-  attr_accessor :owner, :mode
+  PROPERTIES = [:owner, :group, :mode].freeze
+  attr_accessor :owner, :group, :mode
 
-  VERBS = {:chmod => {:prepositions => [:to]}}.freeze
+  VERBS = {:chmod => {:prepositions => [:to]}, :setmode => {:prepositions => [:to]}, :getmode => nil, :clearmode => nil}.freeze
 
-  def chmod
+  FULL_RIGHTS = 0777
+  
+  FULL_OWNER  = 0700
+  READ_OWNER  = 0400
+  WRITE_OWNER = 0200
+  EXEC_OWNER  = 0100
+
+  FULL_GROUP  = 0070
+  READ_GROUP  = 0040
+  WRITE_GROUP = 0020
+  EXEC_GROUP  = 0010
+
+  FULL_OTHER  = 0007
+  READ_OTHER  = 0004
+  WRITE_OTHER = 0002
+  EXEC_OTHER  = 0001
+  
+  DEFAULT_MODE = FULL_OWNER | READ_GROUP | EXEC_GROUP | READ_OTHER | EXEC_OTHER
+
+  def initialize
+    super
+    @mode = DEFAULT_MODE
+  end
+
+  def set_owner(new_owner, new_group)
+    @owner = new_owner
+    @group = new_group
+    @mode = DEFAULT_MODE
+  end
+
+  def chmod(args)
+    return unless check_mode(:write, args['caller'])
+
+    mode = args[:iobjstr].to_i(8)     #convert to octal number
+    if mode == 0
+      args[:player].send_to_client "illegal mode.\n"
+    elsif mode > FULL_RIGHTS
+      args[:player].send_to_client "mode #{"%o" % mode} is illegal.\n"
+    else
+      args[:player].send_to_client "setting mode for #{@game_object_id} to #{"%o" % mode}\n"
+      @mode = mode
+    end
+  end
+
+  def setmode(args)
+    chmod(args)
+  end
+
+  def getmode(args)
+    return unless check_mode(:read, args['caller'])
+    args[:player].send_to_client "mode for #{@game_object_id}: #{"%o" % @mode}\n"
+  end
+
+  def clearmode(args)
+    args[:player].send_to_client "clearing mode for #{@game_object_id}\n"
+    @mode = 0
+  end
+
+  def check_mode(player, access_type, requestor)
+    unless has_access(access_type, requestor)
+
+    end
+  end
+
+  def has_access(access_type, requestor)
+    multiplier = 0
+    if requestor == @owner
+      multiplier = 0
+    elsif requestor == @group
+      multiplier = 1
+    else
+      multiplier = 2
+    end
+    access = 0
+    if access_type == :read
+      access = 04
+    elsif access_type == :write
+      access = 02
+    elsif access_type == :execute
+      access = 01
+    end
+
+    access_requested = access << (3 * multiplier)
+
+    (@mode & access_requested) == access_requested
   end
 end
