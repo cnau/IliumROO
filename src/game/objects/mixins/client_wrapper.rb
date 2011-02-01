@@ -20,7 +20,7 @@ module ClientWrapper
 
   def quit(args)
     args[:player].send_to_client "bye.\n"
-    save args
+    save args if self.methods.include?(:save)
     disconnect
   end
 
