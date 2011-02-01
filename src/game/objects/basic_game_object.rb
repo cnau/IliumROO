@@ -13,7 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'game/utils/state_machine'
+require 'game/objects/mixins/state_machine'
 require 'game/objects/mixins/client_wrapper'
 require 'logging/logging'
 
