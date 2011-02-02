@@ -29,14 +29,14 @@ end
 
 When /^I request the persistent class$/ do
   @persistent_obj_c_1 = GameObjectLoader.load_object 'persistent_class_1'
-  @persistent_obj_c_1.nil?.should == false
+  @persistent_obj_c_1.should_not be_nil
 end
 
 Then /^I get the correct class object$/ do
-  @persistent_obj_c_1.superclass.should == BasicPersistentGameObject
-  @persistent_obj_c_1.properties.include?(:foo).should == true
-  @persistent_obj_c_1.properties.include?(:bar).should == true
-  @persistent_obj_c_1.properties.include?(:foo_text).should == true
+  @persistent_obj_c_1.superclass.should be BasicPersistentGameObject
+  @persistent_obj_c_1.properties.should include :foo
+  @persistent_obj_c_1.properties.should include :bar
+  @persistent_obj_c_1.properties.should include :foo_text
 end
 
 Given /^a mocked persistent object$/ do
@@ -52,28 +52,27 @@ end
 
 When /^I request a new persistent object$/ do
   @persistent_obj_1 = GameObjectLoader.load_object 'persistent_object_1'
-  @persistent_obj_1.nil?.should == false
+  @persistent_obj_1.should_not be_nil
 end
 
 Then /^I get the correct persistent object$/ do
-  @persistent_obj_1.is_a?(BasicPersistentGameObject).should == true
+  @persistent_obj_1.should be_a_kind_of BasicPersistentGameObject
   obj_hash = @persistent_obj_1.to_hash
-  puts obj_hash.inspect
 
-  obj_hash.has_key?('game_object_id').should == true
-  obj_hash['game_object_id'].should == "persistent_object_1"
+  obj_hash.should have_key 'game_object_id'
+  obj_hash['game_object_id'].should eql "persistent_object_1"
 
-  obj_hash.has_key?('foo').should == true
-  obj_hash['foo'].should == "1"
+  obj_hash.should have_key 'foo'
+  obj_hash['foo'].should eql "1"
 
-  obj_hash.has_key?('bar').should == true
-  obj_hash['bar'].should == "2"
+  obj_hash.should have_key 'bar'
+  obj_hash['bar'].should eql "2"
 
-  obj_hash.has_key?('foo_text').should == true
-  obj_hash['foo_text'].should == "some text"
+  obj_hash.should have_key 'foo_text'
+  obj_hash['foo_text'].should eql "some text"
 
-  obj_hash.has_key?('parent').should == true
-  obj_hash['parent'].should == "persistent_class_1"
+  obj_hash.should have_key 'parent'
+  obj_hash['parent'].should eql "persistent_class_1"
 end
 
 Given /^a mocked persistent object to save$/ do
@@ -93,8 +92,8 @@ end
 
 When /^I load a persistent object instance$/ do
   @persistent_obj_2 = GameObjectLoader.load_object 'persistent_object_2'
-  @persistent_obj_2.nil?.should == false
-  @persistent_obj_2.is_a?(BasicPersistentGameObject).should == true
+  @persistent_obj_2.should_not be_nil
+  @persistent_obj_2.should be_a_kind_of BasicPersistentGameObject
 end
 
 When /^I save a persistent object instance$/ do
@@ -119,14 +118,14 @@ end
 
 When /^I load a persistent class 2$/ do
   @persistent_obj_c_2 = GameObjectLoader.load_object 'persistent_class_2'
-  @persistent_obj_c_2.nil?.should == false
-  @persistent_obj_c_2.is_a?(Class).should == true
+  @persistent_obj_c_2.should_not be_nil
+  @persistent_obj_c_2.should be_a Class
 end
 
 When /^I create an object instance from persistent class 2$/ do
   @persistent_obj_3 = @persistent_obj_c_2.new
-  @persistent_obj_3.nil?.should == false
-  @persistent_obj_3.is_a?(@persistent_obj_c_2).should == true
+  @persistent_obj_3.should_not be_nil
+  @persistent_obj_3.should be_an_instance_of @persistent_obj_c_2
 end
 
 When /^I change some properties in persistent object$/ do
@@ -139,4 +138,5 @@ When /^I save the persistent object 2$/ do
 end
 
 Then /^the object should save 2$/ do
+  #NOOP mocha will complain if the properties aren't set properly
 end

@@ -23,7 +23,7 @@ Given /^a clean test object id$/ do
   GameObjects.remove OBJECT_ID
 
   obj = GameObjects.get OBJECT_ID
-  obj.length.should == 0
+  obj.length.should eql 0
 end
 
 When /^I insert an object hash$/ do
@@ -33,15 +33,15 @@ end
 
 Then /^I expect that the object hash was inserted$/ do
   obj = GameObjects.get OBJECT_ID
-  obj.length.should == 2
-  obj['object_id'].should == OBJECT_ID
-  obj['name'].should == 'name'
+  obj.length.should eql 2
+  obj['object_id'].should eql OBJECT_ID
+  obj['name'].should eql 'name'
 end
 
 And /^I clean up the test object id$/ do
   GameObjects.remove OBJECT_ID
   obj = GameObjects.get OBJECT_ID
-  obj.length.should == 0
+  obj.length.should eql 0
 end
 
 When /^I insert an object hash with different columns$/ do
@@ -55,14 +55,14 @@ end
 
 Then /^I expect that the object hash was inserted and is identical$/ do
   obj = GameObjects.get OBJECT_ID
-  obj.should == @obj_hash_2
+  obj.should eql @obj_hash_2
 end
 
 Given /^a clean tag for object "([^"]*)"$/ do |arg1|
   GameObjects.remove_tag 'test', "test_object_name_#{arg1}"
 
   obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
-  obj.length.should == 0
+  obj.length.should eql 0
 end
 
 When /^I insert a new tag for object "([^"]*)"$/ do |arg1|
@@ -71,16 +71,16 @@ end
 
 Then /^I expect object "([^"]*)" to be inserted$/ do |arg1|
   obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
-  obj.length.should == 1
+  obj.length.should eql 1
 end
 
 And /^I expect both objects to be inserted$/ do
   tags = GameObjects.get_tags 'test'
-  tags.length.should == 2
+  tags.length.should eql 2
 end
 
 Then /^that I clean up object "([^"]*)"$/ do |arg1|
   GameObjects.remove_tag 'test', "test_object_name_#{arg1}"
   obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
-  obj.length.should == 0
+  obj.length.should eql 0
 end

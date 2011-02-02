@@ -35,18 +35,18 @@ end
 
 When /^I load test class object$/ do
   @obj_c = GameObjectLoader.load_object 'test_class_1'
-  @obj_c.nil?.should == false
+  @obj_c.should_not be_nil
 end
 
 Then /^I verify class structure$/ do
-  @obj_c.superclass.name.should == 'BasicGameObject'
-  @obj_c.public_instance_methods.include?(:foo).should == true
-  @obj_c.public_instance_methods.include?(:bar).should == true
-  @obj_c.public_instance_methods.include?(:game_object_id).should == true
-  @obj_c.public_instance_methods.include?(:foo_bar).should == true
-  @obj_c.public_instance_methods.include?(:foo_log).should == true
-  @obj_c.public_instance_methods.include?(:foo_obj).should == true
-  @obj_c.included_modules.include?(Logging).should == true
+  @obj_c.superclass.name.should eql 'BasicGameObject'
+  @obj_c.public_instance_methods.should include :foo
+  @obj_c.public_instance_methods.should include :bar
+  @obj_c.public_instance_methods.should include :game_object_id
+  @obj_c.public_instance_methods.should include :foo_bar
+  @obj_c.public_instance_methods.should include :foo_log
+  @obj_c.public_instance_methods.should include :foo_obj
+  @obj_c.included_modules.should include Logging
 end
 
 And /^a mock object setup$/ do
@@ -63,15 +63,15 @@ end
 
 And /^I load test object$/ do
   @obj = GameObjectLoader.load_object 'test_object_1'
-  @obj.nil?.should == false
+  @obj.should_not be_nil
 end
 
 Then /^I verify object structure$/ do
-  @obj.game_object_id.should == 'test_object_1'
-  @obj.is_a?(@obj_c).should == true
-  @obj.foo.should == 1
-  @obj.bar.should == 2
-  @obj.foo_bar.should == 3
-  @obj.foo_text.should == 'some text'
-  @obj.foo_obj.is_a?(BasicGameObject).should == true
+  @obj.game_object_id.should eql 'test_object_1'
+  @obj.should be_an_instance_of @obj_c
+  @obj.foo.should eql 1
+  @obj.bar.should eql 2
+  @obj.foo_bar.should eql 3
+  @obj.foo_text.should eql 'some text'
+  @obj.foo_obj.should be_an_instance_of BasicGameObject
 end

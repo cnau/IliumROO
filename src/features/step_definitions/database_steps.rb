@@ -30,21 +30,21 @@ end
 
 Then /^the log entry should be the same as I inserted$/ do
   rows = CassandraDao.get :log, 'test'
-  rows.empty?.should == false
-  rows.length.should == 1
+  rows.should_not be_empty
+  rows.length.should equal 1
 end
 
 Then /^the inserted log entry should not be empty$/ do
   row = CassandraDao.get :log, 'test', @row_id
-  row.empty?.should == false
-  row['log_id'].should == @row_id.to_guid.to_s
-  row['msg'].should == 'test msg'
+  row.should_not be_empty
+  row['log_id'].should eql @row_id.to_guid.to_s
+  row['msg'].should eql 'test msg'
 end
 
 Then /^I need to clean up the system log$/ do
   CassandraDao.remove :log, 'test'
   row = CassandraDao.get :log, 'test'
-  row.empty?.should == true
+  row.should be_empty
 end
 
 Given /^I have a clean objects test key$/ do
@@ -58,21 +58,21 @@ end
 
 Then /^the inserted object should not be empty$/ do
   row = CassandraDao.get :objects, @new_id_1
-  row.empty?.should == false
-  row['object_id'].should == @new_id_1
-  row['columns'].should == 'additional'
+  row.should_not be_empty
+  row['object_id'].should eql @new_id_1
+  row['columns'].should eql 'additional'
 end
 
 Then /^I need to clean up the test key$/ do
   CassandraDao.remove :objects, @new_id_1
   row = CassandraDao.get :objects, @new_id_1
-  row.empty?.should == true
+  row.should be_empty
 end
 
 Given /^I have a clean unit testing tag$/ do
   CassandraDao.remove :object_tags, 'unit_testing'
   start_count = CassandraDao.count_columns :object_tags, 'unit_testing'
-  start_count.should == 0
+  start_count.should eql 0
 end
 
 When /^I insert two new rows$/ do
@@ -82,19 +82,19 @@ end
 
 Then /^the there should be two rows returned$/ do
   row = CassandraDao.get :object_tags, 'unit_testing'
-  row.length.should == 2
+  row.length.should eql 2
 end
 
 And /^each row should have two columns$/ do
   mid_count = CassandraDao.count_columns :object_tags, 'unit_testing'
-  mid_count.should == 2
+  mid_count.should eql 2
 end
 
 Then /^I need to clean up the test object tag$/ do
   CassandraDao.remove :object_tags, 'unit_testing'
   row = CassandraDao.get :object_tags, 'unit_testing'
-  row.empty?.should == true
+  row.should be_empty
 
   end_count = CassandraDao.count_columns :object_tags, 'unit_testing'
-  end_count.should == 0
+  end_count.should eql 0
 end

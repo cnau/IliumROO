@@ -28,10 +28,10 @@ end
 
 When /^I load the game object$/ do
   @the_game = GameObjectLoader.load_object "game"
-  @the_game.nil?.should == false
+  @the_game.should_not be_nil
 end
 
 Then /^I should get the correct game object$/ do
-  @the_game.port_list.should == 6666
-  @the_game.is_a?(Game).should == true
+  @the_game.port_list.should eql 6666
+  @the_game.should be_an_instance_of Game
 end
