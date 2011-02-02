@@ -17,7 +17,15 @@ require 'logging/logging'
 module StateMachine
   include Logging
 
-  attr_accessor :previous_state, :current_state, :global_state
+  attr_accessor :previous_state, :current_state
+
+  def global_state
+    @global_state
+  end
+
+  def global_state=(arg)
+    @global_state = arg.instance
+  end
 
   def update
     @current_state.execute(self)  unless @current_state.nil?
