@@ -39,6 +39,11 @@ class BasicPersistentGameObject < BasicOwnedObject
   end
 
   def recycle(args = nil)
-    GameObjects.add_tag 'recycled', self.name, {'object_id' => self.game_object_id}
+    if self.class.properties.include? :name then
+      obj_name = self.name
+    else
+      obj_name = self.game_object_id
+    end
+    GameObjects.add_tag 'recycled', obj_name, {'object_id' => self.game_object_id}
   end
 end

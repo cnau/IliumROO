@@ -18,6 +18,15 @@ require "features/step_definitions/spec_helper.rb"
 require "game_objects/game_object_loader"
 require "game/objects/basic_persistent_game_object"
 
+Given /^a persistent game object instance$/ do
+  @persistent_obj_0 = BasicPersistentGameObject.new
+  @persistent_obj_0.should_not be_nil
+end
+
+Then /^parent should be BasicPersistentGameObject$/ do
+  @persistent_obj_0.parent.should eql "BasicPersistentGameObject"
+end
+
 Given /^a mocked persistent class$/ do
   obj_hash = {'game_object_id'=> 'persistent_class_1',
               'super'         => 'BasicPersistentGameObject',
@@ -57,6 +66,8 @@ end
 
 Then /^I get the correct persistent object$/ do
   @persistent_obj_1.should be_a_kind_of BasicPersistentGameObject
+  @persistent_obj_1.parent.should eql "persistent_class_1"
+  
   obj_hash = @persistent_obj_1.to_hash
 
   obj_hash.should have_key 'game_object_id'
@@ -139,4 +150,30 @@ end
 
 Then /^the object should save 2$/ do
   #NOOP mocha will complain if the properties aren't set properly
+end
+
+Given /^a mocked persistent object 3$/ do
+  obj_hash = {'game_object_id'  => 'persistent_object_3',
+              'parent'          => 'BasicPersistentGameObject'}
+
+  # setup mock game object to prevent database hit
+  GameObjects.expects(:get).with('persistent_object_3').once.returns(obj_hash)
+end
+
+Given /^a mocked recycle database function 3$/ do
+  GameObjects.expects(:add_tag).with('recycled', 'persistent_object_3', {'object_id' => 'persistent_object_3'}).once
+end
+
+When /^I load a persistent object instance 3$/ do
+  @persistent_obj_3 = GameObjectLoader.load_object 'persistent_object_3'
+  @persistent_obj_3.should_not be_nil
+  @persistent_obj_3.should be_a_kind_of BasicPersistentGameObject
+end
+
+When /^I recycle a persistent object instance 3$/ do
+  @persistent_obj_3.recycle
+end
+
+Then /^the object should recycle$/ do
+  #NOOP mocha complains if database function isn't hit
 end
