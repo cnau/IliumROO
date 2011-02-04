@@ -16,76 +16,94 @@
 module CommandParser
     def process_command(player)
       # parse the command string
-      @command  = parse_to_words player.last_client_data
-      @verb     = @command['verb']
-      @verbsym  = @verb.to_sym unless @verb.nil?
-      @alias    = @verb
-      @aliassym = @verbsym
-      @dobjstr  = @command['direct_object']
-      @iobjstr  = @command['indirect_object']
-      @prepstr  = @command['preposition']
-      @prepsym  = @prepstr.to_sym unless @prepstr.nil?
-      @player   = player
-      @caller   = player
-      #@room = @player.room
+      command   = parse_to_words player.last_client_data
+      verb      = command['verb']
+      verbsym   = verb.to_sym unless verb.nil?
+      verbalias = verb
+      aliassym  = verbsym
+      dobjstr   = command['direct_object']
+      iobjstr   = command['indirect_object']
+      prepstr   = command['preposition']
+      prepsym   = prepstr.to_sym unless prepstr.nil?
+      caller    = player
+      #TODO: reimplement once room becomes something
+      #room = player.room
+      room = nil
 
       # locate objects
-      @dobj = locate_object(@player, @room, @dobjstr)
-      @iobj = locate_object(@player, @room, @iobjstr)
+      dobj = locate_object(player, room, dobjstr)
+      iobj = locate_object(player, room, iobjstr)
+
+      if dobj.nil? then
+        verb_args = dobjstr
+        dobjstr = nil
+      end
 
       # locate verb
-      @this = nil
-      if test_verb(@player)
-        @this = @player
-      elsif test_verb(@room)
-        @this = @room
-      elsif test_verb(@dobj)
-        @this = @dobj
-      elsif test_verb(@iobj)
-        @this = @iobj
+      this = nil
+      if test_verb(player, verbsym, prepsym)
+        this = player
+      elsif test_verb(room, verbsym, prepsym)
+        this = room
+      elsif test_verb(dobj, verbsym, prepsym)
+        this = dobj
+      elsif test_verb(iobj, verbsym, prepsym)
+        this = iobj
       end
 
-      if @this.nil? or @verb.nil?
-        huh
+      # find alias
+      aliassym = find_alias(this, verbsym)
+
+      if this.nil? or verb.nil?
+        huh player
       else
-        @ret = {}
-        @ret[:verb]     = @verb
-        @ret[:verbsym]  = @verbsym
-        @ret[:alias]    = @alias
-        @ret[:aliassym] = @aliassym
-        @ret[:dobjstr]  = @dobjstr
-        @ret[:iobjstr]  = @iobjstr
-        @ret[:prepstr]  = @prepstr
-        @ret[:prepsym]  = @prepsym
-        @ret[:player]   = @player
-        @ret[:caller]   = @caller
-        @ret[:dobj]     = @dobj
-        @ret[:iobj]     = @iobj
+        ret = {}
+        ret[:verb]     = verb
+        ret[:verbsym]  = verbsym
+        ret[:alias]    = aliassym.to_s
+        ret[:aliassym] = aliassym
+        ret[:dobjstr]  = dobjstr
+        ret[:iobjstr]  = iobjstr
+        ret[:prepstr]  = prepstr
+        ret[:prepsym]  = prepsym
+        ret[:player]   = player
+        ret[:caller]   = caller
+        ret[:dobj]     = dobj
+        ret[:iobj]     = iobj
+        ret[:args]     = verb_args
 
-        @this.send @alias, @ret
+        this.send ret[:alias], ret
       end
     end
 
-    def huh
-      @player.send_to_client "huh?\n"
+    def huh(player)
+      player.send_to_client "huh?\n"
     end
 
-    def test_verb(obj_to_test)
+    def find_alias(obj_to_test, verbsym)
+      return verbsym if obj_to_test.nil?
+      verbs = obj_to_test.class.verbs
+      return verbsym if verbs[verbsym].nil?
+      if verbs.has_key? verbsym
+        if verbs[verbsym].has_key? :alias
+          return verbs[verbsym][:alias]
+        end
+      end
+      verbsym
+    end
+
+    def test_verb(obj_to_test, verbsym, prepsym)
       return false if obj_to_test.nil?
       verbs = obj_to_test.class.verbs
-      if verbs.has_key? @verbsym
-        if verbs[@verbsym].nil?
+      if verbs.has_key? verbsym
+        if verbs[verbsym].nil?
           return true
         else
-          if verbs[@verbsym].has_key? :alias
-            @aliassym = verbs[@verbsym][:alias]
-            @alias = @aliassym.to_s
-          end
-          if verbs[@verbsym].has_key? :prepositions
-            if verbs[@verbsym][:prepositions].nil?
+          if verbs[verbsym].has_key? :prepositions
+            if verbs[verbsym][:prepositions].nil?
               return true
             else
-              if verbs[@verbsym][:prepositions].include? @prepsym
+              if verbs[verbsym][:prepositions].include? prepsym
                 return true
               end
             end
@@ -111,10 +129,11 @@ module CommandParser
       # make common replacements
       sentence.gsub! /^"/, "say"
       sentence.gsub! /^:/, "emote"
-      sentence.gsub! /^;/, "eval"
+      # TODO reimplement eval
+      #sentence.gsub! /^;/, "eval"
 
       # break up sentence
-      matches = sentence.match(/\A([a-z][a-z_?]*)(?: ([a-z 0-9]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z 0-9]+))\Z|\A([a-z][a-z_?]*) ([a-z 0-9]+)\Z|\A([a-z][a-z_?]*)\Z/i)
+      matches = sentence.match(/\A([a-z][a-z_?!"]*)(?: ([a-z 0-9]+))?(?: (with|using|at|to|in front of|in|inside|into|on top of|on|onto|upon|out of|from inside|from|over|through|under|underneath|beneath|behind|beside|for|about|is|as|off|off of) ([a-z 0-9!?"]+))\Z|\A([a-z][a-z_?!]*) ([a-z 0-9?!"]+)\Z|\A([a-z][a-z_?!]*)\Z/)
       matches = matches.to_a
       matches.delete_at 0
 
@@ -144,5 +163,6 @@ module CommandParser
     ret
   end
 
-  private :huh, :test_verb, :locate_object, :parse_to_words
+  module_function :process_command, :huh, :test_verb, :locate_object, :parse_to_words, :find_alias
+  private :huh, :test_verb, :locate_object, :parse_to_words, :find_alias
 end
