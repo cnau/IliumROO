@@ -53,8 +53,8 @@ end
 Then /^I should be able to see that id in the object's to_hash function$/ do
   obj_hash = @basic_game_object_1.to_hash
   obj_hash.should_not be_nil
-  obj_hash.should have_key "game_object_id"
-  obj_hash["game_object_id"].should eql @game_object_id
+  obj_hash.should have_key :game_object_id
+  obj_hash[:game_object_id].should eql @game_object_id
 end
 
 Given /^an instance of BasicGameObject$/ do

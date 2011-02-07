@@ -72,7 +72,7 @@ class ClientAccount < BasicPersistentGameObject
 
   def get_player_name(game_object_id)
     player_hash = GameObjects.get game_object_id
-    player_hash['name']
+    player_hash[:name]
   end
 
   def delete_character(game_object_id)

@@ -11,10 +11,10 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
+#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>
 
-class Hash
-  def symbolize_keys!
-    replace(inject({}) { |h,(k,v)| h[k.to_sym] = v; h })
-  end
-end
+Feature: basic owned object testing
+  As a game I have players that want to own objects
+  So I will have a base object that allows for ownership
+
+  Scenario:

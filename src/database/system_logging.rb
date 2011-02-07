@@ -15,9 +15,11 @@
 require 'singleton'
 require 'database/cassandra_dao'
 require 'logging/logging'
+require 'simple_uuid'
 
 # This class wraps interactions with the 'log' column family
 class SystemLogging
+  include SimpleUUID
   include Singleton
   include Logging
 

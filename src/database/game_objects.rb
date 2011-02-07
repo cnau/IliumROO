@@ -15,19 +15,25 @@
 require 'singleton'
 require 'database/cassandra_dao'
 require 'logging/logging'
+require 'facets/hash/traverse'
 
 # class to interact with "objects" and "object_tags" column families
 class GameObjects
   include Singleton
   include Logging
 
+
   # gets a record from the 'objects' column family
   # [object_id] id of the object to retrieve
   def get(object_id)
-    log_debug "getting object #{object_id}"
-    obj = CassandraDao.get :objects, object_id
-    log_debug "retrieved object #{obj}"
-    obj
+    log.debug {"getting object #{object_id}"}
+    obj = CassandraDao.get(:objects, object_id).to_hash
+    
+    # convert hash to symbolic keys
+    ret = obj.traverse {|k,v| [k.to_sym, v]}
+    
+    log.debug {"retrieved object #{ret}"}
+    ret
   end
 
   # gets a record from the 'objects' column family
@@ -40,8 +46,10 @@ class GameObjects
   # [object_id] object id to save
   # [object_hash] object data
   def save(object_id, object_hash)
-    log_debug "saving #{object_id} : #{object_hash}"
-    CassandraDao.insert :objects, object_id, object_hash
+    log.debug {"saving #{object_id} : #{object_hash}"}
+    #convert hash to string keys
+    to_insert = object_hash.traverse {|k,v| [k.to_s, v]}
+    CassandraDao.insert :objects, object_id, to_insert
   end
 
   # saves an object to the 'objects' column family
@@ -54,7 +62,7 @@ class GameObjects
   # removes an object from the database
   # [object_id] object id to remove
   def remove(object_id)
-    log_debug "removing #{object_id}"
+    log.debug {"removing #{object_id}"}
     CassandraDao.remove :objects, object_id
   end
 
@@ -68,9 +76,9 @@ class GameObjects
   # [tag_name] object tag name to retrieve
   # [val] specific tag to get
   def get_tag(tag_name, val)
-    log_debug "getting object tag #{tag_name} for #{val}"
+    log.debug {"getting object tag #{tag_name} for #{val}"}
     tag = CassandraDao.get :object_tags, tag_name, val
-    log_debug "retrieved #{tag}"
+    log.debug {"retrieved #{tag}"}
     tag
   end
 
@@ -90,9 +98,9 @@ class GameObjects
   # retrieves all object tags for a given tag name
   # [tag_name] object tag name to retrieve
   def get_tags(tag_name)
-    log_debug "getting tags for #{tag_name}"
+    log.debug {"getting tags for #{tag_name}"}
     tags = CassandraDao.get :object_tags, tag_name
-    log_debug "retrieved #{tags}"
+    log.debug {"retrieved #{tags}"}
     tags
   end
 
@@ -100,7 +108,7 @@ class GameObjects
   # [tag_name] object tag name to remove
   # [val] specific tag to remove
   def remove_tag(tag_name, val)
-    log_debug "removing object tag for #{tag_name} for #{val}"
+    log.debug {"removing object tag for #{tag_name} for #{val}"}
     CassandraDao.remove :object_tags, tag_name, val
   end
 
@@ -116,7 +124,7 @@ class GameObjects
   # [val] specific tag to add
   # [row_hash] row hash to add to tag
   def add_tag(tag_name, val, row_hash)
-    log_debug "adding object tag for #{tag_name} for #{val} : #{row_hash}"
+    log.debug {"adding object tag for #{tag_name} for #{val} : #{row_hash}"}
     CassandraDao.insert :object_tags, tag_name, {val => row_hash}
   end
 

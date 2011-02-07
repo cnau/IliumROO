@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #  This file is part of Ilium MUD.
 #
 #  Ilium MUD is free software: you can redistribute it and/or modify

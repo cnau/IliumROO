@@ -11,27 +11,8 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>
+#  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 $: << File.expand_path(File.dirname(__FILE__) + "/../../")
 
 require "features/step_definitions/spec_helper.rb"
-require "game_objects/game_object_loader"
-require "game/objects/game"
-
-Given /^a mocked game object in the database$/ do
-  obj_hash = {:game_object_id   => 'game',
-              :parent           => 'Game',
-              :port_list        => '6666'}
-
-GameObjects.expects(:get).with('game').once.returns(obj_hash)
-end
-
-When /^I load the game object$/ do
-  @the_game = GameObjectLoader.load_object "game"
-  @the_game.should_not be_nil
-end
-
-Then /^I should get the correct game object$/ do
-  @the_game.port_list.should eql 6666
-  @the_game.should be_an_instance_of Game
-end
+require 'game/objects/basic_owned_object'

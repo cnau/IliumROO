@@ -16,8 +16,10 @@
 require 'game/objects/mixins/state_machine'
 require 'game/objects/mixins/client_wrapper'
 require 'logging/logging'
+require 'simple_uuid'
 
 class BasicGameObject
+  include SimpleUUID
   include StateMachine
   include ClientWrapper
   include Logging
@@ -69,7 +71,7 @@ class BasicGameObject
     @game_object_id ||= UUID.new.to_guid.to_s
     ret = {}
     self.class.properties.each do |prop|
-      ret[prop.to_s] = self.instance_variable_get("@#{prop}").to_s
+      ret[prop.to_sym] = self.instance_variable_get("@#{prop}").to_s
     end
     ret
   end

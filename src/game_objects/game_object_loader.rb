@@ -93,6 +93,7 @@ class GameObjectLoader
   end
 
   def load_class_by_id(object_id)
+    log.debug {"locating object id: #{object_id}"}
     # look for class in Kernel
     # only check Kernel if the class name is properly capitalized
     if object_id.match(/^[A-Z][A-Za-z0-9_]*$/)
@@ -113,38 +114,38 @@ class GameObjectLoader
   def setup_class_by_hash(object_hash)
     # get the object's super class
     log.debug {"getting super class for #{object_hash}"}
-    super_c = load_class_by_id(object_hash['super'])
+    super_c = load_class_by_id(object_hash[:super])
     super_c = BasicGameObject if super_c.nil?
     log.debug {"found super class #{super_c}"}
 
     # create a new class derived from the super class
     log.debug {"building class #{object_hash} derived from #{super_c}"}
     new_c = Class.new super_c
-    log.debug {"setting kernel class name C#{object_hash['game_object_id']} to #{new_c}"}
-    Kernel.const_set "C#{object_hash['game_object_id']}", new_c
+    log.debug {"setting kernel class name C#{object_hash[:game_object_id]} to #{new_c}"}
+    Kernel.const_set "C#{object_hash[:game_object_id]}", new_c
     log.debug {"built class #{new_c}"}
     
     # add properties to the class
     prop_array = ""
-    object_hash['properties'].split(',').map do |prop|
+    object_hash[:properties].split(',').map do |prop|
       #TODO:make this next part sandbox safe
-      unless new_c.public_instance_methods.include?(eval(":#{prop}"))
+      unless new_c.public_instance_methods.include? prop.to_sym
         log.debug {"adding property #{prop} to #{new_c}"}
         new_c.class_eval "def #{prop};@#{prop};end;def #{prop}=(val);@#{prop} = val;end;"
       end
       prop_array += "," if prop_array.length > 0
       prop_array += ":#{prop}"
       
-    end if (object_hash.has_key? 'properties')
+    end if (object_hash.has_key? :properties)
 
     new_c.const_set :PROPERTIES, eval("[#{prop_array}]")
 
     # add mixins to the class
-    object_hash['mixins'].split(',').map do |mixin|
+    object_hash[:mixins].split(',').map do |mixin|
       #TODO:make this next part sandbox safe
       log.debug {"adding mixin #{mixin} to #{new_c}"}
       new_c.instance_eval "include #{mixin}"
-    end if (object_hash.has_key? 'mixins')
+    end if (object_hash.has_key? :mixins)
 
     # add methods to class
     object_hash.each do |key, value|
@@ -161,12 +162,12 @@ class GameObjectLoader
   def setup_object_by_hash(object_hash)
     # get the parent class for this object
     log.debug {"setting up object #{object_hash}"}
-    parent_c = load_class_by_id object_hash['parent']
+    parent_c = load_class_by_id object_hash[:parent]
     log.debug {"found parent class #{parent_c}"}
     parent_c = BasicGameObject if parent_c.nil?
 
     new_o = parent_c.new
-    new_o.game_object_id = object_hash['game_object_id']
+    new_o.game_object_id = object_hash[:game_object_id]
     log.debug {"created class instance #{new_o}"}
 
     object_hash.each do |key,value|

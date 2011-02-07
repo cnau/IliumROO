@@ -21,13 +21,13 @@ require 'game/objects/basic_game_object'
 require 'mocha'
 
 Given /^a mock class setup$/ do
-  obj_hash = {'game_object_id'=> 'test_class_1',
-              'super'         => 'BasicGameObject',
-              'mixins'        => 'Logging',
-              'properties'    => 'game_object_id,foo,bar,foo_text,foo_obj',
-              'foo_bar'       => 'self.foo + self.bar',
-              'foo_log'       => 'log.info "some info"',
-              'foo_m(param)'  => 'log.info param'}
+  obj_hash = {:game_object_id => 'test_class_1',
+              :super          => 'BasicGameObject',
+              :mixins         => 'Logging',
+              :properties     => 'game_object_id,foo,bar,foo_text,foo_obj',
+              :foo_bar        => 'self.foo + self.bar',
+              :foo_log        => 'log.info "some info"'}#,
+              #:foo_m(param)   => 'log.info param'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('test_class_1').returns(obj_hash)
@@ -50,12 +50,12 @@ Then /^I verify class structure$/ do
 end
 
 And /^a mock object setup$/ do
-  obj_hash = {'game_object_id'  => 'test_object_1',
-              'parent'          => 'test_class_1',
-              'foo'             => '1',
-              'bar'             => '2',
-              'foo_text'        => 'some text',
-              'foo_obj'         => '$${BasicGameObject}.new'}
+  obj_hash = {:game_object_id   => 'test_object_1',
+              :parent           => 'test_class_1',
+              :foo              => '1',
+              :bar              => '2',
+              :foo_text         => 'some text',
+              :foo_obj          => '$${BasicGameObject}.new'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('test_object_1').returns(obj_hash)

@@ -28,9 +28,9 @@ Then /^parent should be BasicPersistentGameObject$/ do
 end
 
 Given /^a mocked persistent class$/ do
-  obj_hash = {'game_object_id'=> 'persistent_class_1',
-              'super'         => 'BasicPersistentGameObject',
-              'properties'    => 'foo,bar,foo_text'}
+  obj_hash = {:game_object_id   => 'persistent_class_1',
+              :super            => 'BasicPersistentGameObject',
+              :properties       => 'foo,bar,foo_text'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('persistent_class_1').returns(obj_hash)
@@ -49,11 +49,11 @@ Then /^I get the correct class object$/ do
 end
 
 Given /^a mocked persistent object$/ do
-  obj_hash = {'game_object_id'  => 'persistent_object_1',
-              'parent'          => 'persistent_class_1',
-              'foo'             => '1',
-              'bar'             => '2',
-              'foo_text'        => 'some text'}
+  obj_hash = {:game_object_id   => 'persistent_object_1',
+              :parent           => 'persistent_class_1',
+              :foo              => '1',
+              :bar              => '2',
+              :foo_text         => 'some text'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('persistent_object_1').once.returns(obj_hash)
@@ -70,35 +70,35 @@ Then /^I get the correct persistent object$/ do
   
   obj_hash = @persistent_obj_1.to_hash
 
-  obj_hash.should have_key 'game_object_id'
-  obj_hash['game_object_id'].should eql "persistent_object_1"
+  obj_hash.should have_key :game_object_id
+  obj_hash[:game_object_id].should eql "persistent_object_1"
 
-  obj_hash.should have_key 'foo'
-  obj_hash['foo'].should eql "1"
+  obj_hash.should have_key :foo
+  obj_hash[:foo].should eql "1"
 
-  obj_hash.should have_key 'bar'
-  obj_hash['bar'].should eql "2"
+  obj_hash.should have_key :bar
+  obj_hash[:bar].should eql "2"
 
-  obj_hash.should have_key 'foo_text'
-  obj_hash['foo_text'].should eql "some text"
+  obj_hash.should have_key :foo_text
+  obj_hash[:foo_text].should eql "some text"
 
-  obj_hash.should have_key 'parent'
-  obj_hash['parent'].should eql "persistent_class_1"
+  obj_hash.should have_key :parent
+  obj_hash[:parent].should eql "persistent_class_1"
 end
 
 Given /^a mocked persistent object to save$/ do
-  obj_hash = {'game_object_id'  => 'persistent_object_2',
-              'parent'          => 'persistent_class_1',
-              'foo'             => '1',
-              'bar'             => '2',
-              'foo_text'        => 'some text'}
+  obj_hash = {:game_object_id   => 'persistent_object_2',
+              :parent           => 'persistent_class_1',
+              :foo              => '1',
+              :bar              => '2',
+              :foo_text         => 'some text'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('persistent_object_2').once.returns(obj_hash)
 end
 
 Given /^a mocked save database function$/ do
-  GameObjects.expects(:save).with('persistent_object_2', {'foo' => '1', 'bar' => '2', 'foo_text' => 'some text', 'parent' => 'persistent_class_1', 'owner' => '', 'group' => '', 'mode' => '493', 'game_object_id' => 'persistent_object_2'}).once
+  GameObjects.expects(:save).with('persistent_object_2', is_a(Hash)) {|object_id, obj_hash| @object_hash_2 = obj_hash}
 end
 
 When /^I load a persistent object instance$/ do
@@ -112,19 +112,20 @@ When /^I save a persistent object instance$/ do
 end
 
 Then /^the object should save$/ do
-  #NOOP: mocha should fail here if save expectation isn't met
+  @object_hash_2.should include :game_object_id
+  @object_hash_2[:game_object_id].should eql 'persistent_object_2'
 end
 
 Given /^a mocked persistent class 2$/ do
-  obj_hash = {'game_object_id'=> 'persistent_class_2',
-              'super'         => 'BasicPersistentGameObject',
-              'properties'    => 'foo,bar,foo_text'}
+  obj_hash = {:game_object_id   => 'persistent_class_2',
+              :super            => 'BasicPersistentGameObject',
+              :properties       => 'foo,bar,foo_text'}
 
   GameObjects.expects(:get).with('persistent_class_2').returns(obj_hash)
 end
 
 Given /^a mocked save function 2$/ do
-  GameObjects.expects(:save).with(@persistent_obj_3.game_object_id, {'foo' => '5', 'bar' => '6', 'foo_text' => '', 'parent' => 'persistent_class_2', 'owner' => '', 'group' => '', 'mode' => '493', 'game_object_id' => @persistent_obj_3.game_object_id}).once
+  GameObjects.expects(:save).with(@persistent_obj_3.game_object_id, {:foo => '5', :bar => '6', :foo_text => '', :parent => 'persistent_class_2', :owner => '', :group => '', :mode => '493', :game_object_id => @persistent_obj_3.game_object_id}).once
 end
 
 When /^I load a persistent class 2$/ do
@@ -153,8 +154,8 @@ Then /^the object should save 2$/ do
 end
 
 Given /^a mocked persistent object 3$/ do
-  obj_hash = {'game_object_id'  => 'persistent_object_3',
-              'parent'          => 'BasicPersistentGameObject'}
+  obj_hash = {:game_object_id  => 'persistent_object_3',
+              :parent          => 'BasicPersistentGameObject'}
 
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('persistent_object_3').once.returns(obj_hash)

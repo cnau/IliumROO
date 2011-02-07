@@ -27,15 +27,15 @@ Given /^a clean test object id$/ do
 end
 
 When /^I insert an object hash$/ do
-  object_hash_1 = {'object_id' => OBJECT_ID, 'name' => 'name'}
+  object_hash_1 = {:object_id => OBJECT_ID, :name => 'name'}
   GameObjects.save OBJECT_ID, object_hash_1
 end
 
 Then /^I expect that the object hash was inserted$/ do
   obj = GameObjects.get OBJECT_ID
   obj.length.should eql 2
-  obj['object_id'].should eql OBJECT_ID
-  obj['name'].should eql 'name'
+  obj[:object_id].should eql OBJECT_ID
+  obj[:name].should eql 'name'
 end
 
 And /^I clean up the test object id$/ do
@@ -45,10 +45,10 @@ And /^I clean up the test object id$/ do
 end
 
 When /^I insert an object hash with different columns$/ do
-  @obj_hash_2 = { 'object_id'  => OBJECT_ID,
-                  'super'      => 'BasicObject',
-                  'properties' => 'foo,bar',
-                  'foo_bar'    => 'foo + bar'}
+  @obj_hash_2 = { :object_id  => OBJECT_ID,
+                  :super      => 'BasicObject',
+                  :properties => 'foo,bar',
+                  :foo_bar    => 'foo + bar'}
 
   GameObjects.save OBJECT_ID, @obj_hash_2
 end
