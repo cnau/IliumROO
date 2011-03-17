@@ -17,4 +17,8 @@ Feature: basic owned object testing
   As a game I have players that want to own objects
   So I will have a base object that allows for ownership
 
-  Scenario:
+  #Scenario: test getmode
+  #  Given a mocked player object
+  #  And a mocked arguments hash
+  #  When I check the starting mode of the object
+  #  Then I will get the DEFAULT mode

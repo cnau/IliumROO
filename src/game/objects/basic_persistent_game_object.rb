@@ -15,7 +15,7 @@
 
 require 'game/objects/basic_owned_object'
 
-class BasicPersistentGameObject < BasicOwnedObject
+class BasicPersistentGameObject < BasicGameObject
   PROPERTIES = [:parent].freeze
   attr_accessor :parent
   

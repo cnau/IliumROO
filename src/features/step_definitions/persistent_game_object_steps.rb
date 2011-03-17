@@ -125,7 +125,7 @@ Given /^a mocked persistent class 2$/ do
 end
 
 Given /^a mocked save function 2$/ do
-  GameObjects.expects(:save).with(@persistent_obj_3.game_object_id, {:foo => '5', :bar => '6', :foo_text => '', :parent => 'persistent_class_2', :owner => '', :group => '', :mode => '493', :game_object_id => @persistent_obj_3.game_object_id}).once
+  GameObjects.expects(:save).with(@persistent_obj_3.game_object_id, {:foo => '5', :bar => '6', :foo_text => '', :parent => 'persistent_class_2', :game_object_id => @persistent_obj_3.game_object_id}).once
 end
 
 When /^I load a persistent class 2$/ do

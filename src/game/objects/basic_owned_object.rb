@@ -13,6 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# this class is being taken out of the heirarchy.  not really sure how an "owned" object would work in a MUD
+
 require 'game/objects/basic_game_object'
 
 class BasicOwnedObject < BasicGameObject
@@ -52,7 +55,7 @@ class BasicOwnedObject < BasicGameObject
   end
 
   def chmod(args)
-    return unless check_mode(:write, args['caller'])
+    return unless check_mode(:write, args[:caller])
 
     mode = args[:iobjstr].to_i(8)     #convert to octal number
     if mode == 0
@@ -70,8 +73,11 @@ class BasicOwnedObject < BasicGameObject
   end
 
   def getmode(args)
-    return unless check_mode(:read, args['caller'])
-    args[:player].send_to_client "mode for #{@game_object_id}: #{"%o" % @mode}\n"
+    if check_mode(:read, args[:caller]) then
+      args[:player].send_to_client "mode for #{@game_object_id}: #{"%o" % @mode}\n"
+    else
+      args[:player].send_to_client "You don't have read access to #{@game_object_id}\n"
+    end
   end
 
   def clearmode(args)
