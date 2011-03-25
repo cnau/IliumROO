@@ -72,7 +72,8 @@ module CommandParser
         ret[:iobj]     = iobj
         ret[:args]     = verb_args
 
-        this.send ret[:alias], ret
+        this.set_command_args ret
+        this.send ret[:alias]
       end
     end
 

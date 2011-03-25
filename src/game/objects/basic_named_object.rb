@@ -21,16 +21,16 @@ class BasicNamedObject < BasicPersistentGameObject
 
   VERBS = {}.freeze
 
-  def save(args)
-    super args
+  def save
+    super
     register_game_object
-    args[:player].send_to_client "#{self.name} saved.\n"
+    @command_args[:player].send_to_client "#{self.name} saved.\n" unless @command_args.nil?
   end
 
-  def recycle(args)
-    super args
+  def recycle
+    super
     unregister_game_object
-    args[:player].send_to_client "#{self.name} recycled.\n"
+    @command_args[:player].send_to_client "#{self.name} recycled.\n" unless @command_args.nil?
   end
 
   def register_game_object

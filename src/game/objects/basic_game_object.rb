@@ -75,4 +75,8 @@ class BasicGameObject
     end
     ret
   end
+
+  def set_command_args(args)
+    @command_args = args
+  end
 end

@@ -31,14 +31,14 @@ class BasicPersistentGameObject < BasicGameObject
     end
   end
 
-  def save(args = nil)
+  def save
     obj_hash = self.to_hash
     log.debug "saving hash #{obj_hash}"
     obj_id = obj_hash[:game_object_id]
     GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
   end
 
-  def recycle(args = nil)
+  def recycle
     if self.class.properties.include? :name then
       obj_name = self.name
     else
