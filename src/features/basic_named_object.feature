@@ -18,12 +18,47 @@ Feature: named object
   So that players can identify the object
 
   Scenario: test a named object's constructor
-    Given a named game object instance
+    Given a named game object instance 1
     Then parent should be BasicNamedObject
 
   Scenario: test a named object's properties
-    Given a new named object instance
-    And a mocked game object save call
-    When I save it, I should get a new object id
-    And I should have the correct properties in the hash
-    Then I should get an appropriate output message for the user
+    Given a named game object instance 2
+    And a mocked game object save call 2
+    When I save it 2
+    Then I should have the correct properties in the hash 2
+    And I should get an appropriate output message for the user 2
+
+  Scenario: test a named objects name
+    Given a named object instance 3
+    And a mocked game object save call 3
+    When I save it 3
+    Then I should have the correct properties in the hash 3
+    And I should get an appropriate output message for the user 3
+
+  Scenario: test object tags
+    Given a named object instance 4
+    And a mocked game object save call 4
+    When I save it 4
+    Then I should have the correct properties in the hash 4
+    And I should get an appropriate output message for the user 4
+
+  Scenario: test object alias
+    Given a named object instance 5
+    And a mocked game object save call 5
+    When I save it 5
+    Then I should have the correct properties in the hash 5
+    And I should get an appropriate output message for the user 5
+
+  Scenario: test object alias with tag
+    Given a named object instance 6
+    And a mocked game object save call 6
+    When I save it 6
+    Then I should have the correct properties in the hash 6
+    And I should get an appropriate output message for the user 6
+
+  Scenario: test named object recylcing
+    Given a named object instance 7
+    And a mocked game object save call 7
+    When I save it 7
+    And I recycle it
+    Then I should have the correct properties in the hash 7

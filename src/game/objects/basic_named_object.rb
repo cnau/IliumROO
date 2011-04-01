@@ -21,6 +21,14 @@ class BasicNamedObject < BasicPersistentGameObject
 
   VERBS = {}.freeze
 
+  def name
+    if @name.nil?
+      "##{self.game_object_id}"
+    else
+      @name
+    end
+  end
+
   def save
     super
     register_game_object
@@ -34,29 +42,33 @@ class BasicNamedObject < BasicPersistentGameObject
   end
 
   def register_game_object
-    unless @name.nil?
-      log.debug {"adding tag for #{@name}"}
-      GameObjects.add_tag @object_tag.to_s, @name, {'object_id' => @game_object_id}
-    end
+    unless @object_tag.nil?
+      unless @name.nil?
+        log.debug {"adding tag for #{@name}"}
+        GameObjects.add_tag @object_tag.to_s, @name, {'object_id' => @game_object_id}
+      end
 
-    unless @alias.nil?
-      @alias.split(" ").each do |an_alias|
-        log.debug {"adding tag for #{an_alias}"}
-        GameObjects.add_tag @object_tag.to_s, an_alias, {'object_id' => @game_object_id}
+      unless @alias.nil?
+        @alias.split(" ").each do |an_alias|
+          log.debug {"adding tag for #{an_alias}"}
+          GameObjects.add_tag @object_tag.to_s, an_alias, {'object_id' => @game_object_id}
+        end
       end
     end
   end
 
   def unregister_game_object
-    unless @name.nil?
-      log.debug {"removing tag for #{@name}"}
-      GameObjects.remove_tag @object_tag.to_s, @name
-    end
+    unless @object_tag.nil?
+      unless @name.nil?
+        log.debug {"removing tag for #{@name}"}
+        GameObjects.remove_tag @object_tag.to_s, @name
+      end
 
-    unless @alias.nil?
-      @alias.split(" ").each do |an_alias|
-        log.debug {"removing tag for #{an_alias}"}
-        GameObjects.remove_tag @object_tag.to_s, an_alias
+      unless @alias.nil?
+        @alias.split(" ").each do |an_alias|
+          log.debug {"removing tag for #{an_alias}"}
+          GameObjects.remove_tag @object_tag.to_s, an_alias
+        end
       end
     end
   end
