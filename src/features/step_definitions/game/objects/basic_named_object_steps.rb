@@ -86,7 +86,7 @@ Given /^a named object instance 4$/ do
   @named_obj_4 = BasicNamedObject.new
   @named_obj_4.should_not be_nil
   @named_obj_4.name = "Named4"
-  @named_obj_4.object_tag = "test"
+  @named_obj_4.object_tag = "basic_named_object_steps"
 end
 
 And /^a mocked game object save call 4$/ do
@@ -94,7 +94,7 @@ And /^a mocked game object save call 4$/ do
   @player_obj_4.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_4 = msg}
   @named_obj_4.set_command_args ({:player => @player_obj_4})
   GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_4 = obj_hash}
-  GameObjects.expects(:add_tag).with("test", "Named4", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_4 = tag_hash}
+  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named4", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_4 = tag_hash}
 end
 
 When /^I save it 4$/ do
@@ -107,7 +107,7 @@ Then /^I should have the correct properties in the hash 4$/ do
   @object_hash_4[:name].should eql "Named4"
 
   @object_hash_4.should include :object_tag
-  @object_hash_4[:object_tag].should eql "test"
+  @object_hash_4[:object_tag].should eql "basic_named_object_steps"
 
   @tag_hash_4.should_not be_nil
   @tag_hash_4.should include 'object_id'
@@ -154,7 +154,7 @@ Given /^a named object instance 6$/ do
   @named_obj_6.should_not be_nil
   @named_obj_6.name = "Named6"
   @named_obj_6.alias = "Alias6"
-  @named_obj_6.object_tag = "test"
+  @named_obj_6.object_tag = "basic_named_object_steps"
 end
 
 And /^a mocked game object save call 6$/ do
@@ -162,8 +162,8 @@ And /^a mocked game object save call 6$/ do
   @player_obj_6.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_6 = msg}
   @named_obj_6.set_command_args({:player => @player_obj_6})
   GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_6 = obj_hash}
-  GameObjects.expects(:add_tag).with("test", "Named6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6 = tag_hash}
-  GameObjects.expects(:add_tag).with("test", "Alias6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6a = tag_hash}
+  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6 = tag_hash}
+  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6a = tag_hash}
 end
 
 When /^I save it 6$/ do
@@ -196,7 +196,7 @@ Given /^a named object instance 7$/ do
   @named_obj_7.should_not be_nil
   @named_obj_7.name = "Named7"
   @named_obj_7.alias = "Alias7"
-  @named_obj_7.object_tag = "test"
+  @named_obj_7.object_tag = "basic_named_object_steps"
 end
 
 And /^a mocked game object save call 7$/ do
@@ -205,11 +205,11 @@ And /^a mocked game object save call 7$/ do
   @player_obj_7.expects(:send_to_client).with("Named7 recycled.\n")
   @named_obj_7.set_command_args({:player => @player_obj_7})
   GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_7 = obj_hash}
-  GameObjects.expects(:add_tag).with("test", "Named7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7 = tag_hash}
-  GameObjects.expects(:add_tag).with("test", "Alias7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7a = tag_hash}
+  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7 = tag_hash}
+  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7a = tag_hash}
   GameObjects.expects(:add_tag).with("recycled", "Named7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7b = tag_hash}
-  GameObjects.expects(:remove_tag).with("test", "Named7")
-  GameObjects.expects(:remove_tag).with("test", "Alias7")
+  GameObjects.expects(:remove_tag).with("basic_named_object_steps", "Named7")
+  GameObjects.expects(:remove_tag).with("basic_named_object_steps", "Alias7")
 end
 
 When /^I save it 7$/ do

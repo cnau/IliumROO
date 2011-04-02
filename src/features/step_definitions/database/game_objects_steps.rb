@@ -59,28 +59,28 @@ Then /^I expect that the object hash was inserted and is identical$/ do
 end
 
 Given /^a clean tag for object "([^"]*)"$/ do |arg1|
-  GameObjects.remove_tag 'test', "test_object_name_#{arg1}"
+  GameObjects.remove_tag 'game_objects_steps', "test_object_name_#{arg1}"
 
-  obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
+  obj = GameObjects.get_tag 'game_objects_steps', "test_object_name_#{arg1}"
   obj.length.should eql 0
 end
 
 When /^I insert a new tag for object "([^"]*)"$/ do |arg1|
-  GameObjects.add_tag 'test', "test_object_name_#{arg1}", {'object_id' => "test_object_id_#{arg1}"}
+  GameObjects.add_tag 'game_objects_steps', "test_object_name_#{arg1}", {'object_id' => "test_object_id_#{arg1}"}
 end
 
 Then /^I expect object "([^"]*)" to be inserted$/ do |arg1|
-  obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
+  obj = GameObjects.get_tag 'game_objects_steps', "test_object_name_#{arg1}"
   obj.length.should eql 1
 end
 
 And /^I expect both objects to be inserted$/ do
-  tags = GameObjects.get_tags 'test'
+  tags = GameObjects.get_tags 'game_objects_steps'
   tags.length.should eql 2
 end
 
 Then /^that I clean up object "([^"]*)"$/ do |arg1|
-  GameObjects.remove_tag 'test', "test_object_name_#{arg1}"
-  obj = GameObjects.get_tag 'test', "test_object_name_#{arg1}"
+  GameObjects.remove_tag 'game_objects_steps', "test_object_name_#{arg1}"
+  obj = GameObjects.get_tag 'game_objects_steps', "test_object_name_#{arg1}"
   obj.length.should eql 0
 end
