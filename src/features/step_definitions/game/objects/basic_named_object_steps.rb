@@ -37,7 +37,7 @@ And /^a mocked game object save call 2$/ do
   @player_obj_2 = mock
   @player_obj_2.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_2 = msg}
   @named_obj_2.set_command_args ({:player => @player_obj_2})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_2 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_2 = obj_hash}
 end
 
 When /^I save it 2$/ do
@@ -65,7 +65,7 @@ And /^a mocked game object save call 3$/ do
   @player_obj_3 = mock
   @player_obj_3.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_3 = msg}
   @named_obj_3.set_command_args ({:player => @player_obj_3})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_3 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_3 = obj_hash}
 end
 
 When /^I save it 3$/ do
@@ -93,7 +93,7 @@ And /^a mocked game object save call 4$/ do
   @player_obj_4 = mock
   @player_obj_4.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_4 = msg}
   @named_obj_4.set_command_args ({:player => @player_obj_4})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_4 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_4 = obj_hash}
   GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named4", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_4 = tag_hash}
 end
 
@@ -129,7 +129,7 @@ And /^a mocked game object save call 5$/ do
   @player_obj_5 = mock
   @player_obj_5.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_5 = msg}
   @named_obj_5.set_command_args({:player => @player_obj_5})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_5 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_5 = obj_hash}
 end
 
 When /^I save it 5$/ do
@@ -161,7 +161,7 @@ And /^a mocked game object save call 6$/ do
   @player_obj_6 = mock
   @player_obj_6.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_6 = msg}
   @named_obj_6.set_command_args({:player => @player_obj_6})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_6 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_6 = obj_hash}
   GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6 = tag_hash}
   GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias6", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_6a = tag_hash}
 end
@@ -204,7 +204,7 @@ And /^a mocked game object save call 7$/ do
   @player_obj_7.expects(:send_to_client).with("Named7 saved.\n")
   @player_obj_7.expects(:send_to_client).with("Named7 recycled.\n")
   @named_obj_7.set_command_args({:player => @player_obj_7})
-  GameObjects.expects(:save).with(/.*/, is_a(Hash)) {|object_id, obj_hash| @object_hash_7 = obj_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_7 = obj_hash}
   GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7 = tag_hash}
   GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7a = tag_hash}
   GameObjects.expects(:add_tag).with("recycled", "Named7", is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash_7b = tag_hash}

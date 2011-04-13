@@ -33,7 +33,7 @@ class BasicPersistentGameObject < BasicGameObject
 
   def save
     obj_hash = self.to_hash
-    log.debug "saving hash #{obj_hash}"
+    log.debug {"saving hash #{obj_hash}"}
     obj_id = obj_hash[:game_object_id]
     GameObjects.save(obj_id, obj_hash) unless obj_id.nil?
   end

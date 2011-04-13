@@ -38,7 +38,6 @@ class ClientAccount < BasicPersistentGameObject
     # TODO: change this line to reflect new starting class
     new_character = BasicNamedObject.new
     new_character.name = name
-    new_character.set_owner self.game_object_id
     new_character.object_tag = :player_names
     new_character.save
 
@@ -66,8 +65,7 @@ class ClientAccount < BasicPersistentGameObject
 
   def name_available?(the_name)
     player_name = GameObjects.get_tag 'player_names', the_name
-    return true if player_name.empty?
-    false
+    player_name.empty?
   end
 
   def get_player_name(game_object_id)
