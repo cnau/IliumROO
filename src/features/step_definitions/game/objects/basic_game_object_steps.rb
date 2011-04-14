@@ -104,9 +104,10 @@ end
 
 When /^I test the verbs for the client wrapper$/ do
   args = {:player => @basic_game_object_3}
-  @basic_game_object_3.list_verbs args
-  @basic_game_object_3.what_am_i? args
-  @basic_game_object_3.quit args
+  @basic_game_object_3.set_command_args args
+  @basic_game_object_3.list_verbs
+  @basic_game_object_3.what_am_i?
+  @basic_game_object_3.quit
 end
 
 Then /^the verbs should work properly$/ do

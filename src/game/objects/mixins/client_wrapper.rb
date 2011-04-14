@@ -18,24 +18,24 @@ module ClientWrapper
 
   VERBS = {:quit => nil, :what_am_i? => nil, :list_verbs => nil}
 
-  def quit(args)
-    args[:player].send_to_client "bye.\n"
-    save args if self.methods.include?(:save)
+  def quit
+    @command_args[:player].send_to_client "bye.\n"
+    save if self.methods.include?(:save)
     disconnect
   end
 
-  def list_verbs(args)
+  def list_verbs
     ret = ""
     verb_list = self.class.verbs
     verb_list.each do |verb,prepositions|
       ret << ', ' if ret.length > 0
       ret << verb.to_s
     end
-    args[:player].send_to_client ret + "\n"
+    @command_args[:player].send_to_client ret + "\n"
   end
 
-  def what_am_i?(args)
-    args[:player].send_to_client "You are an instance of #{args[:player].class.name}.\n"
+  def what_am_i?
+    @command_args[:player].send_to_client "You are an instance of #{@command_args[:player].class.name}.\n"
   end
   
   def attach_client(client)
