@@ -1,0 +1,26 @@
+/* This file contains the schema used for IliumROO
+
+Load this into Cassandra 0.7x with the following command:
+
+bin/cassandra-cli -host SERVER --file THISFILE
+
+*/
+
+create keyspace IliumROO
+	with replication_factor = 1
+	and placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy';
+
+use IliumROO;
+
+create column family objects
+    with Comparator = UTF8Type;
+
+create column family object_tags
+    with column_type = Super
+    and Comparator = UTF8Type
+    and SubComparator = UTF8Type;
+
+create column family log
+    with column_type = Super
+    and Comparator = TimeUUIDType
+    and SubComparator = UTF8Type;
