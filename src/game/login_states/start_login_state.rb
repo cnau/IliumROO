@@ -44,7 +44,7 @@ class StartLoginState
       end
     else
       entity.ctr += 1
-      entity.send_to_client "invalid email\n"
+      entity.send_to_client "Invalid email.\n"
       if entity.ctr >= 3
         entity.change_state LogoutState
       else
