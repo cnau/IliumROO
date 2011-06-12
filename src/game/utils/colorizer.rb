@@ -27,20 +27,12 @@ module Colorizer
       "bpink" => "[1;35m", "bcyan" => "[1;36m", "bwhite" => "[1;37m", "normal" => "[0m"}
 
   def colorize(to_colorize, display_type)
-    pos = to_colorize.index("[")
-    if pos.nil? then
-      return to_colorize
-    else
-      pre = ""
-      next_pos = to_colorize.index("]", pos)
-      pre = to_colorize[0..pos-1] if pos > 0
-      color = to_colorize[(pos+1)..(next_pos-1)] unless next_pos.nil?
-      the_rest = to_colorize[(next_pos + 1)..to_colorize.length] unless next_pos.nil?
-
-      ansi_color = ""
-      ansi_color = "" << ESC << COLORS[color.downcase] if ((COLORS.include?(color.downcase)) && (display_type == 'ANSI'))
-
-      return pre << ansi_color << colorize(the_rest, display_type)
+    ret = to_colorize.gsub(/\[([a-z_]*)\]/) do |color_token|
+      color = $1.downcase
+      "" << ESC << COLORS[color] if ((COLORS.include?(color)) && (display_type == 'ANSI'))
     end
+    ret
   end
+
+  module_function :colorize
 end
