@@ -50,7 +50,7 @@ class DisplayOptionsState
           entity.save
           entity.change_state MainMenuState
         else
-          entity.send_to_client "invalid choice\n"
+          entity.send_to_client "Invalid choice.\n"
           entity.change_state DisplayOptionsState
       end
     end
