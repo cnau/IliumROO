@@ -55,15 +55,15 @@ class BasicOwnedObject < BasicGameObject
   end
 
   def chmod
-    return unless check_mode(:write, @command_args[:caller])
+    return unless check_mode(:write, @caller)
 
-    mode = @command_args[:iobjstr].to_i(8)     #convert to octal number
+    mode = @iobjstr.to_i(8)     #convert to octal number
     if mode == 0
-      @command_args[:player].send_to_client "illegal mode.\n"
+      @player.send_to_client "illegal mode.\n"
     elsif mode > FULL_RIGHTS
-      @command_args[:player].send_to_client "mode #{"%o" % mode} is illegal.\n"
+      @player.send_to_client "mode #{"%o" % mode} is illegal.\n"
     else
-      @command_args[:player].send_to_client "setting mode for #{@game_object_id} to #{"%o" % mode}\n"
+      @player.send_to_client "setting mode for #{@game_object_id} to #{"%o" % mode}\n"
       @mode = mode
     end
   end
@@ -73,15 +73,15 @@ class BasicOwnedObject < BasicGameObject
   end
 
   def getmode
-    if check_mode(:read, @command_args[:caller]) then
-      @command_args[:player].send_to_client "mode for #{@game_object_id}: #{"%o" % @mode}\n"
+    if check_mode(:read, @caller) then
+      @player.send_to_client "mode for #{@game_object_id}: #{"%o" % @mode}\n"
     else
-      @command_args[:player].send_to_client "You don't have read access to #{@game_object_id}\n"
+      @player.send_to_client "You don't have read access to #{@game_object_id}\n"
     end
   end
 
   def clearmode
-    @command_args[:player].send_to_client "clearing mode for #{@game_object_id}\n"
+    @player.send_to_client "clearing mode for #{@game_object_id}\n"
     @mode = 0
   end
 

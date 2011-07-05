@@ -19,7 +19,7 @@ module ClientWrapper
   VERBS = {:quit => nil, :what_am_i? => nil, :list_verbs => nil}
 
   def quit
-    @command_args[:player].send_to_client "bye.\n"
+    @player.send_to_client "bye.\n"
     save if self.methods.include?(:save)
     disconnect
   end
@@ -31,11 +31,11 @@ module ClientWrapper
       ret << ', ' if ret.length > 0
       ret << verb.to_s
     end
-    @command_args[:player].send_to_client ret + "\n"
+    @player.send_to_client ret + "\n"
   end
 
   def what_am_i?
-    @command_args[:player].send_to_client "You are an instance of #{@command_args[:player].class.name}.\n"
+    @player.send_to_client "You are an instance of #{@player.class.name}.\n"
   end
   
   def attach_client(client)

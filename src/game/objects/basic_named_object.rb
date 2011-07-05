@@ -32,13 +32,13 @@ class BasicNamedObject < BasicPersistentGameObject
   def save
     super
     register_game_object
-    @command_args[:player].send_to_client "#{self.name} saved.\n" unless @command_args.nil?
+    @player.send_to_client "#{self.name} saved.\n" unless @player.nil?
   end
 
   def recycle
     super
     unregister_game_object
-    @command_args[:player].send_to_client "#{self.name} recycled.\n" unless @command_args.nil?
+    @player.send_to_client "#{self.name} recycled.\n" unless @player.nil?
   end
 
   def register_game_object

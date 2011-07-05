@@ -15,6 +15,7 @@
 
 require 'game/objects/mixins/state_machine'
 require 'game/objects/mixins/client_wrapper'
+require 'game/objects/mixins/command_arguments'
 require 'logging/logging'
 require 'simple_uuid'
 
@@ -23,6 +24,7 @@ class BasicGameObject
   include StateMachine
   include ClientWrapper
   include Logging
+  include CommandArguments
 
   @game_object_id = nil
 
@@ -74,9 +76,5 @@ class BasicGameObject
       ret[prop.to_sym] = self.instance_variable_get("@#{prop}").to_s
     end
     ret
-  end
-
-  def set_command_args(args)
-    @command_args = args
   end
 end
