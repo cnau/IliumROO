@@ -13,16 +13,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-class SparseMatrix
-  def initialize
-    @data ||= {}
-  end
+Feature: test sparse matrix class
+  As a multi user game, I need a sparse matrix to hold map data
+  So let's test sparse matrix
 
-  def [](first_dimension, second_dimension, third_dimension)
-    @data[[first_dimension, second_dimension, third_dimension]]
-  end
+  Scenario: test the sparse matrix overloaded set operator
+    Given an instance of SparseMatrix
+    When I add an object to a particular set of coordinates in a SparseMatrix
+    Then that object should be in that location of the SparseMatrix
 
-  def []=(first_dimension, second_dimension, third_dimension, new_value)
-    @data[[first_dimension, second_dimension, third_dimension]] = new_value
-  end
-end
+  Scenario: test multiple new objects in a sparse matrix
+    Given an instance of SparseMatrix
+    When I add an object to a first location in SparseMatrix
+    And I add another object to a second location in SparseMatrix
+    Then those objects should be in the correct locations of SparseMatrix
