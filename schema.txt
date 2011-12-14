@@ -6,9 +6,7 @@ bin/cassandra-cli -host SERVER --file THISFILE
 
 */
 
-create keyspace IliumROO
-	with replication_factor = 1
-	and placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy';
+create keyspace IliumROO;
 
 use IliumROO;
 
