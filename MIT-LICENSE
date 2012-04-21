@@ -1,4 +1,3 @@
-=begin
 Copyright (c) 2009-2012 Christian Nau
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -19,41 +18,3 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-=end
-require 'logging/logging'
-
-module StateMachine
-  include Logging
-
-  attr_accessor :previous_state, :current_state
-
-  def global_state
-    @global_state
-  end
-
-  def global_state=(arg)
-    @global_state = arg.instance
-  end
-
-  def update
-    @current_state.execute(self)  unless @current_state.nil?
-    @global_state.execute(self)   unless @global_state.nil?
-  end
-
-  def change_state(new_state)
-    raise Exception.new "Attempting to set a nil state" if new_state.nil?
-
-    @previous_state = @current_state
-    @current_state.exit(self) unless @current_state.nil?
-    @current_state = new_state.instance
-    @current_state.enter(self) unless @current_state.nil?
-  end
-
-  def revert_to_previous_state
-    change_state @previous_state.class
-  end
-
-  def in_state?(st)
-    st == @current_state.class
-  end
-end
