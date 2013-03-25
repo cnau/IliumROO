@@ -61,7 +61,7 @@ class Game < BasicPersistentGameObject
 
   # starts up all socket servers
   def start_socket_servers
-    log.debug {"starting socket servers on ports #{@port_list}"}
+    log.debug {"starting socket servers on ports #@port_list"}
     @port_list.to_s.split(",").map do |port|
       log.debug {"starting socket server on port #{port}"}
       @socket_servers.push EventMachine.start_server 'localhost', port, ClientConnection

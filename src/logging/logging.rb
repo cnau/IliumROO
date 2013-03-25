@@ -39,13 +39,13 @@ module Logging
 
   # private method to configure the loggers
   def setup_logging()
-    if !@logger_setup
+    unless @logger_setup
       @logger_setup = true
       if $use_log4r
         @logger = Logger.new("#{self.who_am_i?}")
         @logger.level = Logger::DEBUG
         @logger.outputters = Outputter.stdout
-        @logger.outputters.each {|o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m")}
+        @logger.outputters.each { |o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m") }
       else
         @logger = Logger.new(STDOUT)
         @logger.level = Logger::DEBUG

@@ -22,17 +22,30 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
 class ClientMaster
-  @@client_list ||= []
-  
+  include Singleton
+
+  def register_client(client)
+    @client_list ||= []
+    @client_list.push client
+  end
+
   def self.register_client(client)
-    @@client_list.push client
+    instance.register_client client
+  end
+
+  def remove_client(client)
+    @client_list.delete client unless @client_list.nil?
   end
 
   def self.remove_client(client)
-    @@client_list.delete client
+    instance.remove_client client
   end
 
   def self.client_list
-    @@client_list
+    instance client_list
+  end
+
+  def client_list
+    @client_list
   end
 end

@@ -41,9 +41,9 @@ class PlayerAdmin
       end
       obj_hash = GameObjects.get obj_id
       if obj_hash.nil? or obj_hash.empty?
-        @client.send_to_client "Can't find object #{@dobjstr}\n"
+        @client.send_to_client "Can't find object #@dobjstr\n"
       else
-        out = "Object #{@dobjstr}\n"
+        out = "Object #@dobjstr\n"
         out << obj_hash.inspect
         out << "\n"
         @client.send_to_client out
@@ -74,7 +74,7 @@ class PlayerAdmin
         ret << type_name << "\n"
       end
     else
-      ret = "#{@dobjstr}s:\n"
+      ret = "#@dobjstrs:\n"
       ret << "item name".ljust(25)
       ret << "     "
       ret << "object id".ljust(10)

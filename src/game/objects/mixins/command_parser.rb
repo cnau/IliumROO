@@ -42,7 +42,7 @@ module CommandParser
       dobj = locate_object(player, room, dobjstr)
       iobj = locate_object(player, room, iobjstr)
 
-      if dobj.nil? then
+      if dobj.nil?
         verb_args = dobjstr
         dobjstr = nil
       end
@@ -148,7 +148,7 @@ module CommandParser
 
       # assign each sentence part to return hash
       ctr = -1
-      sentence_parts = ['verb', 'direct_object', 'preposition', 'indirect_object']
+      sentence_parts = %w(verb direct_object preposition indirect_object)
       parts = {}
       matches.each do |item|
         unless item.nil? and ctr == -1

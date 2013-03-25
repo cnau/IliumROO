@@ -39,7 +39,6 @@ Feature: test MainMenuState finite state machine state
     And an entity expecting to receive a menu for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "7" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     And a generated invalid option message for MainMenuState
     When I call the execute method of MainMenuState
     Then I should get appropriate output from MainMenuState
@@ -50,7 +49,6 @@ Feature: test MainMenuState finite state machine state
     And a mocked entity for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "1" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     When I call the execute method of MainMenuState
     And I should get redirected to "EnterWorldState" by MainMenuState
 
@@ -59,7 +57,6 @@ Feature: test MainMenuState finite state machine state
     And a mocked entity for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "2" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     When I call the execute method of MainMenuState
     And I should get redirected to "AddCharacterState" by MainMenuState
 
@@ -68,7 +65,6 @@ Feature: test MainMenuState finite state machine state
     And a mocked entity for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "3" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     When I call the execute method of MainMenuState
     And I should get redirected to "DeleteCharacterState" by MainMenuState
 
@@ -77,7 +73,6 @@ Feature: test MainMenuState finite state machine state
     And a mocked entity for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "4" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     When I call the execute method of MainMenuState
     And I should get redirected to "DisplayOptionsState" by MainMenuState
 
@@ -86,7 +81,6 @@ Feature: test MainMenuState finite state machine state
     And a mocked entity for MainMenuState
     And an entity expecting a change of state for MainMenuState
     And an entity with last_client_data of "5" for MainMenuState
-    And an entity with account type of "" for MainMenuState
     When I call the execute method of MainMenuState
     And I should get redirected to "LogoutState" by MainMenuState
 

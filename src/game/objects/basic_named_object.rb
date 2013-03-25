@@ -52,7 +52,7 @@ class BasicNamedObject < BasicPersistentGameObject
   def register_game_object
     unless @object_tag.nil?
       unless @name.nil?
-        log.debug {"adding tag for #{@name}"}
+        log.debug {"adding tag for #@name"}
         GameObjects.add_tag @object_tag.to_s, @name, {'object_id' => @game_object_id}
       end
 
@@ -68,7 +68,7 @@ class BasicNamedObject < BasicPersistentGameObject
   def unregister_game_object
     unless @object_tag.nil?
       unless @name.nil?
-        log.debug {"removing tag for #{@name}"}
+        log.debug {"removing tag for #@name"}
         GameObjects.remove_tag @object_tag.to_s, @name
       end
 

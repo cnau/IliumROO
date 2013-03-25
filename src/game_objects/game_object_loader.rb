@@ -49,8 +49,8 @@ class GameObjectLoader
 
     new_o = load_object_by_id(object_id)
 
-    if !new_o.nil?
-      log.debug {"caching object #{new_o} as #{object_id}" }
+    unless new_o.nil?
+      log.debug { "caching object #{new_o} as #{object_id}" }
       @cache[object_id] = new_o
     end
 
@@ -69,7 +69,7 @@ class GameObjectLoader
 
   def load_object_by_id(object_id)
     # look for object in cache
-    log.debug {"found #{object_id} in #{@cache}"} if @cache.has_key? object_id
+    log.debug {"found #{object_id} in #@cache"} if @cache.has_key? object_id
     return @cache[object_id] if @cache.has_key? object_id
 
     # load the object from the database
@@ -97,7 +97,6 @@ class GameObjectLoader
     # build the object
     log.debug {"building object by hash #{obj_hash}"}
     new_o = build_object_by_hash obj_hash
-    new_o
   end
 
   def load_class_by_id(object_id)
@@ -199,11 +198,11 @@ class GameObjectLoader
           results = value.match(/^\$\$\{(\w*)\}.?(new|instance)?$/)
           new_c = load_class_by_id(results[1])
           sub_o = nil
-          if(results[2] == 'new')
+          if results[2] == 'new'
             log.debug "#{value} requires a new object"
             sub_o = new_c.new
 
-          elsif(results[2] == 'instance')
+          elsif results[2] == 'instance'
             log.debug "#{value} requires a singleton instance"
             if new_c.included_modules.include? Singleton
               sub_o = new_c.instance

@@ -38,7 +38,6 @@ class BasicGameObject
 
   def game_object_id
     @game_object_id ||= UUID.new.to_guid.to_s
-    @game_object_id
   end
 
   def game_object_id=(val)
@@ -74,7 +73,7 @@ class BasicGameObject
   end
 
   def on_load
-    log.debug "loaded game object #{@game_object_id}"
+    log.debug "loaded game object #@game_object_id"
   end
 
   def to_hash

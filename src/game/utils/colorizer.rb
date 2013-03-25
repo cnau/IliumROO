@@ -31,7 +31,6 @@ module Colorizer
       color = $1.downcase
       "" << ESC << COLORS[color] if ((COLORS.include?(color)) && (display_type == 'ANSI'))
     end
-    ret
   end
 
   module_function :colorize

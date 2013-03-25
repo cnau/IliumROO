@@ -76,7 +76,7 @@ When /^a last_client_data of "([^"]*)"$/ do |last_client_data|
   @entity.stubs(:last_client_data).returns(last_client_data)
   id_list = @character_id_list.split(",")
   char_id = id_list[last_client_data.to_i - 1]
-  if(last_client_data.to_i < id_list.length)
+  if last_client_data.to_i < id_list.length
     @entity.expects(:remove_character).with(char_id)
     @entity.expects(:delete_character).with(char_id)
     char_name = @character_name_list.split(",")[last_client_data.to_i - 1]

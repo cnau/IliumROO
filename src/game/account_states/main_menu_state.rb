@@ -55,19 +55,11 @@ class MainMenuState
 
   def execute(entity)
     client_choice = entity.last_client_data.to_i
-    max_choice_num = 5
-    max_choice_num = 6 if entity.account_type.to_sym == :admin
-
-    if (client_choice < 1) || (client_choice > max_choice_num)
-      entity.send_to_client "invalid option\n"
-      entity.change_state MainMenuState
-      return
-    end
 
     case client_choice
       when 1 then
         entity.change_state EnterWorldState
-        
+
       when 2 then
         entity.change_state AddCharacterState
 
@@ -81,7 +73,15 @@ class MainMenuState
         entity.change_state LogoutState
 
       when 6 then
-        entity.change_state ListAccountsState
+        if entity.account_type.to_sym == :admin then
+          entity.change_state ListAccountsState
+        else
+          entity.send_to_client "invalid option\n"
+          entity.change_state MainMenuState
+        end
+      else
+        entity.send_to_client "invalid option\n"
+        entity.change_state MainMenuState
     end
   end
 end
