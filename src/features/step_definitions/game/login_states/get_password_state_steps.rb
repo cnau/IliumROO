@@ -93,7 +93,7 @@ When /^I call the execute method of GetPasswordState with a valid password$/ do
 
   mock_client = mock
   mock_client.stubs(:client_ip).returns('127.0.0.2')
-  mock_client.expects(:add_client_listener)
+  mock_client.expects(:add_observer)
 
   new_entity.stubs(:client).returns(mock_client)
   new_entity.expects(:detach_client).once
@@ -102,7 +102,7 @@ When /^I call the execute method of GetPasswordState with a valid password$/ do
 end
 
 Then /^I should get appropriate output from GetPasswordState 3$/ do
-  @client_msg_3.should eql "Last login from 127.0.0.2 on #{@last_login_date}\n"
+  @client_msg_3.should eql "Last login from 127.0.0.2 on #@last_login_date\n"
 end
 
 Then /^I should get an appropriate client hash for GetPasswordState 3$/ do

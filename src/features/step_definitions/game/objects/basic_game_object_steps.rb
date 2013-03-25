@@ -73,10 +73,10 @@ end
 
 When /^I mock a client object$/ do
   @client_obj_1 = mock
-  @client_obj_1.expects(:add_client_listener).at_most_once
+  @client_obj_1.expects(:add_observer).at_most_once
   @client_obj_1.expects(:send_data).with("test send").at_most_once
   @client_obj_1.expects(:receive_data).with("test receive").at_most_once
-  @client_obj_1.expects(:remove_client_listener).at_most_once
+  @client_obj_1.expects(:remove_observer).at_most_once
   @client_obj_1.expects(:close_connection_after_writing).at_most_once
 end
 
@@ -86,7 +86,7 @@ end
 
 Then /^the client object should be attached$/ do
   @basic_game_object_2.send_to_client "test send"
-  @basic_game_object_2.receive_data "test receive"
+  @basic_game_object_2.client.receive_data "test receive"
   @basic_game_object_2.disconnect   # detach gets called by this function
 end
 
@@ -98,12 +98,12 @@ end
 
 When /^I mock a client object 2$/ do
   @client_obj_2 = mock
-  @client_obj_2.expects(:add_client_listener).at_most_once
+  @client_obj_2.expects(:add_observer).at_most_once
   @client_obj_2.expects(:send_data).with("quit, what_am_i?, list_verbs\n").at_most_once
   @client_obj_2.expects(:send_data).with("You are an instance of BasicGameObject.\n").at_most_once
   @client_obj_2.expects(:send_data).with("bye.\n").at_most_once
   @client_obj_2.expects(:close_connection_after_writing).at_most_once
-  @client_obj_2.expects(:remove_client_listener).at_most_once
+  @client_obj_2.expects(:remove_observer).at_most_once
 end
 
 When /^I attach the client object to the game object 2$/ do

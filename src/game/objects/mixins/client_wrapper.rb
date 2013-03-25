@@ -48,20 +48,17 @@ module ClientWrapper
   
   def attach_client(client)
     @client = client
-    @client.add_client_listener method(:receive_data)
+    @client.add_observer(:client_data, self) { |data|
+                                                @last_client_data = data
+                                                self.update}
   end
 
-  def receive_data(data)
-    @last_client_data = data
-    self.update   # this implies that anything including this module requires StateMachine as well
-  end
-  
   def send_to_client(message)
     @client.send_data message unless @client.nil?
   end
 
   def detach_client
-    @client.remove_client_listener method(:receive_data)
+    @client.remove_observer :client_data, self
     @client = nil
   end
 

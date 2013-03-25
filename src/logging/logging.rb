@@ -43,12 +43,12 @@ module Logging
       @logger_setup = true
       if $use_log4r
         @logger = Logger.new("#{self.who_am_i?}")
-        @logger.level = Logger::INFO
+        @logger.level = Logger::DEBUG
         @logger.outputters = Outputter.stdout
         @logger.outputters.each {|o| o.formatter = PatternFormatter.new(:pattern => "%-5l %c - %m")}
       else
         @logger = Logger.new(STDOUT)
-        @logger.level = Logger::INFO
+        @logger.level = Logger::DEBUG
         @logger.datetime_format = "%Y-%m-%d %H:%M:%S"
       end
     end
