@@ -120,10 +120,12 @@ class ClientAccount < BasicPersistentGameObject
     # create the new character object
     new_class_id = BasicGameObject.generate_game_object_id
     new_class = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => new_class_id}
-    new_class[:mixins] << 'Admin' if account_type == :admin
+    log.debug "Account type: #{account_type.inspect}"
+    new_class[:mixins] << 'Admin' if account_type.to_sym == :admin
     GameObjects.save new_class_id, new_class
     new_character_klass = GameObjectLoader.load_object new_class_id
     raise "Unable to create character class C#{new_class_id}" if new_character_klass.nil?
+    log.debug {new_character_klass.included_modules.each {|mod| mod.name}}
     new_character = new_character_klass.new
     new_character.name = name
     new_character.object_tag = :player_names

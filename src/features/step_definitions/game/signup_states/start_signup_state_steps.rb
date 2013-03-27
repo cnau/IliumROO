@@ -111,7 +111,7 @@ Given /^an ClientAccount expecting to receive a prompt for StartSignupState$/ do
 end
 
 Given /^a ClientAccount expecting to get set as admin and saved$/ do
-  @client_account.expects(:account_type=).with(:admin)
+  @client_account.expects(:account_type=).with("admin")
   @client_account.expects(:save)
 end
 

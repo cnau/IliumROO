@@ -65,7 +65,7 @@ Given /^a mocked player object for test three$/ do
   @player_obj_3.stubs(:class).returns(@player_klass_3)
   arg_hash = {:verb => 'command',
               :verbsym  => :command,
-              :alias    => 'command',
+              :aliasname=> 'command',
               :aliassym => :command,
               :dobjstr  => nil,
               :iobjstr  => nil,
@@ -98,7 +98,7 @@ Given /^a mocked player object for test four$/ do
   @player_obj_4.expects(:command)
   arg_hash = {:verb     => 'command',
               :verbsym  => :command,
-              :alias    => 'command',
+              :aliasname=> 'command',
               :aliassym => :command,
               :dobjstr  => nil,
               :iobjstr  => nil,
@@ -135,7 +135,7 @@ end
 Given /^a player object with last_data with a quote$/ do
   arg_hash = {:verb     => 'say',
               :verbsym  => :say,
-              :alias    => 'say',
+              :aliasname=> 'say',
               :aliassym => :say,
               :dobjstr  => nil,
               :iobjstr  => nil,
@@ -159,7 +159,7 @@ end
 Given /^a player object with last_data with a colon$/ do
   arg_hash = {:verb     => 'emote',
               :verbsym  => :emote,
-              :alias    => 'emote',
+              :aliasname=> 'emote',
               :aliassym => :emote,
               :dobjstr  => nil,
               :iobjstr  => 'emote',
@@ -184,7 +184,7 @@ Given /^a mocked player object for test six$/ do
   @player_obj_6.stubs(:class).returns(@player_klass_6)
   arg_hash = {:verb     => 'look',
               :verbsym  => :look,
-              :alias    => 'look',
+              :aliasname=> 'look',
               :aliassym => :look,
               :dobjstr  => 'me',
               :iobjstr  => nil,
@@ -220,7 +220,7 @@ Given /^a mocked player object for test seven$/ do
   @player_obj_7.stubs(:class).returns(@player_klass_7)
   arg_hash = {:verb     => 'put',
               :verbsym  => :put,
-              :alias    => 'put',
+              :aliasname=> 'put',
               :aliassym => :put,
               :dobjstr  => nil,
               :iobjstr  => 'bag',
@@ -263,13 +263,13 @@ end
 
 Given /^a mocked player object for test eight$/ do
   @player_klass_8 = mock
-  @player_klass_8.stubs(:verbs).returns({:put => {:alias => :put_in}})
+  @player_klass_8.stubs(:verbs).returns({:put => {:aliasname => :put_in}})
 
   @player_obj_8 = mock
   @player_obj_8.stubs(:class).returns(@player_klass_8)
   arg_hash = {:verb     => 'put',
               :verbsym  => :put,
-              :alias    => 'put_in',
+              :aliasname=> 'put_in',
               :aliassym => :put_in,
               :dobjstr  => nil,
               :iobjstr  => nil,
@@ -298,13 +298,13 @@ end
 
 Given /^a mocked player object for test nine$/ do
   @player_klass_9 = mock
-  @player_klass_9.stubs(:verbs).returns({:put => {:alias => :put_in}})
+  @player_klass_9.stubs(:verbs).returns({:put => {:aliasname => :put_in}})
 
   @player_obj_9 = mock
   @player_obj_9.stubs(:class).returns(@player_klass_9)
   arg_hash = {:verb     => 'put',
               :verbsym  => :put,
-              :alias    => 'put_in',
+              :aliasname=> 'put_in',
               :aliassym => :put_in,
               :dobjstr  => nil,
               :iobjstr  => 'bag',

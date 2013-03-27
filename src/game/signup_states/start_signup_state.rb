@@ -51,7 +51,7 @@ class StartSignupState
 
       if ClientAccount.account_count == 1
         client_account.send_to_client "This is the first account created in this database.  Setting account as admin.\n"
-        client_account.account_type = :admin
+        client_account.account_type = "admin"
         client_account.save
       end
       
