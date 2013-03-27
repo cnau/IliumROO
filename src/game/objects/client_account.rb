@@ -118,7 +118,7 @@ class ClientAccount < BasicPersistentGameObject
 
   def generate_new_character(name)
     # create the new character object
-    new_class_id = UUID.new.to_guid.to_s
+    new_class_id = BasicGameObject.generate_game_object_id
     new_class = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => new_class_id}
     new_class[:mixins] << 'Admin' if account_type == :admin
     GameObjects.save new_class_id, new_class

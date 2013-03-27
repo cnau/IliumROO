@@ -26,6 +26,7 @@ require 'game/objects/mixins/client_wrapper'
 require 'game/objects/mixins/command_arguments'
 require 'logging/logging'
 require 'simple_uuid'
+require 'digest'
 
 class BasicGameObject
   include SimpleUUID
@@ -36,8 +37,12 @@ class BasicGameObject
 
   @game_object_id = nil
 
+  def self.generate_game_object_id
+    Digest::SHA1.hexdigest(UUID.new.to_guid.to_s)[8..16]
+  end
+
   def game_object_id
-    @game_object_id ||= UUID.new.to_guid.to_s
+    @game_object_id ||= BasicGameObject.generate_game_object_id
   end
 
   def game_object_id=(val)
@@ -77,7 +82,7 @@ class BasicGameObject
   end
 
   def to_hash
-    @game_object_id ||= UUID.new.to_guid.to_s
+    @game_object_id ||= BasicGameObject.generate_game_object_id
     ret = {}
     self.class.properties.each do |prop|
       ret[prop.to_sym] = self.instance_variable_get("@#{prop}").to_s

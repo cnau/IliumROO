@@ -54,7 +54,7 @@ When /^I check game object id$/ do
 end
 
 Then /^I should get a valid game object id$/ do
-  m = @game_object_id.match /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/
+  m = @game_object_id.match /^[0-9a-fA-F]{9}$/
   m.should_not be_nil
 end
 
