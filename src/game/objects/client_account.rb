@@ -25,8 +25,11 @@ require 'database/game_objects'
 require 'database/system_logging'
 require 'game_objects/game_object_loader'
 require 'date'
+require 'game/objects/mixins/client_wrapper'
 
 class ClientAccount < BasicPersistentGameObject
+  include ClientWrapper
+
   PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type].freeze
   attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type
 
@@ -118,19 +121,37 @@ class ClientAccount < BasicPersistentGameObject
 
   def generate_new_character(name)
     # create the new character object
+
+    # first get a new object id
     new_class_id = BasicGameObject.generate_game_object_id
+
+    # build the new class' hash definition
     new_class = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => new_class_id}
-    log.debug "Account type: #{account_type.inspect}"
-    new_class[:mixins] << 'Admin' if account_type.to_sym == :admin
+
+    # add some basic mixins for every character
+    new_character_mixins = %w(ClientWrapper)
+
+    # add admin mixin if appropriate
+    new_character_mixins.push 'Admin' if account_type.to_sym == :admin
+
+    # put mixin list into character hash
+    new_class[:mixins] = new_character_mixins.join(',')
     GameObjects.save new_class_id, new_class
+
+    # now build the class itself
     new_character_klass = GameObjectLoader.load_object new_class_id
+
+    #TODO: FIX exception handling for entire application
     raise "Unable to create character class C#{new_class_id}" if new_character_klass.nil?
     log.debug {new_character_klass.included_modules.each {|mod| mod.name}}
+
+    # create an instance of this new character class and save it
     new_character = new_character_klass.new
     new_character.name = name
     new_character.object_tag = :player_names
     new_character.save
 
+    # returning the game object id only
     new_character.game_object_id
   end
 end

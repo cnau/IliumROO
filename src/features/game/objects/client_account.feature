@@ -88,3 +88,9 @@ Feature: client account
     Given a mocked account_count database call
     When I call account_count
     Then I should get a correct account_count count
+
+  Scenario: test a ClientAccount's add_new_character function as admin
+    Given a new client account object 9
+    And a mocked client account add_new_character call 9
+    When I add a new character 9
+    Then I should have the correct mixins for the new character class

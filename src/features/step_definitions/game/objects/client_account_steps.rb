@@ -272,3 +272,44 @@ end
 Then /^I should get a correct account_count count$/ do
   @account_count_11.should eql 1
 end
+
+Given /^a new client account object 9$/ do
+  @client_account_9 = ClientAccount.new
+  @client_account_9.should_not be_nil
+  @client_account_9.class.superclass.should eql BasicPersistentGameObject
+  @client_account_9.account_type = "admin"
+end
+
+Then /^I should have the correct mixins for the new character class$/ do
+  @client_account_9.characters.should_not be_nil
+  @client_account_9.characters.split(',').size.should eql 1
+  new_char_id = @client_account_9.characters.split(',')[0]
+  p @save_hash_9[0].inspect
+  GameObjects.expects(:get).with(new_char_id).returns(@save_hash_9[0])
+  new_char = GameObjectLoader.load_object new_char_id
+
+  new_char.included_modules.should include Admin
+  new_char.included_modules.should include ClientWrapper
+end
+
+Given /^a mocked client account add_new_character call 9$/ do
+  # save new character
+  @new_class_hash_9 = {:super => 'BasicNamedObject', :mixins => 'Admin,ClientWrapper', :game_object_id => 'Test'}
+  GameObjects.expects(:get).with(is_a(String)).returns(@new_class_hash_9)
+
+  @save_hash_9 = []
+  GameObjects.expects(:save).times(3).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @save_hash_9.push object_hash }
+
+  # account tag
+  GameObjects.expects(:add_tag).with('accounts', 'test9@test.com', is_a(Hash)) { |tag_name, email, tag_hash| @tag_hash_9 = tag_hash }
+
+  # object tag new character
+  GameObjects.expects(:add_tag).with('player_names', 'test9@test.com', is_a(Hash)) { |object_tag, email, tag_hash| @player_tag_hash_9 = tag_hash }
+
+  # system logging calls
+  SystemLogging.expects(:add_log_entry).with('created new character', is_a(String), is_a(String))
+end
+
+When /^I add a new character 9$/ do
+  @client_account_9.add_new_character 'Test'
+end

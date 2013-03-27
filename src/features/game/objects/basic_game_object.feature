@@ -25,8 +25,7 @@ Feature: test basic game object
 
   Scenario: test a basic game object's class functions
     Given a BasicGameObject class
-    When I request verbs
-    And when I request properties
+    When I request properties
     Then I should get appropriate values
 
   Scenario: test a basic game object's properties
@@ -34,19 +33,6 @@ Feature: test basic game object
     When I check game object id
     Then I should get a valid game object id
     And I should be able to see that id in the object's to_hash function
-
-  Scenario: test game object's client wrapper mixin
-    Given an instance of BasicGameObject
-    When I mock a client object
-    And I attach the mock client object to the game object
-    Then the client object should be attached
-
-  Scenario: test game object's client wrapper mixin's verbs
-    Given an instance of BasicGameObject 2
-    When I mock a client object 2
-    And I attach the client object to the game object 2
-    And I test the verbs for the client wrapper
-    Then the verbs should work properly
 
   Scenario: test a game object's state machine mixin
     Given an instance of BasicGameObject 3

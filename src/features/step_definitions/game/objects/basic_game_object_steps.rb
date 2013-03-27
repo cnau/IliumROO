@@ -33,12 +33,11 @@ When /^I request verbs$/ do
   @klass_verbs = @test_klass.verbs
 end
 
-When /^when I request properties$/ do
+When /^I request properties$/ do
   @klass_properties = @test_klass.properties
 end
 
 Then /^I should get appropriate values$/ do
-  @klass_verbs.should eql({:quit => nil, :what_am_i? => nil, :list_verbs => nil})
   @klass_properties.should eql [:game_object_id]
 end
 
@@ -63,63 +62,6 @@ Then /^I should be able to see that id in the object's to_hash function$/ do
   obj_hash.should_not be_nil
   obj_hash.should have_key :game_object_id
   obj_hash[:game_object_id].should eql @game_object_id
-end
-
-Given /^an instance of BasicGameObject$/ do
-  @basic_game_object_2 = BasicGameObject.new
-  @basic_game_object_2.should_not be_nil
-  @basic_game_object_2.should be_an_instance_of BasicGameObject
-end
-
-When /^I mock a client object$/ do
-  @client_obj_1 = mock
-  @client_obj_1.expects(:add_observer).at_most_once
-  @client_obj_1.expects(:send_data).with("test send").at_most_once
-  @client_obj_1.expects(:receive_data).with("test receive").at_most_once
-  @client_obj_1.expects(:remove_observer).at_most_once
-  @client_obj_1.expects(:close_connection_after_writing).at_most_once
-end
-
-When /^I attach the mock client object to the game object$/ do
-  @basic_game_object_2.attach_client @client_obj_1
-end
-
-Then /^the client object should be attached$/ do
-  @basic_game_object_2.send_to_client "test send"
-  @basic_game_object_2.client.receive_data "test receive"
-  @basic_game_object_2.disconnect   # detach gets called by this function
-end
-
-Given /^an instance of BasicGameObject 2$/ do
-  @basic_game_object_3 = BasicGameObject.new
-  @basic_game_object_3.should_not be nil
-  @basic_game_object_3.should be_an_instance_of BasicGameObject
-end
-
-When /^I mock a client object 2$/ do
-  @client_obj_2 = mock
-  @client_obj_2.expects(:add_observer).at_most_once
-  @client_obj_2.expects(:send_data).with("quit, what_am_i?, list_verbs\n").at_most_once
-  @client_obj_2.expects(:send_data).with("You are an instance of BasicGameObject.\n").at_most_once
-  @client_obj_2.expects(:send_data).with("bye.\n").at_most_once
-  @client_obj_2.expects(:close_connection_after_writing).at_most_once
-  @client_obj_2.expects(:remove_observer).at_most_once
-end
-
-When /^I attach the client object to the game object 2$/ do
-  @basic_game_object_3.attach_client @client_obj_2
-end
-
-When /^I test the verbs for the client wrapper$/ do
-  args = {:player => @basic_game_object_3}
-  @basic_game_object_3.set_command_args args
-  @basic_game_object_3.list_verbs
-  @basic_game_object_3.what_am_i?
-  @basic_game_object_3.quit
-end
-
-Then /^the verbs should work properly$/ do
-  #NOOP mocha will complain if expectations were not met
 end
 
 Given /^an instance of BasicGameObject 3$/ do

@@ -31,6 +31,7 @@ require 'game/objects/game'
 require 'game/objects/basic_game_item'
 require 'game/objects/basic_named_object'
 require 'game/objects/mixins/admin'
+require 'game/objects/mixins/client_wrapper'
 
 # loads game objects and caches them
 class GameObjectLoader
