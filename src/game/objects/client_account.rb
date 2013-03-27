@@ -42,23 +42,17 @@ class ClientAccount < BasicPersistentGameObject
   end
 
   def add_new_character(name)
-    # create the new character object
-    # TODO: change this line to reflect new starting class
-    new_character = BasicNamedObject.new
-    new_character.name = name
-    new_character.object_tag = :player_names
-    new_character.save
+    new_character = generate_new_character(name)
 
     # add new character to our collection
-    if @characters.nil?
-      @characters = new_character.game_object_id
-    else
-      @characters << "," << new_character.game_object_id
-    end
+    c_list ||= []
+    c_list = @characters.split(',') unless @characters.nil?
+    c_list.push new_character
+    @characters = c_list.join(',')
     save
 
     # add the log entry
-    SystemLogging.add_log_entry "created new character", self.game_object_id, new_character.game_object_id
+    SystemLogging.add_log_entry "created new character", self.game_object_id, new_character
   end
 
   def remove_character(character_id)
@@ -120,5 +114,21 @@ class ClientAccount < BasicPersistentGameObject
   def self.account_count()
     accounts = GameObjects.get_tags 'accounts'
     accounts.length
+  end
+
+  def generate_new_character(name)
+    # create the new character object
+    new_class_id = UUID.new.to_guid.to_s
+    new_class = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => new_class_id}
+    new_class[:mixins] << 'Admin' if account_type == :admin
+    GameObjects.save new_class_id, new_class
+    new_character_klass = GameObjectLoader.load_object new_class_id
+    raise "Unable to create character class C#{new_class_id}" if new_character_klass.nil?
+    new_character = new_character_klass.new
+    new_character.name = name
+    new_character.object_tag = :player_names
+    new_character.save
+
+    new_character.game_object_id
   end
 end

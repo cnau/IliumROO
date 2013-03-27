@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 require 'singleton'
 require 'database/cassandra_dao'
 require 'logging/logging'
-require 'facets/hash/traverse'
+require 'facets/hash/rekey'
 
 # class to interact with "objects" and "object_tags" column families
 class GameObjects
@@ -38,7 +38,7 @@ class GameObjects
     obj = CassandraDao.get(:objects, object_id).to_hash
     
     # convert hash to symbolic keys
-    ret = obj.traverse {|k,v| [k.to_sym, v]}
+    ret = obj.rekey {|k| k.to_sym}
     
     log.debug {"retrieved object #{ret}"}
     ret
@@ -56,7 +56,7 @@ class GameObjects
   def save(object_id, object_hash)
     log.debug {"saving #{object_id} : #{object_hash}"}
     #convert hash to string keys
-    to_insert = object_hash.traverse {|k,v| [k.to_s, v]}
+    to_insert = object_hash.rekey {|k| k.to_s}
     CassandraDao.insert :objects, object_id, to_insert
   end
 

@@ -31,6 +31,7 @@ require 'game/objects/game'
 require 'game/objects/player_admin'
 require 'game/objects/basic_game_item'
 require 'game/objects/basic_named_object'
+require 'game/objects/mixins/admin'
 
 # loads game objects and caches them
 class GameObjectLoader
@@ -75,6 +76,7 @@ class GameObjectLoader
     # load the object from the database
     log.debug {"loading game object #{object_id} from database"}
     obj_hash = GameObjects.get object_id
+    log.debug {"Found object hash #{obj_hash}"}
     if obj_hash.nil? or obj_hash.empty?
       # find out if a ruby class is requested
       if object_id.match(/^[A-Z][A-Za-z0-9_]*$/)

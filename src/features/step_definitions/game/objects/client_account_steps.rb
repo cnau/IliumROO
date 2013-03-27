@@ -55,8 +55,8 @@ Given /^a new client account object 2$/ do
 end
 
 And /^a mocked client account save call 2$/ do
-  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, obj_hash| @object_hash_2 = obj_hash}
-  GameObjects.expects(:add_tag).with('accounts', 'test2@test.com', is_a(Hash)) {|object_tag, email_address, tag_hash| @tag_hash_2 = tag_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, obj_hash| @object_hash_2 = obj_hash }
+  GameObjects.expects(:add_tag).with('accounts', 'test2@test.com', is_a(Hash)) { |object_tag, email_address, tag_hash| @tag_hash_2 = tag_hash }
 end
 
 When /^I set some properties in the ClientAccount object 2$/ do
@@ -87,15 +87,17 @@ end
 
 Given /^a mocked client account add_new_character call$/ do
   # save new character
+  @new_class_hash = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => 'Test'}
+  GameObjects.expects(:get).with(is_a(String)).returns(@new_class_hash)
+
   @save_hash_3 = []
-  GameObjects.expects(:save).twice.with(is_a(String), is_a(Hash)) {|object_id, object_hash| @save_hash_3.push object_hash}
+  GameObjects.expects(:save).times(3).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @save_hash_3.push object_hash }
 
   # account tag
-  GameObjects.expects(:add_tag).with('accounts', 'test3@test.com', is_a(Hash)) {|tag_name, email, tag_hash| @tag_hash_3 = tag_hash}
+  GameObjects.expects(:add_tag).with('accounts', 'test3@test.com', is_a(Hash)) { |tag_name, email, tag_hash| @tag_hash_3 = tag_hash }
 
-  
   # object tag new character
-  GameObjects.expects(:add_tag).with("player_names", "test3@test.com", is_a(Hash)) {|object_tag, email, tag_hash| @player_tag_hash_3 = tag_hash}
+  GameObjects.expects(:add_tag).with('player_names', 'test3@test.com', is_a(Hash)) { |object_tag, email, tag_hash| @player_tag_hash_3 = tag_hash }
 
   # system logging calls
   SystemLogging.expects(:add_log_entry).with('created new character', is_a(String), is_a(String))
@@ -107,16 +109,21 @@ When /^I set some properties in the ClientAccount object 3$/ do
 end
 
 When /^I add a new character$/ do
-  @client_account_3.add_new_character "Test"
+  @client_account_3.add_new_character 'Test'
 end
 
 Then /^I should get appropriate values in the client account hash 3$/ do
   client_hash = @save_hash_3.pop
   new_char_hash = @save_hash_3.pop
+  new_class_hash = @save_hash_3.pop
+
   new_char_hash.should include :game_object_id
 
   client_hash.should include :characters
   client_hash[:characters].should eql new_char_hash[:game_object_id]
+
+  new_class_hash.should include :super
+  new_class_hash[:super].should eql "BasicNamedObject"
 end
 
 Given /^a new client account object 4$/ do
@@ -129,8 +136,8 @@ end
 Given /^a mocked client account remove_character database call$/ do
   SystemLogging.expects(:add_log_entry).with("deleted character Test", is_a(String), is_a(String))
   GameObjects.expects(:get).with("NEW_CHAR_1").returns({:name => "Test"})
-  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, object_hash| @save_hash_4 = object_hash}
-  GameObjects.expects(:add_tag).with('accounts', 'test4@test.com', is_a(Hash)) {|tag_name, email, tag_hash| @tag_hash_3 = tag_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @save_hash_4 = object_hash }
+  GameObjects.expects(:add_tag).with('accounts', 'test4@test.com', is_a(Hash)) { |tag_name, email, tag_hash| @tag_hash_3 = tag_hash }
 end
 
 When /^I remove a character id$/ do
@@ -195,8 +202,8 @@ Given /^a new client account object 8$/ do
 end
 
 Given /^a mocked client account set_last_login call$/ do
-  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, object_hash| @object_hash_8 = object_hash}
-  GameObjects.expects(:add_tag).with('accounts', 'test8@test.com', is_a(Hash)) {|object_tag, email_address, tag_hash| @tag_hash_8 = tag_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @object_hash_8 = object_hash }
+  GameObjects.expects(:add_tag).with('accounts', 'test8@test.com', is_a(Hash)) { |object_tag, email_address, tag_hash| @tag_hash_8 = tag_hash }
   SystemLogging.expects(:add_log_entry).with('logged in account', @client_account_8.game_object_id)
 end
 
@@ -217,8 +224,8 @@ Then /^I should get a correct response$/ do
 end
 
 Given /^a mocked create_new_account database call$/ do
-  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) {|object_id, object_hash| @object_hash_9 = object_hash}
-  GameObjects.expects(:add_tag).with('accounts', 'test9@test.com', is_a(Hash)) {|object_tag, email_address, tag_hash| @tag_hash_9 = tag_hash}
+  GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @object_hash_9 = object_hash }
+  GameObjects.expects(:add_tag).with('accounts', 'test9@test.com', is_a(Hash)) { |object_tag, email_address, tag_hash| @tag_hash_9 = tag_hash }
   SystemLogging.expects(:add_log_entry).with('created new account', is_a(String))
 end
 
@@ -238,7 +245,7 @@ Then /^I should get correct hashes from create_new_account$/ do
 end
 
 Given /^a mocked get_account database call$/ do
-  GameObjects.expects(:get).with('test-object-id-10').returns({:email=>"test10@test.com", :password=>"pass", :last_login_date=>"", :last_login_ip=>"", :display_type=>"ANSI", :characters=>"", :account_type=>"normal", :parent=>"ClientAccount", :game_object_id=>"test-object-id-10"})
+  GameObjects.expects(:get).with('test-object-id-10').returns({:email => "test10@test.com", :password => "pass", :last_login_date => "", :last_login_ip => "", :display_type => "ANSI", :characters => "", :account_type => "normal", :parent => "ClientAccount", :game_object_id => "test-object-id-10"})
 end
 
 When /^I call get_account$/ do
@@ -248,7 +255,7 @@ end
 Then /^I should get correct hashes from get_account$/ do
   @client_account_10.should_not be_nil
   @client_account_10.class.should eql ClientAccount
-  
+
   @client_account_10.email.should eql 'test10@test.com'
   @client_account_10.game_object_id.should eql 'test-object-id-10'
   @client_account_10.password.should eql 'pass'
