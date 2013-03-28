@@ -284,7 +284,6 @@ Then /^I should have the correct mixins for the new character class$/ do
   @client_account_9.characters.should_not be_nil
   @client_account_9.characters.split(',').size.should eql 1
   new_char_id = @client_account_9.characters.split(',')[0]
-  p @save_hash_9[0].inspect
   GameObjects.expects(:get).with(new_char_id).returns(@save_hash_9[0])
   new_char = GameObjectLoader.load_object new_char_id
 
