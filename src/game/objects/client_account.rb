@@ -129,7 +129,8 @@ class ClientAccount < BasicPersistentGameObject
     new_class = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => new_class_id}
 
     # add some basic mixins for every character
-    new_character_mixins = %w(ClientWrapper)
+    new_character_mixins = []
+    new_character_mixins.push 'ClientWrapper'
 
     # add admin mixin if appropriate
     new_character_mixins.push 'Admin' if account_type.to_sym == :admin
