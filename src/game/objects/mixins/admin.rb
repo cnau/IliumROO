@@ -20,29 +20,32 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-require 'game_objects/game_object_loader'
-require 'game/objects/mixins/item_builder'
+
+require 'database/game_objects'
 
 module Admin
-  include ItemBuilder
-
-  VERBS = {:list_items => nil, :list_players => nil, :inspect => {:alias => :inspect_object}}.freeze
+  VERBS = {:list_items => nil, :list_players => nil, :inspect => {:aliasname => :inspect_object}}.freeze
 
   def inspect_object
-    if @dobjstr.nil?
+    arg_str = nil
+    arg_str = @dobjstr unless @dobjstr.nil? or @dobjstr.empty?
+    arg_str = @args unless @args.nil? or @args.empty?
+    arg_str = @dobj.game_object_id unless @dobj.nil?
+
+    if arg_str.nil?
       @player.send_to_client "Inspect what?\n"
     else
       obj_id = nil
-      if @dobj.nil?
-        obj_id = @dobjstr
+      if arg_str.downcase == 'self'
+        obj_id = @game_object_id
       else
-        obj_id = @dobj.game_object_id
+        obj_id = arg_str
       end
       obj_hash = GameObjects.get obj_id
       if obj_hash.nil? or obj_hash.empty?
-        @player.send_to_client "Can't find object #@dobjstr\n"
+        @player.send_to_client "Can't find object #{arg_str}\n"
       else
-        out = "Object #@dobjstr\n"
+        out = "Object #{obj_id}\n"
         out << obj_hash.inspect
         out << "\n"
         @player.send_to_client out
@@ -73,7 +76,7 @@ module Admin
         ret << type_name << "\n"
       end
     else
-      ret = "#@dobjstrs:\n"
+      ret = "#@dobjstr:\n"
       ret << "item name".ljust(25)
       ret << "     "
       ret << "object id".ljust(10)
@@ -88,4 +91,5 @@ module Admin
     end
     @player.send_to_client ret
   end
+
 end

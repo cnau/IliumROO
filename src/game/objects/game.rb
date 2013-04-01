@@ -52,7 +52,7 @@ class Game < BasicPersistentGameObject
 
   # stops all socket servers
   def stop_socket_servers
-    log.debug {"stopping all socket servers"}
+    log.debug { "stopping all socket servers" }
     @socket_servers.each do |server|
       server.close_connection
     end
@@ -61,19 +61,28 @@ class Game < BasicPersistentGameObject
 
   # starts up all socket servers
   def start_socket_servers
-    log.debug {"starting socket servers on ports #@port_list"}
+    log.debug { "starting socket servers on ports #@port_list" }
     @port_list.to_s.split(",").map do |port|
-      log.debug {"starting socket server on port #{port}"}
+      log.debug { "starting socket server on port #{port}" }
       @socket_servers.push EventMachine.start_server 'localhost', port, ClientConnection
     end
   end
 
   # starts the game
   def start
-    EventMachine.run do
-      log.debug {"spinning up socket servers"}
-      # startup the socket servers
-      start_socket_servers
+    begin
+      log.info {'server starting up' }
+      EventMachine.run do
+        log.debug { "spinning up socket servers" }
+        # startup the socket servers
+        start_socket_servers
+      end
+    rescue Interrupt => ex
+      log.info { 'server shutting down' }
+
+    rescue Exception => ex
+      log.error ex
+
     end
   end
 
