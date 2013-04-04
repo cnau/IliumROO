@@ -26,7 +26,7 @@ require "features/step_definitions/spec_helper.rb"
 require 'game/objects/mixins/admin'
 
 class AdminTester
-  attr_accessor :player, :dobjstr, :args, :game_object_id, :dobj
+  attr_accessor :game_object_id
   include Admin
 end
 
@@ -48,9 +48,8 @@ Then /^the list_players command should return the player list$/ do
   player_mock = mock
   player_msg = nil
   player_mock.expects(:send_to_client).with(is_a(String)) { |msg| player_msg = msg }
-  @admin_object.player = player_mock
 
-  @admin_object.list_players
+  @admin_object.list_players player_mock
 
   ret = "player name".ljust(25)
   ret << "     "
@@ -68,7 +67,6 @@ end
 
 When /^I mock an item list with nil direct object$/ do
   @list_item_hash = {'TestType' => {'TestName' => {'object_id' => 'test_id'}}}
-  @admin_object.dobjstr = nil
   GameObjects.expects(:get_tag).with('items', nil).returns(@list_item_hash)
 end
 
@@ -81,16 +79,14 @@ Then /^the list_items command should return the item list with nil direct object
   player_mock = mock
   player_msg = nil
   player_mock.expects(:send_to_client).with(is_a(String)) { |msg| player_msg = msg }
-  @admin_object.player = player_mock
 
-  @admin_object.list_items
+  @admin_object.list_items player_mock
 
   player_msg.should eql ret
 end
 
 When /^I mock an item list with with a direct object$/ do
   @list_item_hash = {'TestName' => {'object_id' => 'test_id'}}
-  @admin_object.dobjstr = 'TestType'
   GameObjects.expects(:get_tag).with('items', 'TestType').returns(@list_item_hash)
 end
 
@@ -110,23 +106,16 @@ Then /^the list_items command should return the item list with the correct item 
   player_mock = mock
   player_msg = nil
   player_mock.expects(:send_to_client).with(is_a(String)) { |msg| player_msg = msg }
-  @admin_object.player = player_mock
 
-  @admin_object.list_items
+  @admin_object.list_items player_mock, 'TestType'
 
   player_msg.should eql ret
 end
 
-When /^I mock an object hash with "([^"]*)"$/ do |obj_str|
+When /^I mock an object hash$/ do
   @object_hash = {:alias => "", :game_object_id => "test_id", :name => "Test", :object_tag => "test_tag", :parent => "test_parent_id"}
-  @admin_object.args = obj_str
   @admin_object.game_object_id = 'test_id'
   GameObjects.expects(:get).with('test_id').returns(@object_hash)
-end
-
-When /^I mock an object hash with empty string$/ do
-  @admin_object.args = nil
-  @admin_object.dobjstr = nil
 end
 
 Then /^the inspect command should display the correct object hash$/ do
@@ -137,33 +126,27 @@ Then /^the inspect command should display the correct object hash$/ do
   player_mock = mock
   player_msg = nil
   player_mock.expects(:send_to_client).with(is_a(String)) { |msg| player_msg = msg }
-  @admin_object.player = player_mock
 
-  @admin_object.inspect_object
+  @admin_object.inspect_object player_mock, 'test_id'
 
   player_msg.should eql out
 end
 
-Then /^the inspect command should send to player "([^"]*)"$/ do |the_msg|
+Then /^the inspect command with dobjstr "([^"]*)" should send to player "([^"]*)"$/ do |dobjstr, the_msg|
   player_mock = mock
   player_msg = nil
   player_mock.expects(:send_to_client).with(is_a(String)) { |msg| player_msg = msg }
-  @admin_object.player = player_mock
 
-  @admin_object.inspect_object
+  @admin_object.inspect_object player_mock, dobjstr
 
   player_msg.chomp.should eql the_msg
 end
 
 When /^I mock an object hash with a object instance$/ do
   @object_hash = {:alias => "", :game_object_id => "test_id", :name => "Test", :object_tag => "test_tag", :parent => "test_parent_id"}
-  test_object = mock
-  test_object.expects(:game_object_id).returns('test_id')
-  @admin_object.dobj = test_object
   GameObjects.expects(:get).with('test_id').returns(@object_hash)
 end
 
 When /^I mock an object hash with a bogus_id$/ do
-  @admin_object.args = 'bogus_id'
   GameObjects.expects(:get).with('bogus_id').returns(nil)
 end

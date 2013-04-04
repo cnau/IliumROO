@@ -26,14 +26,14 @@ require 'database/game_objects'
 module Admin
   VERBS = {:list_items => nil, :list_players => nil, :inspect => {:aliasname => :inspect_object}}.freeze
 
-  def inspect_object
+  def inspect_object(player, dobjstr = nil, dobj = nil, args = nil)
     arg_str = nil
-    arg_str = @dobjstr unless @dobjstr.nil? or @dobjstr.empty?
-    arg_str = @args unless @args.nil? or @args.empty?
-    arg_str = @dobj.game_object_id unless @dobj.nil?
+    arg_str = dobjstr unless dobjstr.nil? or dobjstr.empty?
+    arg_str = args unless args.nil? or args.empty?
+    arg_str = dobj.game_object_id unless dobj.nil?
 
     if arg_str.nil?
-      @player.send_to_client "Inspect what?\n"
+      player.send_to_client "Inspect what?\n"
     else
       obj_id = nil
       if arg_str.downcase == 'self'
@@ -43,17 +43,17 @@ module Admin
       end
       obj_hash = GameObjects.get obj_id
       if obj_hash.nil? or obj_hash.empty?
-        @player.send_to_client "Can't find object #{arg_str}\n"
+        player.send_to_client "Can't find object #{arg_str}\n"
       else
         out = "Object #{obj_id}\n"
         out << obj_hash.inspect
         out << "\n"
-        @player.send_to_client out
+        player.send_to_client out
       end
     end
   end
 
-  def list_players
+  def list_players(player)
     ret = "player name".ljust(25)
     ret << "     "
     ret << "object id".ljust(10)
@@ -65,23 +65,23 @@ module Admin
       ret << object_hash['object_id'].center(10, " ")
       ret << "\n"
     end
-    @player.send_to_client ret
+    player.send_to_client ret
   end
 
-  def list_items
-    if @dobjstr.nil?
+  def list_items(player, dobjstr = nil)
+    if dobjstr.nil?
       ret = "items types:\n"
       item_types = GameObjects.get_tag 'items', nil
       item_types.each do |type_name, items|
         ret << type_name << "\n"
       end
     else
-      ret = "#@dobjstr:\n"
+      ret = "#{dobjstr}:\n"
       ret << "item name".ljust(25)
       ret << "     "
       ret << "object id".ljust(10)
       ret << "\n"
-      items = GameObjects.get_tag 'items', @dobjstr
+      items = GameObjects.get_tag 'items', dobjstr
       items.each do |item_name, object_hash|
         ret << item_name.ljust(25)
         ret << "     "
@@ -89,7 +89,7 @@ module Admin
         ret << "\n"
       end
     end
-    @player.send_to_client ret
+    player.send_to_client ret
   end
 
 end

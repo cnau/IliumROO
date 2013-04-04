@@ -18,7 +18,7 @@
 #LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+#TODO: test with "emote something to emote"
 Feature: test the command parser
   As a game that receives text input from the user
   So I need to parse and understand what the user is requesting
@@ -36,12 +36,12 @@ Feature: test the command parser
   Scenario: test one word commands
     Given a mocked player object for test three
     When I parse a one word command
-    Then I should get a correct hash
+    Then I should be done
 
-  Scenario: test a one word command with parameters "say hello there!"
+  Scenario: test a one word command with parameters "foo"
     Given a mocked player object for test four
-    When I parse a one word command with parameters
-    Then I should get a correct hash for test four
+    When I parse a one word command with parameters "foo"
+    Then I should get correct parameter value of "foo"
 
   Scenario: test common word replacements " ;, :, " "
     Given a mocked player object for test five
@@ -52,10 +52,10 @@ Feature: test the command parser
     When I parse a command with common word replacements
     Then I should get a correct hash substitution with verb "emote"
 
-  Scenario: test me and here
+  Scenario: test me
     Given a mocked player object for test six
     And a player object with last_data "look me" for test six
-    When I parse the command
+    When I parse the command for test six
     Then I should get a correct hash for test six
 
   Scenario: test prepositions

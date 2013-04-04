@@ -80,9 +80,31 @@ module CommandParser
       ret[:iobj] = iobj
       ret[:args] = verb_args
 
-      this.set_command_args ret
-      this.send ret[:aliasname]
+      command_args = get_command_args(this, ret)
+      this.send ret[:aliasname], *command_args
     end
+
+
+  end
+
+  def get_command_args(calling_obj, arg_list)
+    param_values = []
+    if calling_obj.respond_to? arg_list[:aliassym]
+      # parameters returns an array of arrays consisting of a format like this:
+      # [:req, :param_name]
+      # [:opt, :param_name]
+      calling_obj.class.instance_method(arg_list[:aliassym]).parameters.each { |param|
+        if arg_list.include? param[1]
+          param_values << arg_list[param[1]]
+        else
+          param_values << nil
+        end
+      }
+    else
+      huh arg_list[:player]
+    end
+
+    param_values
   end
 
   def huh(player)
@@ -170,6 +192,6 @@ module CommandParser
     ret
   end
 
-  module_function :process_command, :huh, :test_verb, :locate_object, :parse_to_words, :find_alias
-  private :huh, :test_verb, :locate_object, :parse_to_words, :find_alias
+  module_function :process_command, :huh, :test_verb, :locate_object, :parse_to_words, :find_alias, :get_command_args
+  private :huh, :test_verb, :locate_object, :parse_to_words, :find_alias, :get_command_args
 end

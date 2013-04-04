@@ -40,17 +40,16 @@ Feature: test the admin mixin
 
   Scenario: test inspect verb with empty string
     Given a new admin object
-    When I mock an object hash with empty string
-    Then the inspect command should send to player "Inspect what?"
+    Then the inspect command with dobjstr "" should send to player "Inspect what?"
 
   Scenario: test inspect verb with self
     Given a new admin object
-    When I mock an object hash with "self"
+    When I mock an object hash
     Then the inspect command should display the correct object hash
 
   Scenario: test inspect verb with object id
     Given a new admin object
-    When I mock an object hash with "test_id"
+    When I mock an object hash
     Then the inspect command should display the correct object hash
 
   Scenario: test inspect verb with object
@@ -61,4 +60,4 @@ Feature: test the admin mixin
   Scenario: test inspect verb with non-existent object
     Given a new admin object
     When I mock an object hash with a bogus_id
-    Then the inspect command should send to player "Can't find object bogus_id"
+    Then the inspect command with dobjstr "bogus_id" should send to player "Can't find object bogus_id"

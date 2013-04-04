@@ -37,16 +37,16 @@ class BasicNamedObject < BasicPersistentGameObject
     end
   end
 
-  def save
-    super
+  def save(player = nil)
+    super()
     register_game_object
-    @player.send_to_client "#{self.name} saved.\n" unless @player.nil?
+    player.send_to_client "#{self.name} saved.\n" unless player.nil?
   end
 
-  def recycle
-    super
+  def recycle(player = nil)
+    super()
     unregister_game_object
-    @player.send_to_client "#{self.name} recycled.\n" unless @player.nil?
+    player.send_to_client "#{self.name} recycled.\n" unless player.nil?
   end
 
   def register_game_object

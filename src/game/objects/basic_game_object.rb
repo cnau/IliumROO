@@ -22,7 +22,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
 require 'game/objects/mixins/state_machine'
-require 'game/objects/mixins/command_arguments'
 require 'logging/logging'
 require 'simple_uuid'
 require 'digest'
@@ -31,7 +30,6 @@ class BasicGameObject
   include SimpleUUID
   include StateMachine
   include Logging
-  include CommandArguments
 
   @game_object_id = nil
 
