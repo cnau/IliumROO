@@ -41,7 +41,8 @@ if game_id.nil?
   end
 
   # create the game
-  game = eval("#{game_klass_name}.new")
+  game_klass = GameObjectLoader.load_object game_klass_name
+  game = game_klass.new
   game.port_list = game_ports
   game.save
 else
