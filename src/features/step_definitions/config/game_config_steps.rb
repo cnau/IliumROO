@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 =begin
 Copyright (c) 2009-2012 Christian Nau
 
@@ -22,31 +20,30 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
+$: << File.expand_path(File.dirname(__FILE__) + "/../../../")
 
-$: << File.expand_path(File.dirname(__FILE__))
+require "features/step_definitions/spec_helper.rb"
+require 'config/game_config'
 
-require 'game_objects/game_object_loader'
-
-game = nil
-
-game_id = Game.get_game_id
-
-if game_id.nil?
-  if (!GameConfig.instance.config.nil?) && (!GameConfig.instance.config.empty?) && (!GameConfig.instance['startup'].nil?) && (!GameConfig.instance['startup'].empty?)
-    game_klass_name = GameConfig.instance['startup']['game']
-    game_ports = GameConfig.instance['startup']['ports']
-  else
-    game_klass_name = 'Game'
-    game_ports = '6666'
-  end
-
-  # create the game
-  game = eval("#{game_klass_name}.new")
-  game.port_list = game_ports
-  game.save
-else
-  # load the game
-  game = GameObjectLoader.load_object game_id
+Given /^a new instance of game config$/ do
+  @game_config = GameConfig.instance
 end
 
-game.start
+When /^I check for the config hash$/ do
+  @game_config.config.should_not be_nil
+end
+
+Then /^I should see the correct game hash$/ do
+  conf_name = File.join(File.dirname(__FILE__), '../../../../game_properties.yaml')
+  if File.exists? conf_name
+    config = File.open(conf_name) { |yf| YAML::load(yf) }
+  end
+
+  @game_config.config.should eql config
+end
+
+Then /^I should see the correct entries in the index operator$/ do
+  @game_config.config.each {|k,v|
+    @game_config[k].should eql v
+  }
+end

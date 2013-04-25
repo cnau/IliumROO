@@ -2,3 +2,7 @@ cassandra:
   server:   127.0.0.1
   port:     9160
   keyspace: IliumROO
+
+startup:
+  game: Game
+  ports: 6666

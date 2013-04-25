@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 =begin
 Copyright (c) 2009-2012 Christian Nau
 
@@ -23,30 +21,27 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__))
+require 'logging/logging'
+require 'singleton'
+class GameConfig
+  include Singleton
+  include Logging
 
-require 'game_objects/game_object_loader'
-
-game = nil
-
-game_id = Game.get_game_id
-
-if game_id.nil?
-  if (!GameConfig.instance.config.nil?) && (!GameConfig.instance.config.empty?) && (!GameConfig.instance['startup'].nil?) && (!GameConfig.instance['startup'].empty?)
-    game_klass_name = GameConfig.instance['startup']['game']
-    game_ports = GameConfig.instance['startup']['ports']
-  else
-    game_klass_name = 'Game'
-    game_ports = '6666'
+  def initialize
+    conf_name = File.join(File.dirname(__FILE__), '../../game_properties.yaml')
+    log.debug {"Reading config file #{conf_name}"}
+    if File.exists? conf_name
+      @config = File.open(conf_name) { |yf| YAML::load(yf) }
+    else
+      log.error {"No config file found at #{conf_name}"}
+    end
   end
 
-  # create the game
-  game = eval("#{game_klass_name}.new")
-  game.port_list = game_ports
-  game.save
-else
-  # load the game
-  game = GameObjectLoader.load_object game_id
-end
+  def config
+    @config
+  end
 
-game.start
+  def [](index)
+    @config[index]
+  end
+end

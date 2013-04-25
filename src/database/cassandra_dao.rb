@@ -25,6 +25,7 @@ require 'rubygems'
 require 'cassandra'
 require 'singleton'
 require 'yaml'
+require 'config/game_config'
 
 include Cassandra::Constants
 
@@ -35,18 +36,16 @@ class CassandraDao
   include Logging
 
   def initialize
-    conf_name = File.join(File.dirname(__FILE__), '../../game_properties.yaml')
-    if File.exists? conf_name
-      config = File.open(conf_name) { |yf| YAML::load(yf) }
-      keyspace  = config['cassandra']['keyspace']
-      server    = config['cassandra']['server']
-      port      = config['cassandra']['port']
+    if (!GameConfig.instance.config.nil?) && (!GameConfig.instance.config.empty?) && (!GameConfig.instance.config['cassandra'].nil?) && (!GameConfig.instance.config['cassandra'].empty?)
+      keyspace = GameConfig.instance['cassandra']['keyspace']
+      server = GameConfig.instance['cassandra']['server']
+      port = GameConfig.instance['cassandra']['port']
     else
-      keyspace  = "IliumROO"
-      server    = "localhost"
-      port      = "9160"
+      keyspace = "IliumROO"
+      server = "localhost"
+      port = "9160"
     end
-    log.info {"attaching to cassandra server: #{keyspace}@#{server}:#{port}"}
+    log.info { "attaching to cassandra server: #{keyspace}@#{server}:#{port}" }
     @dao = Cassandra.new(keyspace, "#{server}:#{port}")
   end
 
@@ -56,10 +55,10 @@ class CassandraDao
   # [row_hash] the hash table of the row to insert
   # [options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
   def insert(column_family, key, row_hash, options = {})
-    log.debug {"inserting into #{column_family} : #{key} : #{row_hash}"}
+    log.debug { "inserting into #{column_family} : #{key} : #{row_hash}" }
     @dao.insert(column_family, key, row_hash, options)
   end
-  
+
   # inserts into a column family
   # [column_family] the column family to insert into
   # [key] they key into the column family
@@ -74,9 +73,9 @@ class CassandraDao
   # [key] the key to retrieve
   # [columns_and_options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
   def get(column_family, key, *columns_and_options)
-    log.debug {"getting #{column_family} : #{key} : #{columns_and_options}"}
+    log.debug { "getting #{column_family} : #{key} : #{columns_and_options}" }
     rows = @dao.get column_family, key, *columns_and_options
-    log.debug {"get returned #{rows}"}
+    log.debug { "get returned #{rows}" }
     rows
   end
 
@@ -93,7 +92,7 @@ class CassandraDao
   # [key] the key to remove
   # [columns_and_options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
   def remove(column_family, key, *columns_and_options)
-    log.debug {"removing #{column_family} : #{key} : #{columns_and_options}"}
+    log.debug { "removing #{column_family} : #{key} : #{columns_and_options}" }
     @dao.remove column_family, key, *columns_and_options
   end
 
@@ -110,9 +109,9 @@ class CassandraDao
   # [key] the key to count
   # [columns_and_options] additional options, see http://blog.evanweaver.com/files/doc/fauna/cassandra/classes/Cassandra.html
   def count_columns(column_family, key, *columns_and_options)
-    log.debug {"counting columns for #{column_family} : #{key} : #{columns_and_options}"}
+    log.debug { "counting columns for #{column_family} : #{key} : #{columns_and_options}" }
     log_count = @dao.count_columns column_family, key, *columns_and_options
-    log.debug {"found #{log_count} for #{column_family} : #{key}"}
+    log.debug { "found #{log_count} for #{column_family} : #{key}" }
     log_count
   end
 
