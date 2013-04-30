@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/enter_world_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/enter_world_state'
 
 Given /^an instance of EnterWorldState$/ do
   @enter_world_state = EnterWorldState.instance
@@ -41,7 +41,7 @@ Given /^this character list "([^"]*)" with a name of "([^"]*)"$/ do |char_id, na
       @entity.expects(:get_player_name).with(char_id).returns(name)
       @expected_menu = "1. #{name}\nChoose a character to play: "
       @entity.expects(:send_to_client).with(is_a(String)) {|msg| @last_client_msg = msg}
-      @entity.expects(:display_type).returns("NONE")
+      @entity.expects(:display_type).returns('NONE')
     end
   end
 end

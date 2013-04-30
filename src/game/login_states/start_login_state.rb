@@ -32,7 +32,7 @@ class StartLoginState
 
   def enter(entity)
     entity.email_address = nil
-    entity.send_to_client "Email Address:"
+    entity.send_to_client 'Email Address:'
   end
 
   def exit(entity)

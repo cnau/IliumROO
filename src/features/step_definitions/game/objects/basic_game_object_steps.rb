@@ -20,9 +20,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
+require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/basic_game_object'
 
 Given /^a BasicGameObject class$/ do
@@ -57,8 +57,8 @@ Then /^I should get a valid game object id$/ do
   m.should_not be_nil
 end
 
-Then /^I should be able to see that id in the object's to_hash function$/ do
-  obj_hash = @basic_game_object_1.to_hash
+Then /^I should be able to see that id in the object's to_h function$/ do
+  obj_hash = @basic_game_object_1.to_h
   obj_hash.should_not be_nil
   obj_hash.should have_key :game_object_id
   obj_hash[:game_object_id].should eql @game_object_id

@@ -14,15 +14,28 @@
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
 class SparseMatrix
+  include Enumerable
+
   def initialize
     @data ||= {}
   end
 
-  def [](first_dimension, second_dimension, third_dimension)
-    @data[[first_dimension, second_dimension, third_dimension]]
+  def [](x, y, z)
+    @data[[x, y, z]]
   end
 
-  def []=(first_dimension, second_dimension, third_dimension, new_value)
-    @data[[first_dimension, second_dimension, third_dimension]] = new_value
+  def []=(x, y, z, new_value)
+    @data[[x, y, z]] = new_value
+  end
+
+  def each(&block)
+    @data.each {|k,v|
+      if block_given?
+        block.call [k,v]
+
+      else
+        yield [k,v]
+      end
+    }
   end
 end

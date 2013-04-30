@@ -26,10 +26,10 @@ module HumanoidBody
   PROPERTIES = [:left_finger, :right_finger, :neck_1, :neck_2, :body, :head, :legs, :feet, :hands, :arms, :about_body,
                 :about_waist, :left_wrist, :right_wrist, :right_hand, :left_hand, :face, :left_ear, :right_ear].freeze
 
-  DESC = {:left_hand  => "left hand", :right_hand   => "right hand",  :head         => "head",          :neck_1       => "around neck",   :neck_2       => "around neck",
-          :body       => "on body",   :about_body   => "about body",  :arms         => "on arms",       :left_wrist   => "around wrist",  :right_wrist  => "around wrist",
-          :hands      => "on hands",  :left_finger  => "left finger", :right_finger => "right finger",  :about_waist  => "about waist",   :legs         => "on legs",   
-          :feet       => "on feet",   :left_ear     => "in left ear", :right_ear    => "in right ear",  :face         => "on face"}.freeze
+  DESC = {:left_hand  => 'left hand', :right_hand   => 'right hand',  :head         => 'head',          :neck_1       => 'around neck',   :neck_2       => 'around neck',
+          :body       => 'on body',   :about_body   => 'about body',  :arms         => 'on arms',       :left_wrist   => 'around wrist',  :right_wrist  => 'around wrist',
+          :hands      => 'on hands',  :left_finger  => 'left finger', :right_finger => 'right finger',  :about_waist  => 'about waist',   :legs         => 'on legs',
+          :feet       => 'on feet',   :left_ear     => 'in left ear', :right_ear    => 'in right ear',  :face         => 'on face'}.freeze
 
   VERBS = {:eq => nil}
 

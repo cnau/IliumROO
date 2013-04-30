@@ -21,46 +21,33 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
+require 'game/objects/maps/basic_game_map'
+require 'game/utils/sparse_matrix'
+require 'yaml'
 
-class DisplayOptionsState
-  include Singleton
-  include Colorizer
+class BasicContinuousMap < BasicGameMap
+  VERBS = {:enter => nil}.freeze
+  PROPERTIES = [:rooms, :start_location].freeze
 
-  def enter(entity)
-    menu = ''
-    if entity.display_type == 'ANSI'
-      menu << "[blue]1.[white] turn off ANSI color\n"
-    else
-      menu << "[blue]1.[white] turn on ANSI color\n"
-    end
-    menu << '[white]choose and perish:'
-    menu = colorize(menu, entity.display_type)
+  attr_accessor :start_location
 
-    entity.send_to_client menu
+  def initialize
+    super
+    @rooms = SparseMatrix.new
+    @start_location = [0,0,0]
   end
 
-  def exit(entity)
+  def enter(dobj)
+    @rooms[*@start_location] = BasicContinuousRoom.new if @rooms.contains_key? @start_location
+    @rooms[*@start_location].enter dobj
+    log.debug "#{dobj.game_object_id} entering room #{@start_location}"
   end
 
-  def execute(entity)
-    if entity.last_client_data.empty?
-      entity.change_state MainMenuState
-    else
-      case entity.last_client_data
-        when '1'
-          if entity.display_type == 'ANSI'
-            entity.display_type = 'NONE'
-          else
-            entity.display_type = 'ANSI'
-          end
-          entity.save
-          entity.change_state MainMenuState
-        else
-          entity.send_to_client "Invalid choice.\n"
-          entity.change_state DisplayOptionsState
-      end
-    end
+  def to_h
+    ret = super
+    rooms_save = @rooms.inject({}) {|h,(k,v)| h.update({k => v.game_object_id})}
+    p "to_h: #{rooms_save}"
+    ret[:rooms] = YAML.dump(rooms_save)
+    ret
   end
 end

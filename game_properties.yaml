@@ -6,3 +6,5 @@ cassandra:
 startup:
   game: Game
   ports: 6666
+  map: BasicContinuousMap
+  room: [0,0,0]

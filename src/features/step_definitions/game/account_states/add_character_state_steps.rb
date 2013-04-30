@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/add_character_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/add_character_state'
 
 Given /^an instance of AddCharacterState$/ do
   @add_character_state = AddCharacterState.instance
@@ -45,9 +45,9 @@ When /^I call the execute method of AddCharacterState with the name "([^"]*)" an
   entity.expects(:last_client_data).returns(character_name)
   entity.expects(:change_state).with(is_a(Class)) {|next_state| @next_client_state = next_state}
   entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_2 = msg} unless character_name.empty?
-  entity.expects(:name_available?).returns(true) if available == "available"
-  entity.expects(:add_new_character).with(character_name) if available == "available"
-  entity.expects(:name_available?).returns(false) if available == "unavailable"
+  entity.expects(:name_available?).returns(true) if available == 'available'
+  entity.expects(:add_new_character).with(character_name) if available == 'available'
+  entity.expects(:name_available?).returns(false) if available == 'unavailable'
   @add_character_state.execute entity
 end
 

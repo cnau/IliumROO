@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/list_accounts_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/list_accounts_state'
 
 Given /^an instance of ListAccountsState$/ do
   @list_accounts_state = ListAccountsState.instance
@@ -32,17 +32,17 @@ end
 
 Given /^an account list with names of "([^"]*)" and object ids of "([^"]*)"$/ do |names, ids|
   @account_list_hash = {}
-  @expected_menu = ""
+  @expected_menu = ''
   unless names.empty?
-    names_ar = names.split(",")
-    ids_ar = ids.split(",")
+    names_ar = names.split(',')
+    ids_ar = ids.split(',')
     (0..(names_ar.length - 1)).each do |ctr|
       hash = ids_ar[ctr]
       name = names_ar[ctr]
       @account_list_hash[name] = {'object_id' => hash}
       @expected_menu << "#{ctr+1}. #{name}\n"
     end
-    @expected_menu << "Choose account (q): "
+    @expected_menu << 'Choose account (q): '
   end
 end
 
@@ -63,7 +63,7 @@ Then /^I should get redirected to "([^"]*)" by ListAccountsState$/ do |next_stat
 end
 
 Given /^a mocked GameObjects returning the account list$/ do
-  GameObjects.expects(:get_tags).with("accounts").returns(@account_list_hash)
+  GameObjects.expects(:get_tags).with('accounts').returns(@account_list_hash)
 end
 
 Then /^I should get an appropriate menu for ListAccountsState$/ do

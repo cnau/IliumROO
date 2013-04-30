@@ -35,8 +35,8 @@ class ClientAccount < BasicPersistentGameObject
 
   def initialize
     super
-    @display_type ||= "ANSI"
-    @account_type ||= "normal"
+    @display_type ||= 'ANSI'
+    @account_type ||= 'normal'
   end
 
   def save
@@ -55,15 +55,15 @@ class ClientAccount < BasicPersistentGameObject
     save
 
     # add the log entry
-    SystemLogging.add_log_entry "created new character", self.game_object_id, new_character
+    SystemLogging.add_log_entry 'created new character', self.game_object_id, new_character
   end
 
   def remove_character(character_id)
-    c_list = @characters.split(",")
+    c_list = @characters.split(',')
     c_name = get_player_name(character_id)
     SystemLogging.add_log_entry "deleted character #{c_name}", self.game_object_id, character_id
     c_list.delete character_id
-    @characters = c_list.join(",")
+    @characters = c_list.join(',')
     @characters = nil if @characters.empty?
     save
   end
@@ -91,7 +91,7 @@ class ClientAccount < BasicPersistentGameObject
     save
 
     # add the log entry
-    SystemLogging.add_log_entry "logged in account", self.game_object_id
+    SystemLogging.add_log_entry 'logged in account', self.game_object_id
   end
 
   def self.get_account_id(email_address)
@@ -106,7 +106,7 @@ class ClientAccount < BasicPersistentGameObject
     client_account.email = email_address
     client_account.save
 
-    SystemLogging.add_log_entry "created new account", client_account.game_object_id
+    SystemLogging.add_log_entry 'created new account', client_account.game_object_id
     client_account
   end
 

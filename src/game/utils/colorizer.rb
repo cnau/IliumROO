@@ -16,20 +16,20 @@
 module Colorizer
   ESC = 0x1b
 
-  COLORS = {"reset" => "[0m", "bold" => "[1m", "italics_on" => "[3m", "underline_on" => "[4m",
-      "inverse_on" => "[7m", "strikethrough_on" => "[9m", "bold_off" => "[22m", "italics_off" => "[23m",
-      "underline_off" => "[24m", "inverse_off" => "[27m", "strikethrough_off" => "[29m",
-      "black" => "[30m", "red" => "[31m", "green" => "[32m", "yellow" => "[33m", "blue" => "[34m",
-      "purple" => "[35m", "cyan" => "[36m", "white" => "[37m", "default" => "[39m", "back_black" => "[40m",
-      "back_red" => "[41m", "back_green" => "[42m", "back_yellow" => "[43m", "back_blue" => "[44m",
-      "back_purple" => "[45m", "back_cyan" => "[46m", "back_white" => "[47m", "back_default" => "[49m",
-      "bred" => "[1;31m", "bgreen" => "[1;32m", "byellow" => "[1;33m", "bblue" => "[1;34m",
-      "bpink" => "[1;35m", "bcyan" => "[1;36m", "bwhite" => "[1;37m", "normal" => "[0m"}
+  COLORS = {'reset' => '[0m', 'bold' => '[1m', 'italics_on' => '[3m', 'underline_on' => '[4m',
+      'inverse_on' => '[7m', 'strikethrough_on' => '[9m', 'bold_off' => '[22m', 'italics_off' => '[23m',
+      'underline_off' => '[24m', 'inverse_off' => '[27m', 'strikethrough_off' => '[29m',
+      'black' => '[30m', 'red' => '[31m', 'green' => '[32m', 'yellow' => '[33m', 'blue' => '[34m',
+      'purple' => '[35m', 'cyan' => '[36m', 'white' => '[37m', 'default' => '[39m', 'back_black' => '[40m',
+      'back_red' => '[41m', 'back_green' => '[42m', 'back_yellow' => '[43m', 'back_blue' => '[44m',
+      'back_purple' => '[45m', 'back_cyan' => '[46m', 'back_white' => '[47m', 'back_default' => '[49m',
+      'bred' => '[1;31m', 'bgreen' => '[1;32m', 'byellow' => '[1;33m', 'bblue' => '[1;34m',
+      'bpink' => '[1;35m', 'bcyan' => '[1;36m', 'bwhite' => '[1;37m', 'normal' => '[0m'}
 
   def colorize(to_colorize, display_type)
     ret = to_colorize.gsub(/\[([a-z_]*)\]/) do |color_token|
       color = $1.downcase
-      "" << ESC << COLORS[color] if ((COLORS.include?(color)) && (display_type == 'ANSI'))
+      '' << ESC << COLORS[color] if ((COLORS.include?(color)) && (display_type == 'ANSI'))
     end
   end
 

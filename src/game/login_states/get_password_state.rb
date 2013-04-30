@@ -31,7 +31,7 @@ class GetPasswordState
   include Singleton
 
   def enter(entity)
-    entity.send_to_client "Password:"
+    entity.send_to_client 'Password:'
   end
 
   def exit(entity)

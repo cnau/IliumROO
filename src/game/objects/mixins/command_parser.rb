@@ -147,17 +147,17 @@ module CommandParser
   end
 
   def locate_object(player, room, object_name)
-    if object_name =="me"
+    if object_name =='me'
       player
-    elsif object_name == "here"
+    elsif object_name == 'here'
       room
     end
   end
 
   def parse_to_words(sentence)
     # make common replacements
-    sentence.gsub! /^"/, "say"
-    sentence.gsub! /^:/, "emote"
+    sentence.gsub! /^"/, 'say'
+    sentence.gsub! /^:/, 'emote'
     # TODO reimplement eval
     #sentence.gsub! /^;/, "eval"
 
@@ -182,11 +182,11 @@ module CommandParser
     # remove common words
     ret = {}
     parts.each do |key, value|
-      vals = value.split(" ")
+      vals = value.split(' ')
       vals.delete_if { |item|
-        item == "the" or item == "a" or item == "an"
+        item == 'the' or item == 'a' or item == 'an'
       }
-      ret[key] = vals.join(" ")
+      ret[key] = vals.join(' ')
     end
 
     ret

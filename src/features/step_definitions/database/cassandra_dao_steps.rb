@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "database/cassandra_dao.rb"
+require 'features/step_definitions/spec_helper.rb'
+require 'database/cassandra_dao.rb'
 
 include SimpleUUID
 
@@ -33,7 +33,7 @@ end
 
 When /^I insert a new log entry$/ do
   @row_id = UUID.new
-  CassandraDao.insert :log, 'test', {@row_id => {"log_id" => @row_id.to_guid.to_s, "msg" => 'test msg'}}
+  CassandraDao.insert :log, 'test', {@row_id => {'log_id' => @row_id.to_guid.to_s, 'msg' => 'test msg'}}
 end
 
 Then /^the log entry should be the same as I inserted$/ do
@@ -84,8 +84,8 @@ Given /^I have a clean unit testing tag$/ do
 end
 
 When /^I insert two new rows$/ do
-  CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_1' => {"player_name" => 'unit test 1'}}
-  CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_2' => {"player_name" => 'unit test 2'}}
+  CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_1' => {'player_name' => 'unit test 1'}}
+  CassandraDao.insert :object_tags, 'unit_testing', {'unit_test_key_2' => {'player_name' => 'unit test 2'}}
 end
 
 Then /^the there should be two rows returned$/ do

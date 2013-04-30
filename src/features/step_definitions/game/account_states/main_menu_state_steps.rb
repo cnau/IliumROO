@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/main_menu_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/main_menu_state'
 
 Given /^an instance of MainMenuState$/ do
   @main_menu_state = MainMenuState.instance
@@ -55,14 +55,14 @@ Then /^I should get appropriate output from MainMenuState$/ do
 end
 
 Given /^a generated main menu with account type of "([^"]*)"$/ do |account_type|
-  @expected_msg = ""
+  @expected_msg = ''
   @expected_msg << "1. enter world\n"
   @expected_msg << "2. add character\n"
   @expected_msg << "3. delete character\n"
   @expected_msg << "4. set display options\n"
   @expected_msg << "5. quit\n"
   @expected_msg << "6. list accounts\n" if account_type.to_sym == :admin
-  @expected_msg << "choose and perish:"
+  @expected_msg << 'choose and perish:'
 end
 
 Given /^an entity expecting a change of state for MainMenuState$/ do

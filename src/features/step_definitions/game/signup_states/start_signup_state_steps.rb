@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/signup_states/start_signup_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/signup_states/start_signup_state'
 
 Given /^an instance of StartSignupState$/ do
   @start_signup_state = StartSignupState.instance
@@ -72,11 +72,11 @@ end
 
 Given /^a mocked client for StartSignupState$/ do
   @client = mock
-  @client.stubs(:client_ip).returns("127.0.0.1")
+  @client.stubs(:client_ip).returns('127.0.0.1')
 end
 
 Given /^a client expecting to set_last_login for StartSignupState$/ do
-  @client_account.expects(:set_last_login).with("127.0.0.1")
+  @client_account.expects(:set_last_login).with('127.0.0.1')
 end
 
 Given /^a ClientAccount expecting to create a new client account with email "([^"]*)" and password "([^"]*)" for StartSignupState$/ do |email, password|
@@ -111,7 +111,7 @@ Given /^an ClientAccount expecting to receive a prompt for StartSignupState$/ do
 end
 
 Given /^a ClientAccount expecting to get set as admin and saved$/ do
-  @client_account.expects(:account_type=).with("admin")
+  @client_account.expects(:account_type=).with('admin')
   @client_account.expects(:save)
 end
 

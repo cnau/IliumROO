@@ -33,3 +33,9 @@ Feature: test sparse matrix class
     When I add an object to a first location in SparseMatrix
     And I add another object to a second location in SparseMatrix
     Then those objects should be in the correct locations of SparseMatrix
+
+  Scenario: test enumerable capability of sparse matrix
+    Given an instance of SparseMatrix
+    When I add an object to a first location in SparseMatrix
+    And I add another object to a second location in SparseMatrix
+    Then I should be able to enumerate the list

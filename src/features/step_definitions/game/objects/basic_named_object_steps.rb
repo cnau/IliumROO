@@ -21,11 +21,11 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game_objects/game_object_loader"
-require "game/objects/basic_named_object"
+require 'features/step_definitions/spec_helper.rb'
+require 'game_objects/game_object_loader'
+require 'game/objects/basic_named_object'
 
 Given /^a named game object instance 1/ do
   @named_obj_1 = BasicNamedObject.new
@@ -33,7 +33,7 @@ Given /^a named game object instance 1/ do
 end
 
 Then /^parent should be BasicNamedObject$/ do
-  @named_obj_1.parent.should eql "BasicNamedObject"
+  @named_obj_1.parent.should eql 'BasicNamedObject'
 end
 
 Given /^a named game object instance 2/ do
@@ -65,7 +65,7 @@ end
 Given /^a named object instance 3$/ do
   @named_obj_3 = BasicNamedObject.new
   @named_obj_3.should_not be_nil
-  @named_obj_3.name = "Named3"
+  @named_obj_3.name = 'Named3'
 end
 
 And /^a mocked game object save call 3$/ do
@@ -81,7 +81,7 @@ end
 Then /^I should have the correct properties in the hash 3$/ do
   @object_hash_3.should_not be_nil
   @object_hash_3.should include :name
-  @object_hash_3[:name].should eql "Named3"
+  @object_hash_3[:name].should eql 'Named3'
 end
 
 And /^I should get an appropriate output message for the user 3$/ do
@@ -91,13 +91,13 @@ end
 Given /^a named object instance 4$/ do
   @named_obj_4 = BasicNamedObject.new
   @named_obj_4.should_not be_nil
-  @named_obj_4.name = "Named4"
-  @named_obj_4.object_tag = "basic_named_object_steps"
+  @named_obj_4.name = 'Named4'
+  @named_obj_4.object_tag = 'basic_named_object_steps'
 end
 
 And /^a mocked game object save call 4$/ do
   GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, obj_hash| @object_hash_4 = obj_hash }
-  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named4", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_4 = tag_hash }
+  GameObjects.expects(:add_tag).with('basic_named_object_steps', 'Named4', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_4 = tag_hash }
 end
 
 When /^I save it 4$/ do
@@ -109,10 +109,10 @@ end
 Then /^I should have the correct properties in the hash 4$/ do
   @object_hash_4.should_not be_nil
   @object_hash_4.should include :name
-  @object_hash_4[:name].should eql "Named4"
+  @object_hash_4[:name].should eql 'Named4'
 
   @object_hash_4.should include :object_tag
-  @object_hash_4[:object_tag].should eql "basic_named_object_steps"
+  @object_hash_4[:object_tag].should eql 'basic_named_object_steps'
 
   @tag_hash_4.should_not be_nil
   @tag_hash_4.should include 'object_id'
@@ -126,8 +126,8 @@ end
 Given /^a named object instance 5$/ do
   @named_obj_5 = BasicNamedObject.new
   @named_obj_5.should_not be_nil
-  @named_obj_5.name = "Named5"
-  @named_obj_5.alias = "Alias5"
+  @named_obj_5.name = 'Named5'
+  @named_obj_5.alias = 'Alias5'
 end
 
 And /^a mocked game object save call 5$/ do
@@ -143,10 +143,10 @@ end
 Then /^I should have the correct properties in the hash 5$/ do
   @object_hash_5.should_not be_nil
   @object_hash_5.should include :name
-  @object_hash_5[:name].should eql "Named5"
+  @object_hash_5[:name].should eql 'Named5'
 
   @object_hash_5.should include :alias
-  @object_hash_5[:alias].should eql "Alias5"
+  @object_hash_5[:alias].should eql 'Alias5'
 end
 
 And /^I should get an appropriate output message for the user 5$/ do
@@ -156,15 +156,15 @@ end
 Given /^a named object instance 6$/ do
   @named_obj_6 = BasicNamedObject.new
   @named_obj_6.should_not be_nil
-  @named_obj_6.name = "Named6"
-  @named_obj_6.alias = "Alias6"
-  @named_obj_6.object_tag = "basic_named_object_steps"
+  @named_obj_6.name = 'Named6'
+  @named_obj_6.alias = 'Alias6'
+  @named_obj_6.object_tag = 'basic_named_object_steps'
 end
 
 And /^a mocked game object save call 6$/ do
   GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, obj_hash| @object_hash_6 = obj_hash }
-  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named6", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_6 = tag_hash }
-  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias6", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_6a = tag_hash }
+  GameObjects.expects(:add_tag).with('basic_named_object_steps', 'Named6', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_6 = tag_hash }
+  GameObjects.expects(:add_tag).with('basic_named_object_steps', 'Alias6', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_6a = tag_hash }
 end
 
 When /^I save it 6$/ do
@@ -176,10 +176,10 @@ end
 Then /^I should have the correct properties in the hash 6$/ do
   @object_hash_6.should_not be_nil
   @object_hash_6.should include :name
-  @object_hash_6[:name].should eql "Named6"
+  @object_hash_6[:name].should eql 'Named6'
 
   @object_hash_6.should include :alias
-  @object_hash_6[:alias].should eql "Alias6"
+  @object_hash_6[:alias].should eql 'Alias6'
 
   @tag_hash_6.should_not be_nil
   @tag_hash_6.should include 'object_id'
@@ -197,18 +197,18 @@ end
 Given /^a named object instance 7$/ do
   @named_obj_7 = BasicNamedObject.new
   @named_obj_7.should_not be_nil
-  @named_obj_7.name = "Named7"
-  @named_obj_7.alias = "Alias7"
-  @named_obj_7.object_tag = "basic_named_object_steps"
+  @named_obj_7.name = 'Named7'
+  @named_obj_7.alias = 'Alias7'
+  @named_obj_7.object_tag = 'basic_named_object_steps'
 end
 
 And /^a mocked game object save call 7$/ do
   GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, obj_hash| @object_hash_7 = obj_hash }
-  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Named7", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7 = tag_hash }
-  GameObjects.expects(:add_tag).with("basic_named_object_steps", "Alias7", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7a = tag_hash }
-  GameObjects.expects(:add_tag).with("recycled", "Named7", is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7b = tag_hash }
-  GameObjects.expects(:remove_tag).with("basic_named_object_steps", "Named7")
-  GameObjects.expects(:remove_tag).with("basic_named_object_steps", "Alias7")
+  GameObjects.expects(:add_tag).with('basic_named_object_steps', 'Named7', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7 = tag_hash }
+  GameObjects.expects(:add_tag).with('basic_named_object_steps', 'Alias7', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7a = tag_hash }
+  GameObjects.expects(:add_tag).with('recycled', 'Named7', is_a(Hash)) { |obj_tag, obj_name, tag_hash| @tag_hash_7b = tag_hash }
+  GameObjects.expects(:remove_tag).with('basic_named_object_steps', 'Named7')
+  GameObjects.expects(:remove_tag).with('basic_named_object_steps', 'Alias7')
 end
 
 When /^I save it 7$/ do
@@ -226,10 +226,10 @@ end
 Then /^I should have the correct properties in the hash 7$/ do
   @object_hash_7.should_not be_nil
   @object_hash_7.should include :name
-  @object_hash_7[:name].should eql "Named7"
+  @object_hash_7[:name].should eql 'Named7'
 
   @object_hash_7.should include :alias
-  @object_hash_7[:alias].should eql "Alias7"
+  @object_hash_7[:alias].should eql 'Alias7'
 
   @tag_hash_7.should_not be_nil
   @tag_hash_7.should include 'object_id'

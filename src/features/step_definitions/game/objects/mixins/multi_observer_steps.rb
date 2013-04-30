@@ -20,9 +20,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
+require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/mixins/multi_observer'
 
 class BasicObservable
@@ -74,10 +74,10 @@ When /^I add a new observer with arguments$/ do
 end
 
 Then /^the event should have been fired with arguments$/ do
-  @data_from_args.should == "some data"
+  @data_from_args.should == 'some data'
 end
 
 When /^I fire the event with arguments$/ do
   @new_observer.changed :my_event
-  @new_observer.notify :my_event, "some data"
+  @new_observer.notify :my_event, 'some data'
 end

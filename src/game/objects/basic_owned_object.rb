@@ -69,9 +69,9 @@ class BasicOwnedObject < BasicGameObject
     if mode == 0
       @player.send_to_client "illegal mode.\n"
     elsif mode > FULL_RIGHTS
-      @player.send_to_client "mode #{"%o" % mode} is illegal.\n"
+      @player.send_to_client "mode #{'%o' % mode} is illegal.\n"
     else
-      @player.send_to_client "setting mode for #@game_object_id to #{"%o" % mode}\n"
+      @player.send_to_client "setting mode for #{@game_object_id} to #{'%o' % mode}\n"
       @mode = mode
     end
   end
@@ -82,14 +82,14 @@ class BasicOwnedObject < BasicGameObject
 
   def getmode
     if check_mode(:read, @caller) then
-      @player.send_to_client "mode for #@game_object_id: #{"%o" % @mode}\n"
+      @player.send_to_client "mode for #{@game_object_id}: #{'%o' % @mode}\n"
     else
-      @player.send_to_client "You don't have read access to #@game_object_id\n"
+      @player.send_to_client "You don't have read access to #{@game_object_id}\n"
     end
   end
 
   def clearmode
-    @player.send_to_client "clearing mode for #@game_object_id\n"
+    @player.send_to_client "clearing mode for #{@game_object_id}\n"
     @mode = 0
   end
 

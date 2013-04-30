@@ -21,46 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
+require 'game/objects/maps/rooms/basic_room'
 
-class DisplayOptionsState
-  include Singleton
-  include Colorizer
-
-  def enter(entity)
-    menu = ''
-    if entity.display_type == 'ANSI'
-      menu << "[blue]1.[white] turn off ANSI color\n"
-    else
-      menu << "[blue]1.[white] turn on ANSI color\n"
-    end
-    menu << '[white]choose and perish:'
-    menu = colorize(menu, entity.display_type)
-
-    entity.send_to_client menu
-  end
-
-  def exit(entity)
-  end
-
-  def execute(entity)
-    if entity.last_client_data.empty?
-      entity.change_state MainMenuState
-    else
-      case entity.last_client_data
-        when '1'
-          if entity.display_type == 'ANSI'
-            entity.display_type = 'NONE'
-          else
-            entity.display_type = 'ANSI'
-          end
-          entity.save
-          entity.change_state MainMenuState
-        else
-          entity.send_to_client "Invalid choice.\n"
-          entity.change_state DisplayOptionsState
-      end
-    end
-  end
+class BasicContinuousRoom < BasicRoom
 end

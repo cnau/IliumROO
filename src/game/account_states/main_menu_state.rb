@@ -37,14 +37,14 @@ class MainMenuState
 
   def enter(entity)
     # build main menu string
-    main_menu = ""
+    main_menu = ''
     main_menu << "[blue]1.[white] enter world\n"
     main_menu << "[blue]2.[white] add character\n"
     main_menu << "[blue]3.[white] delete character\n"
     main_menu << "[blue]4.[white] set display options\n"
     main_menu << "[blue]5.[white] quit\n"
     main_menu << "[blue]6.[white] list accounts\n" if entity.account_type.to_sym == :admin
-    main_menu << "[white]choose and perish:"
+    main_menu << '[white]choose and perish:'
     main_menu = colorize(main_menu, entity.display_type)
 
     entity.send_to_client main_menu

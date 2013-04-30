@@ -19,31 +19,18 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Feature: test basic game object
-  As a game I need game objects
-  So let's test our basic game object
+Feature: test basic continuous game map
+  As a game I need a continuous map
+  So let's test our basic continuous game map
 
-  Scenario: test a basic game object's class functions
-    Given a BasicGameObject class
-    When I request properties
-    Then I should get appropriate values
+  Scenario: test a basic continuous map's save function
+    Given a BasicContinuousMap object
+    When I save the continuous map
+    Then I should get a correctly saved continuous map
 
-  Scenario: test a basic game object's properties
-    Given a new BasicGameObject instance
-    When I check game object id
-    Then I should get a valid game object id
-    And I should be able to see that id in the object's to_h function
-
-  Scenario: test a game object's state machine mixin
-    Given an instance of BasicGameObject 3
-    When I mock a couple of state classes
-    And I change the state of BasicGameObject
-    Then I expect the state changes to take place
-    When I revert the state
-    Then I expect the state to be reverted
-
-  Scenario: test a game object's global state
-    Given an instance of BasicGameObject 4
-    When I mock a global state
-    And I assign the global state to the game object
-    Then I expect the state change to take place
+  Scenario: test a basic continuous map's world saving ability
+    Given a BasicContinuousMap object
+    And the map has objects in the world
+    When I save the continuous map
+    Then I should get a correctly saved continuous map
+    And the saved map should contain a list of entities

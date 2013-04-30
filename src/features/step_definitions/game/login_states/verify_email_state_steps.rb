@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/login_states/verify_email_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/login_states/verify_email_state'
 
 Given /^an instance of VerifyEmailState$/ do
   @verify_email_state = VerifyEmailState.instance
@@ -32,13 +32,13 @@ end
 
 When /^I call the enter method of VerifyEmailState$/ do
   entity = mock
-  entity.expects(:email_address).returns("test_1@test.com")
+  entity.expects(:email_address).returns('test_1@test.com')
   entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_1 = msg}
   @verify_email_state.enter entity
 end
 
 Then /^I should get appropriate output from VerifyEmailState 1$/ do
-  @client_msg_1.should eql "test_1@test.com, did I get that right?"
+  @client_msg_1.should eql 'test_1@test.com, did I get that right?'
 end
 
 When /^I call the execute method of VerifyEmailState with "([^"]*)"$/ do |verify_answer|

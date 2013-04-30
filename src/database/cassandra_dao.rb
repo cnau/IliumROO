@@ -41,9 +41,9 @@ class CassandraDao
       server = GameConfig.instance['cassandra']['server']
       port = GameConfig.instance['cassandra']['port']
     else
-      keyspace = "IliumROO"
-      server = "localhost"
-      port = "9160"
+      keyspace = 'IliumROO'
+      server = 'localhost'
+      port = '9160'
     end
     log.info { "attaching to cassandra server: #{keyspace}@#{server}:#{port}" }
     @dao = Cassandra.new(keyspace, "#{server}:#{port}")

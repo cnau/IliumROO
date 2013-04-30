@@ -31,14 +31,14 @@ class ListAccountsState
   include Colorizer
 
   def enter(entity)
-    accounts = GameObjects.get_tags "accounts"
+    accounts = GameObjects.get_tags 'accounts'
 
     if accounts.empty?
       entity.change_state MainMenuState
       return
     end
 
-    menu = ""
+    menu = ''
     ctr = 1
     accounts.each do |account_name, account_hash|
       menu << "[blue]#{ctr}.[white] #{account_name}\n"
@@ -46,7 +46,7 @@ class ListAccountsState
     end
 
     menu = colorize(menu, entity.display_type)
-    entity.send_to_client menu << "Choose account (q): "
+    entity.send_to_client menu << 'Choose account (q): '
   end
 
   def exit(entity)
@@ -56,7 +56,7 @@ class ListAccountsState
     if entity.last_client_data.empty?
       entity.change_state MainMenuState
     else
-      accounts = GameObjects.get_tags "accounts"
+      accounts = GameObjects.get_tags 'accounts'
       idx = entity.last_client_data.to_i
       if idx > 0 and idx <= accounts.count
         entity.change_state ViewAccountDetailsState

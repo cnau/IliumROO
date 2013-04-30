@@ -33,7 +33,7 @@ module ClientWrapper
   end
 
   def list_verbs(player)
-    ret = ""
+    ret = ''
     verb_list = self.class.verbs
     verb_list.each do |verb,prepositions|
       ret << ', ' if ret.length > 0

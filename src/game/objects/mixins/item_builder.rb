@@ -30,14 +30,14 @@ module ItemBuilder
     # try to get the class for the new item
     new_item_c = GameObjectLoader.load_object @iobjstr
     if new_item_c.nil?
-      @player.send_to_client "#@iobjstr is not a known Class.\n"
+      @player.send_to_client "#{@iobjstr} is not a known Class.\n"
 
     elsif new_item_c.is_a? Class
-      @player.send_to_client "creating #@dobjstr as #{new_item_c}\n"
+      @player.send_to_client "creating #{@dobjstr} as #{new_item_c}\n"
       new_item_o = new_item_c.new
 
     else
-      @player.send_to_client "#@iobjstr is an Object, not a Class.\n"
+      @player.send_to_client "#{@iobjstr} is an Object, not a Class.\n"
     end
   end
 end

@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## features/support/mocha.rb
 
-require "mocha"
+require 'mocha'
 
 World(Mocha::API)
 

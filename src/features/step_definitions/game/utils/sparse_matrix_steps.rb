@@ -21,9 +21,9 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
+require 'features/step_definitions/spec_helper.rb'
 require 'game/utils/sparse_matrix'
 
 Given /^an instance of SparseMatrix$/ do
@@ -31,25 +31,31 @@ Given /^an instance of SparseMatrix$/ do
 end
 
 When /^I add an object to a particular set of coordinates in a SparseMatrix$/ do
-  @sparse_matrix[0,0,0] = "NEW STRING"
+  @sparse_matrix[0,0,0] = 'NEW STRING'
 end
 
 Then /^that object should be in that location of the SparseMatrix$/ do
   @sparse_matrix[0,0,0].should_not be_nil
-  @sparse_matrix[0,0,0].should eql "NEW STRING"
+  @sparse_matrix[0,0,0].should eql 'NEW STRING'
 end
 
 When /^I add an object to a first location in SparseMatrix$/ do
-  @sparse_matrix[1,2,3] = "NEW STRING 1"
+  @sparse_matrix[1,2,3] = 'NEW STRING 1'
 end
 
 When /^I add another object to a second location in SparseMatrix$/ do
-  @sparse_matrix[3,2,1] = "NEW STRING 2"
+  @sparse_matrix[3,2,1] = 'NEW STRING 2'
 end
 
 Then /^those objects should be in the correct locations of SparseMatrix$/ do
   @sparse_matrix[1,2,3].should_not be_nil
-  @sparse_matrix[1,2,3].should eql "NEW STRING 1"
+  @sparse_matrix[1,2,3].should eql 'NEW STRING 1'
   @sparse_matrix[3,2,1].should_not be_nil
-  @sparse_matrix[3,2,1].should eql "NEW STRING 2"
+  @sparse_matrix[3,2,1].should eql 'NEW STRING 2'
+end
+
+Then /^I should be able to enumerate the list$/ do
+  @sparse_matrix.each {|k,v|
+    @sparse_matrix[*k].should eql v
+  }
 end

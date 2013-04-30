@@ -20,31 +20,42 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
+
 $: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
 require 'features/step_definitions/spec_helper.rb'
-require 'game/objects/basic_owned_object'
+require 'game/objects/maps/basic_continuous_map'
 
-Given /^a mocked player object$/ do
-  @player_klass_1 = mock
-  @player_klass_1.stubs(:verbs).returns({})
-
-  @player_obj_1 = mock
-  @player_obj_1.stubs(:class).returns(@player_klass_1)
+Given /^a BasicContinuousMap object$/ do
+  @map = BasicContinuousMap.new
 end
 
-And /^a mocked arguments hash$/ do
-  args[:caller] = @player_obj_1
-  args[:player] = @player_obj_1
+When /^I save the continuous map$/ do
+  GameObjects.expects(:save).with(@map.game_object_id, is_a(Hash)) {|object_id, obj_hash| @map_hash = obj_hash}
+  @map.save
 end
 
-And /^an instance of BasicOwnedObject$/ do
-  @owned_object_1 = BasicOwnedObject.new
+Then /^I should get a correctly saved continuous map$/ do
+  @map.game_object_id.should_not be_nil
+  @map_hash.should eql @map.to_h
 end
 
-When /^I check the starting mode of the object$/ do
-  @start_mode_1 = @owned_object_1.getmode
+Given /^the map has objects in the world$/ do
+  @map.entities.should_not be_nil
+  @map.entities[0,0,0] = BasicGameObject.new
 end
 
-Then /^I will get the DEFAULT mode$/ do
+Then /^the saved map should contain a list of entities$/ do
+  @map_hash.should include :entities
+  @map_hash[:entities].should_not be_nil
+
+  entities = YAML.load(@map_hash[:entities])
+  p "STEP: #{entities}"
+  entities.should_not be_empty
+  entities.size.should eql 1
+  entity = entities[0]
+  entity.size.should eql 2
+  coords = eval(entity[0])
+  coords.should eql [0,0,0]
+  entity[1].should eql @map.entities[0,0,0].game_object_id
 end

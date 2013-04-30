@@ -70,7 +70,7 @@ class GameObjectLoader
 
   def load_object_by_id(object_id)
     # look for object in cache
-    log.debug {"found #{object_id} in #@cache"} if @cache.has_key? object_id
+    log.debug {"found #{object_id} in #{@cache}"} if @cache.has_key? object_id
     return @cache[object_id] if @cache.has_key? object_id
 
     # load the object from the database
@@ -135,14 +135,14 @@ class GameObjectLoader
     log.debug {"built class #{new_c}"}
     
     # add properties to the class
-    prop_array = ""
+    prop_array = ''
     object_hash[:properties].split(',').map do |prop|
       #TODO:make this next part sandbox safe
       unless new_c.public_instance_methods.include? prop.to_sym
         log.debug {"adding property #{prop} to #{new_c}"}
         new_c.class_eval "def #{prop};@#{prop};end;def #{prop}=(val);@#{prop} = val;end;"
       end
-      prop_array += "," if prop_array.length > 0
+      prop_array += ',' if prop_array.length > 0
       prop_array += ":#{prop}"
       
     end if (object_hash.has_key? :properties)
@@ -188,7 +188,7 @@ class GameObjectLoader
         # check if value is a number
         log.debug {"checking '#{value}' for known cases"}
         if value.empty?
-          log.debug "value is empty"
+          log.debug 'value is empty'
           new_o.instance_variable_set "@#{key}", nil
           
         elsif value.match(/^\d*$/)

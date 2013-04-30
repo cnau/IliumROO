@@ -54,15 +54,15 @@ module Admin
   end
 
   def list_players(player)
-    ret = "player name".ljust(25)
-    ret << "     "
-    ret << "object id".ljust(10)
+    ret = 'player name'.ljust(25)
+    ret << '     '
+    ret << 'object id'.ljust(10)
     ret << "\n"
     player_list = GameObjects.get_tag 'player_names', nil
     player_list.each do |player_name, object_hash|
       ret << player_name.ljust(25)
-      ret << "     "
-      ret << object_hash['object_id'].center(10, " ")
+      ret << '     '
+      ret << object_hash['object_id'].center(10, ' ')
       ret << "\n"
     end
     player.send_to_client ret
@@ -77,15 +77,15 @@ module Admin
       end
     else
       ret = "#{dobjstr}:\n"
-      ret << "item name".ljust(25)
-      ret << "     "
-      ret << "object id".ljust(10)
+      ret << 'item name'.ljust(25)
+      ret << '     '
+      ret << 'object id'.ljust(10)
       ret << "\n"
       items = GameObjects.get_tag 'items', dobjstr
       items.each do |item_name, object_hash|
         ret << item_name.ljust(25)
-        ret << "     "
-        ret << object_hash['object_id'].center(10, " ")
+        ret << '     '
+        ret << object_hash['object_id'].center(10, ' ')
         ret << "\n"
       end
     end

@@ -20,9 +20,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
+require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/mixins/admin'
 
 class AdminTester
@@ -51,14 +51,14 @@ Then /^the list_players command should return the player list$/ do
 
   @admin_object.list_players player_mock
 
-  ret = "player name".ljust(25)
-  ret << "     "
-  ret << "object id".ljust(10)
+  ret = 'player name'.ljust(25)
+  ret << '     '
+  ret << 'object id'.ljust(10)
   ret << "\n"
   @list_player_hash.each do |player_name, object_hash|
     ret << player_name.ljust(25)
-    ret << "     "
-    ret << object_hash['object_id'].center(10, " ")
+    ret << '     '
+    ret << object_hash['object_id'].center(10, ' ')
     ret << "\n"
   end
 
@@ -92,14 +92,14 @@ end
 
 Then /^the list_items command should return the item list with the correct item type$/ do
   ret = "TestType:\n"
-  ret << "item name".ljust(25)
-  ret << "     "
-  ret << "object id".ljust(10)
+  ret << 'item name'.ljust(25)
+  ret << '     '
+  ret << 'object id'.ljust(10)
   ret << "\n"
   @list_item_hash.each do |item_name, object_hash|
     ret << item_name.ljust(25)
-    ret << "     "
-    ret << object_hash['object_id'].center(10, " ")
+    ret << '     '
+    ret << object_hash['object_id'].center(10, ' ')
     ret << "\n"
   end
 
@@ -113,7 +113,7 @@ Then /^the list_items command should return the item list with the correct item 
 end
 
 When /^I mock an object hash$/ do
-  @object_hash = {:alias => "", :game_object_id => "test_id", :name => "Test", :object_tag => "test_tag", :parent => "test_parent_id"}
+  @object_hash = {:alias => '', :game_object_id => 'test_id', :name => 'Test', :object_tag => 'test_tag', :parent => 'test_parent_id'}
   @admin_object.game_object_id = 'test_id'
   GameObjects.expects(:get).with('test_id').returns(@object_hash)
 end
@@ -143,7 +143,7 @@ Then /^the inspect command with dobjstr "([^"]*)" should send to player "([^"]*)
 end
 
 When /^I mock an object hash with a object instance$/ do
-  @object_hash = {:alias => "", :game_object_id => "test_id", :name => "Test", :object_tag => "test_tag", :parent => "test_parent_id"}
+  @object_hash = {:alias => '', :game_object_id => 'test_id', :name => 'Test', :object_tag => 'test_tag', :parent => 'test_parent_id'}
   GameObjects.expects(:get).with('test_id').returns(@object_hash)
 end
 

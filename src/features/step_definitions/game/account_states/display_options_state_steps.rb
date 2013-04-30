@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/display_options_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/display_options_state'
 
 Given /^an instance of DisplayOptionsState$/ do
   @display_options_state = DisplayOptionsState.instance
@@ -34,13 +34,13 @@ When /^I have a display type of "([^"]*)" for the enter method$/ do |display_typ
   @entity = mock
   @entity.expects(:display_type).twice.returns(display_type)
   @entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg = msg}
-  @expected_menu = ""
+  @expected_menu = ''
   if display_type == 'ANSI'
     @expected_menu << "[blue]1.[white] turn off ANSI color\n"
   else
     @expected_menu << "[blue]1.[white] turn on ANSI color\n"
   end
-  @expected_menu << "[white]choose and perish:"
+  @expected_menu << '[white]choose and perish:'
   @expected_menu = Colorizer::colorize(@expected_menu, display_type)
 end
 

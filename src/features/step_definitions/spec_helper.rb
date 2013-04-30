@@ -13,8 +13,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Ilium MUD.  If not, see <http://www.gnu.org/licenses/>.
 
-require "rspec"
-require "mocha"
+require 'rspec'
+require 'mocha'
 
 RSpec.configure do |config|
   config.mock_with :mocha

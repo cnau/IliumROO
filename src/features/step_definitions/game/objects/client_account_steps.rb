@@ -20,7 +20,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
 require 'features/step_definitions/spec_helper.rb'
 
@@ -35,7 +35,7 @@ end
 
 Then /^I have correct properties in the object$/ do
   #attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type
-  client_account_hash = @client_account_1.to_hash
+  client_account_hash = @client_account_1.to_h
   @client_account_1.class.properties.should include :email
   @client_account_1.class.properties.should include :password
   @client_account_1.class.properties.should include :last_login_date
@@ -45,8 +45,8 @@ Then /^I have correct properties in the object$/ do
   @client_account_1.class.properties.should include :account_type
 
   @client_account_1.game_object_id.should_not be_nil
-  @client_account_1.display_type.should eql "ANSI"
-  @client_account_1.account_type.should eql "normal"
+  @client_account_1.display_type.should eql 'ANSI'
+  @client_account_1.account_type.should eql 'normal'
 end
 
 Given /^a new client account object 2$/ do
@@ -123,25 +123,25 @@ Then /^I should get appropriate values in the client account hash 3$/ do
   client_hash[:characters].should eql new_char_hash[:game_object_id]
 
   new_class_hash.should include :super
-  new_class_hash[:super].should eql "BasicNamedObject"
+  new_class_hash[:super].should eql 'BasicNamedObject'
 end
 
 Given /^a new client account object 4$/ do
   @client_account_4 = ClientAccount.new
   @client_account_4.should_not be_nil
-  @client_account_4.characters = "NEW_CHAR_1"
-  @client_account_4.email = "test4@test.com"
+  @client_account_4.characters = 'NEW_CHAR_1'
+  @client_account_4.email = 'test4@test.com'
 end
 
 Given /^a mocked client account remove_character database call$/ do
-  SystemLogging.expects(:add_log_entry).with("deleted character Test", is_a(String), is_a(String))
-  GameObjects.expects(:get).with("NEW_CHAR_1").returns({:name => "Test"})
+  SystemLogging.expects(:add_log_entry).with('deleted character Test', is_a(String), is_a(String))
+  GameObjects.expects(:get).with('NEW_CHAR_1').returns({:name => 'Test'})
   GameObjects.expects(:save).with(is_a(String), is_a(Hash)) { |object_id, object_hash| @save_hash_4 = object_hash }
   GameObjects.expects(:add_tag).with('accounts', 'test4@test.com', is_a(Hash)) { |tag_name, email, tag_hash| @tag_hash_3 = tag_hash }
 end
 
 When /^I remove a character id$/ do
-  @client_account_4.remove_character "NEW_CHAR_1"
+  @client_account_4.remove_character 'NEW_CHAR_1'
 end
 
 Then /^I should have an empty characters hash entry$/ do
@@ -208,7 +208,7 @@ Given /^a mocked client account set_last_login call$/ do
 end
 
 When /^I call set_last_login$/ do
-  @client_account_8.set_last_login "255.255.255.255"
+  @client_account_8.set_last_login '255.255.255.255'
 end
 
 Given /^a mocked client account get_account_id call$/ do
@@ -245,7 +245,7 @@ Then /^I should get correct hashes from create_new_account$/ do
 end
 
 Given /^a mocked get_account database call$/ do
-  GameObjects.expects(:get).with('test-object-id-10').returns({:email => "test10@test.com", :password => "pass", :last_login_date => "", :last_login_ip => "", :display_type => "ANSI", :characters => "", :account_type => "normal", :parent => "ClientAccount", :game_object_id => "test-object-id-10"})
+  GameObjects.expects(:get).with('test-object-id-10').returns({:email => 'test10@test.com', :password => 'pass', :last_login_date => '', :last_login_ip => '', :display_type => 'ANSI', :characters => '', :account_type => 'normal', :parent => 'ClientAccount', :game_object_id => 'test-object-id-10'})
 end
 
 When /^I call get_account$/ do
@@ -262,7 +262,7 @@ Then /^I should get correct hashes from get_account$/ do
 end
 
 Given /^a mocked account_count database call$/ do
-  GameObjects.expects(:get_tags).with('accounts').returns({"test11@test.com" => {"object_id" => "test-object-id-11"}})
+  GameObjects.expects(:get_tags).with('accounts').returns({'test11@test.com' => {'object_id' => 'test-object-id-11'}})
 end
 
 When /^I call account_count$/ do
@@ -277,7 +277,7 @@ Given /^a new client account object 9$/ do
   @client_account_9 = ClientAccount.new
   @client_account_9.should_not be_nil
   @client_account_9.class.superclass.should eql BasicPersistentGameObject
-  @client_account_9.account_type = "admin"
+  @client_account_9.account_type = 'admin'
 end
 
 Then /^I should have the correct mixins for the new character class$/ do

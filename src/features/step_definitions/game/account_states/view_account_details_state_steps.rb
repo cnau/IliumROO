@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/account_states/view_account_details_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/account_states/view_account_details_state'
 
 Given /^an instance of ViewAccountDetailsState$/ do
   @view_account_details_state = ViewAccountDetailsState.instance
@@ -53,8 +53,8 @@ end
 Given /^an account list with names of "([^"]*)" and object ids of "([^"]*)" for ViewAccountDetailsState$/ do |names, ids|
   @account_list_hash = {}
   unless names.empty?
-    names_ar = names.split(",")
-    ids_ar = ids.split(",")
+    names_ar = names.split(',')
+    ids_ar = ids.split(',')
     (0..(names_ar.length - 1)).each do |ctr|
       hash = ids_ar[ctr]
       name = names_ar[ctr]
@@ -64,7 +64,7 @@ Given /^an account list with names of "([^"]*)" and object ids of "([^"]*)" for 
 end
 
 Given /^a mocked GameObjects returning the account list for ViewAccountDetailsState$/ do
-  GameObjects.expects(:get_tags).with("accounts").returns(@account_list_hash)
+  GameObjects.expects(:get_tags).with('accounts').returns(@account_list_hash)
 end
 
 Given /^an entity with last_client_data of "([^"]*)" for ViewAccountDetailsState$/ do |last_client_data|
@@ -77,18 +77,18 @@ end
 
 Given /^a mocked client account get_account call with account id of "([^"]*)" for ViewAccountDetailsState$/ do |account_id|
   @client_account = mock
-  @client_account.stubs(:email).returns("test@test.com")
+  @client_account.stubs(:email).returns('test@test.com')
   @client_account.stubs(:last_login_date).returns(DateTime.now.strftime)
-  @client_account.stubs(:last_login_ip).returns("127.0.0.1")
-  @client_account.stubs(:display_type).returns("NONE")
-  @client_account.stubs(:account_type).returns("NORMAL")
+  @client_account.stubs(:last_login_ip).returns('127.0.0.1')
+  @client_account.stubs(:display_type).returns('NONE')
+  @client_account.stubs(:account_type).returns('NORMAL')
 
   @expected_menu = "Account name: #{@client_account.email}\n"
   @expected_menu << "Last login date: #{@client_account.last_login_date}\n"
   @expected_menu << "Last login IP: #{@client_account.last_login_ip}\n"
   @expected_menu << "Display type: #{@client_account.display_type}\n"
   @expected_menu << "Account type: #{@client_account.account_type}\n"
-  @expected_menu << "Press enter when done:"
+  @expected_menu << 'Press enter when done:'
 
   ClientAccount.expects(:get_account).with(account_id).returns(@client_account)
 end

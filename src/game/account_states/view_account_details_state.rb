@@ -30,7 +30,7 @@ class ViewAccountDetailsState
   include Colorizer
 
   def enter(entity)
-    accounts = GameObjects.get_tags "accounts"
+    accounts = GameObjects.get_tags 'accounts'
 
     if accounts.empty?
       entity.change_state MainMenuState
@@ -52,7 +52,7 @@ class ViewAccountDetailsState
         menu << "Last login IP: #{account.last_login_ip}\n"
         menu << "Display type: #{account.display_type}\n"
         menu << "Account type: #{account.account_type}\n"
-        menu << "Press enter when done:"
+        menu << 'Press enter when done:'
         menu = colorize(menu, entity.display_type)
         entity.send_to_client menu
         return

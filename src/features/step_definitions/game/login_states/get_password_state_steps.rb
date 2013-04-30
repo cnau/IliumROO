@@ -20,10 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game/login_states/get_password_state"
+require 'features/step_definitions/spec_helper.rb'
+require 'game/login_states/get_password_state'
 
 Given /^an instance of GetPasswordState$/ do
   @get_password_state = GetPasswordState.instance
@@ -37,24 +37,24 @@ When /^I call the enter method of GetPasswordState$/ do
 end
 
 Then /^I should get appropriate output from GetPasswordState 1$/ do
-  @client_msg_1.should eql "Password:"
+  @client_msg_1.should eql 'Password:'
 end
 
 When /^I call the execute method of GetPasswordState with an invalid password$/ do
-  account_hash = {:email            => "test@test.com",
-                  :password         => "password",
-                  :last_login_date  => "",
-                  :last_login_ip    => "",
-                  :display_type     => "ANSI",
-                  :characters       => "",
-                  :account_type     => "normal",
-                  :parent           => "ClientAccount",
-                  :game_object_id   => "test-client-account-2"}
+  account_hash = {:email            => 'test@test.com',
+                  :password         => 'password',
+                  :last_login_date  => '',
+                  :last_login_ip    => '',
+                  :display_type     => 'ANSI',
+                  :characters       => '',
+                  :account_type     => 'normal',
+                  :parent           => 'ClientAccount',
+                  :game_object_id   => 'test-client-account-2'}
   GameObjects.expects(:get).with('test-client-account-2').returns(account_hash)
   @ctr = 0
   new_entity = mock
-  new_entity.stubs(:account).returns("test-client-account-2")
-  new_entity.stubs(:last_client_data).returns("password")
+  new_entity.stubs(:account).returns('test-client-account-2')
+  new_entity.stubs(:last_client_data).returns('password')
   new_entity.stubs(:ctr).returns(@ctr)
   new_entity.stubs(:ctr=).with(is_a(Integer)) {|ctr| @ctr = ctr}
   new_entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_2 = msg}
@@ -80,7 +80,7 @@ When /^I call the execute method of GetPasswordState with a valid password$/ do
   # setup mock game object to prevent database hit
   GameObjects.expects(:get).with('test-client-account-3').returns(account_hash)
   GameObjects.expects(:save).with('test-client-account-3', is_a(Hash)) {|id, client_hash| @client_hash_3 = client_hash}
-  SystemLogging.expects(:add_log_entry).with("logged in account", 'test-client-account-3')
+  SystemLogging.expects(:add_log_entry).with('logged in account', 'test-client-account-3')
   GameObjects.expects(:add_tag).with('accounts', 'test@test.com', {'object_id' => 'test-client-account-3'})
 
   new_entity = mock
@@ -102,7 +102,7 @@ When /^I call the execute method of GetPasswordState with a valid password$/ do
 end
 
 Then /^I should get appropriate output from GetPasswordState 3$/ do
-  @client_msg_3.should eql "Last login from 127.0.0.2 on #@last_login_date\n"
+  @client_msg_3.should eql "Last login from 127.0.0.2 on #{@last_login_date}\n"
 end
 
 Then /^I should get an appropriate client hash for GetPasswordState 3$/ do
@@ -118,20 +118,20 @@ Then /^I should get an appropriate client hash for GetPasswordState 3$/ do
 end
 
 When /^I call the execute method of GetPasswordState with an invalid password thrice$/ do
-  account_hash = {:email            => "test@test.com",
-                  :password         => "password",
-                  :last_login_date  => "",
-                  :last_login_ip    => "",
-                  :display_type     => "ANSI",
-                  :characters       => "",
-                  :account_type     => "normal",
-                  :parent           => "ClientAccount",
-                  :game_object_id   => "test-client-account-4"}
+  account_hash = {:email            => 'test@test.com',
+                  :password         => 'password',
+                  :last_login_date  => '',
+                  :last_login_ip    => '',
+                  :display_type     => 'ANSI',
+                  :characters       => '',
+                  :account_type     => 'normal',
+                  :parent           => 'ClientAccount',
+                  :game_object_id   => 'test-client-account-4'}
   GameObjects.expects(:get).with('test-client-account-4').returns(account_hash)
   @ctr = 3
   new_entity = mock
-  new_entity.stubs(:account).returns("test-client-account-4")
-  new_entity.stubs(:last_client_data).returns("password")
+  new_entity.stubs(:account).returns('test-client-account-4')
+  new_entity.stubs(:last_client_data).returns('password')
   new_entity.stubs(:ctr).returns(@ctr)
   new_entity.stubs(:ctr=).with(is_a(Integer)) {|ctr| @ctr = ctr}
   new_entity.expects(:change_state).with(LogoutState)

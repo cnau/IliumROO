@@ -21,46 +21,25 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-class DisplayOptionsState
-  include Singleton
-  include Colorizer
+require 'features/step_definitions/spec_helper.rb'
+require 'game/objects/maps/basic_game_map'
 
-  def enter(entity)
-    menu = ''
-    if entity.display_type == 'ANSI'
-      menu << "[blue]1.[white] turn off ANSI color\n"
-    else
-      menu << "[blue]1.[white] turn on ANSI color\n"
-    end
-    menu << '[white]choose and perish:'
-    menu = colorize(menu, entity.display_type)
+Given /^a BasicGameMap object$/ do
+  @new_map = BasicGameMap.new
+  @new_map.name = 'test_map'
+end
 
-    entity.send_to_client menu
-  end
+When /^I save the map$/ do
+  GameObjects.expects(:save).with(@new_map.game_object_id, is_a(Hash)) {|object_id, obj_hash| @map_hash = obj_hash}
+  GameObjects.expects(:add_tag).with('maps', 'test_map', is_a(Hash)) {|obj_tag, obj_name, tag_hash| @tag_hash = tag_hash}
+  @new_map.save
+end
 
-  def exit(entity)
-  end
-
-  def execute(entity)
-    if entity.last_client_data.empty?
-      entity.change_state MainMenuState
-    else
-      case entity.last_client_data
-        when '1'
-          if entity.display_type == 'ANSI'
-            entity.display_type = 'NONE'
-          else
-            entity.display_type = 'ANSI'
-          end
-          entity.save
-          entity.change_state MainMenuState
-        else
-          entity.send_to_client "Invalid choice.\n"
-          entity.change_state DisplayOptionsState
-      end
-    end
-  end
+Then /^I should get a correctly saved map$/ do
+  @map_hash.should eql @new_map.to_h
+  @tag_hash.should_not be_nil
+  @tag_hash.should include 'object_id'
+  @tag_hash['object_id'].should eql @new_map.game_object_id
 end

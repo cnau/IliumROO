@@ -36,7 +36,7 @@ class ClientConnection < EventMachine::Connection
   def post_init
     log.level = Logger::DEBUG
     @client_port, @client_ip = Socket.unpack_sockaddr_in(get_peername)
-    log.debug "accepted client connection from #@client_ip"
+    log.debug "accepted client connection from #{@client_ip}"
 
     # register this client connection
     ClientMaster.register_client self
@@ -51,7 +51,7 @@ class ClientConnection < EventMachine::Connection
   end
 
   def send_license_blurb
-    f = File.open('../license_blurb.txt', "r") 
+    f = File.open('../license_blurb.txt', 'r')
     f.each_line do |line|
       send_data line
     end

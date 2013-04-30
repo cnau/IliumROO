@@ -36,9 +36,9 @@ class EnterWorldState
       return
     end
 
-    enter_menu = ""
+    enter_menu = ''
     ctr = 1
-    c_list = entity.characters.split(",")
+    c_list = entity.characters.split(',')
     c_list.each do |character_id|
       character_name = entity.get_player_name(character_id)
       enter_menu << "[blue]#{ctr}.[white] #{character_name}\n"
@@ -46,7 +46,7 @@ class EnterWorldState
     end
 
     enter_menu = colorize(enter_menu, entity.display_type)
-    entity.send_to_client enter_menu << "Choose a character to play: "
+    entity.send_to_client enter_menu << 'Choose a character to play: '
   end
 
   def exit(entity)
@@ -57,7 +57,7 @@ class EnterWorldState
       entity.change_state MainMenuState
     else
       c_idx = entity.last_client_data.to_i
-      c_list = entity.characters.split(",")
+      c_list = entity.characters.split(',')
       if (c_idx >= 1) and (c_idx <= c_list.length)
         # attach client to a player character game object
         p_char = GameObjectLoader.load_object c_list[c_idx - 1]

@@ -41,7 +41,7 @@ module StateMachine
   end
 
   def change_state(new_state)
-    raise Exception.new "Attempting to set a nil state" if new_state.nil?
+    raise Exception.new 'Attempting to set a nil state' if new_state.nil?
 
     @previous_state = @current_state
     @current_state.exit(self) unless @current_state.nil?

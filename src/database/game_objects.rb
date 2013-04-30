@@ -35,7 +35,7 @@ class GameObjects
   # [object_id] id of the object to retrieve
   def get(object_id)
     log.debug {"getting object #{object_id}"}
-    obj = CassandraDao.get(:objects, object_id).to_hash
+    obj = CassandraDao.get(:objects, object_id).to_h
     
     # convert hash to symbolic keys
     ret = obj.rekey {|k| k.to_sym}

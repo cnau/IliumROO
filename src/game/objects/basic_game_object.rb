@@ -57,7 +57,7 @@ class BasicGameObject
     @properties ||= []
     if @properties.empty?
       self.ancestors.each do |ancestor|
-        @properties += ancestor::PROPERTIES if ancestor.const_defined? "PROPERTIES"
+        @properties += ancestor::PROPERTIES if ancestor.const_defined? 'PROPERTIES'
       end
     end
     @properties
@@ -67,17 +67,17 @@ class BasicGameObject
     @verbs ||= {}
     if @verbs.empty?
       self.ancestors.each do |ancestor|
-        @verbs.merge! ancestor::VERBS if ancestor.const_defined? "VERBS"
+        @verbs.merge! ancestor::VERBS if ancestor.const_defined? 'VERBS'
       end
     end
     @verbs
   end
 
   def on_load
-    log.debug "loaded game object #@game_object_id"
+    log.debug "loaded game object #{@game_object_id}"
   end
 
-  def to_hash
+  def to_h
     @game_object_id ||= BasicGameObject.generate_game_object_id
     ret = {}
     self.class.properties.each do |prop|

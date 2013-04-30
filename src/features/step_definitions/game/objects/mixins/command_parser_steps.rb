@@ -20,16 +20,16 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
+require 'features/step_definitions/spec_helper.rb'
 
 Given /^a mocked player object for test one$/ do
   player_klass = mock
   player_klass.stubs(:verbs).returns({})
 
   @player_obj_1 = mock
-  @player_obj_1.stubs(:last_client_data).returns("")
+  @player_obj_1.stubs(:last_client_data).returns('')
   @player_obj_1.stubs(:class).returns(player_klass)
   @player_obj_1.expects(:send_to_client).with("huh?\n")
 end
@@ -47,7 +47,7 @@ Given /^a mocked player object for test two$/ do
   player_klass.stubs(:verbs).returns({})
   
   @player_obj_2 = mock
-  @player_obj_2.stubs(:last_client_data).returns("command")
+  @player_obj_2.stubs(:last_client_data).returns('command')
   @player_obj_2.stubs(:class).returns(player_klass)
   @player_obj_2.expects(:send_to_client).with("huh?\n")
 end
@@ -64,7 +64,7 @@ Given /^a mocked player object for test three$/ do
   player_klass.stubs(:instance_method).with(:command).returns command_mock
 
   @player_obj_3 = mock
-  @player_obj_3.stubs(:last_client_data).returns("command")
+  @player_obj_3.stubs(:last_client_data).returns('command')
   @player_obj_3.stubs(:class).returns(player_klass)
   @player_obj_3.expects(:command)
 end
@@ -85,7 +85,7 @@ Given /^a mocked player object for test four$/ do
   player_klass.stubs(:instance_method).with(:command).returns command_mock
 
   @player_obj_4 = mock
-  @player_obj_4.stubs(:last_client_data).returns("command foo")
+  @player_obj_4.stubs(:last_client_data).returns('command foo')
   @player_obj_4.stubs(:class).returns(player_klass)
 end
 
@@ -119,7 +119,7 @@ When /^I parse a command with common word replacements$/ do
 end
 
 Given /^a player object with last_data with a quote$/ do
-  @player_obj_5.expects(:say).with("hello there!")
+  @player_obj_5.expects(:say).with('hello there!')
   @player_obj_5.stubs(:last_client_data).returns('" hello there!')
 end
 
@@ -128,8 +128,8 @@ Then /^I should get a correct hash substitution with verb "([^"]*)"$/ do |verb|
 end
 
 Given /^a player object with last_data with a colon$/ do
-  @player_obj_5.expects(:emote).with("something")
-  @player_obj_5.stubs(:last_client_data).returns(": something")
+  @player_obj_5.expects(:emote).with('something')
+  @player_obj_5.stubs(:last_client_data).returns(': something')
 end
 
 Given /^a mocked player object for test six$/ do
@@ -167,7 +167,7 @@ Given /^a mocked player object for test seven$/ do
   @player_obj_7 = mock
   @player_obj_7.stubs(:class).returns(player_klass)
   @player_obj_7.expects(:send_to_client).with("huh?\n").twice
-  @player_obj_7.expects(:put).once.with("sock")
+  @player_obj_7.expects(:put).once.with('sock')
 end
 
 Given /^a player object with last_data "([^"]*)" for test seven$/ do |last_data|
@@ -204,7 +204,7 @@ Given /^a mocked player object for test eight$/ do
 
   @player_obj_8 = mock
   @player_obj_8.stubs(:class).returns(player_klass)
-  @player_obj_8.expects(:put_in).once.with("bag")
+  @player_obj_8.expects(:put_in).once.with('bag')
 end
 
 Given /^a player object with last_data "([^"]*)" for test eight$/ do |last_data|
@@ -228,7 +228,7 @@ Given /^a mocked player object for test nine$/ do
 
   @player_obj_9 = mock
   @player_obj_9.stubs(:class).returns(player_klass)
-  @player_obj_9.expects(:put_in).once.with("sword")
+  @player_obj_9.expects(:put_in).once.with('sword')
 end
 
 Given /^a player object with last_data "([^"]*)" for test nine$/ do |last_data|

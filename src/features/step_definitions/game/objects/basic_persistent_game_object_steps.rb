@@ -20,11 +20,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + "/../../")
+$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require "features/step_definitions/spec_helper.rb"
-require "game_objects/game_object_loader"
-require "game/objects/basic_persistent_game_object"
+require 'features/step_definitions/spec_helper.rb'
+require 'game_objects/game_object_loader'
+require 'game/objects/basic_persistent_game_object'
 
 Given /^a persistent game object instance$/ do
   @persistent_obj_0 = BasicPersistentGameObject.new
@@ -32,7 +32,7 @@ Given /^a persistent game object instance$/ do
 end
 
 Then /^parent should be BasicPersistentGameObject$/ do
-  @persistent_obj_0.parent.should eql "BasicPersistentGameObject"
+  @persistent_obj_0.parent.should eql 'BasicPersistentGameObject'
 end
 
 Given /^a mocked persistent class$/ do
@@ -74,24 +74,24 @@ end
 
 Then /^I get the correct persistent object$/ do
   @persistent_obj_1.should be_a_kind_of BasicPersistentGameObject
-  @persistent_obj_1.parent.should eql "persistent_class_1"
+  @persistent_obj_1.parent.should eql 'persistent_class_1'
   
-  obj_hash = @persistent_obj_1.to_hash
+  obj_hash = @persistent_obj_1.to_h
 
   obj_hash.should have_key :game_object_id
-  obj_hash[:game_object_id].should eql "persistent_object_1"
+  obj_hash[:game_object_id].should eql 'persistent_object_1'
 
   obj_hash.should have_key :foo
-  obj_hash[:foo].should eql "1"
+  obj_hash[:foo].should eql '1'
 
   obj_hash.should have_key :bar
-  obj_hash[:bar].should eql "2"
+  obj_hash[:bar].should eql '2'
 
   obj_hash.should have_key :foo_text
-  obj_hash[:foo_text].should eql "some text"
+  obj_hash[:foo_text].should eql 'some text'
 
   obj_hash.should have_key :parent
-  obj_hash[:parent].should eql "persistent_class_1"
+  obj_hash[:parent].should eql 'persistent_class_1'
 end
 
 Given /^a mocked persistent object to save$/ do
