@@ -25,6 +25,7 @@ $: << File.expand_path(File.dirname(__FILE__) + '/../../')
 require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/basic_game_object'
 require 'game/objects/mixins/container'
+require 'game/objects/mixins/contained'
 
 class ContainerTester < BasicGameObject
   include Container
@@ -32,6 +33,10 @@ class ContainerTester < BasicGameObject
   def contents
     @contents
   end
+end
+
+class ContainedTester < BasicGameObject
+  include Contained
 end
 
 Given /^a new basic game object with container mixin$/ do
@@ -86,6 +91,7 @@ end
 
 When /^I remove an object from the container "([^"]*)"$/ do |container|
   GameObjects.expects(:remove_tag).once.with("#{@container_tester.game_object_id}_#{container.to_s}", @test_object.game_object_id)
+  GameObjects.expects(:remove_tag).once.with('contained', @test_object.game_object_id) {|tag_name, obj_id| tag_name == 'contained' and obj_id == @test_object.game_object_id}
   @container_tester.remove_from_container @test_object, container
 end
 
@@ -163,6 +169,23 @@ When /^I add several persistent objects to the container "([^"]*)" via game obje
 end
 
 When /^I remove an object from the container "([^"]*)" with only the game object id$/ do |container|
-  GameObjects.expects(:remove_tag).once.with("#{@container_tester.game_object_id}_#{container.to_s}", @test_object.game_object_id)
+  GameObjects.expects(:remove_tag).once.with("#{@container_tester.game_object_id}_#{container.to_s}", @test_object.game_object_id) {|tag_name, obj_id| tag_name == "#{@container_tester.game_object_id}_#{container.to_s}" and obj_id == @test_object.game_object_id}
+  GameObjects.expects(:remove_tag).once.with('contained', @test_object.game_object_id) {|tag_name, obj_id| tag_name == 'contained' and obj_id == @test_object.game_object_id}
   @container_tester.remove_from_container @test_object.game_object_id, container
+end
+
+Given /^a new basic game object with contained mixin$/ do
+  @contained_object = ContainedTester.new
+  @contained_object.is_a?(Contained).should be_true
+end
+
+Then /^the contained object should have the correct container$/ do
+  @contained_object.container.should eql @container_tester.game_object_id
+end
+
+When /^I add a contained object to the container "([^"]*)"$/ do |container|
+  GameObjects.expects(:add_tag).with("#{@container_tester.game_object_id}_#{container.to_s}", @contained_object.game_object_id, {'object_id' => @contained_object.game_object_id})
+  new_tag_hash = {'object_id' => @contained_object.game_object_id, 'container' => @container_tester.game_object_id}
+  GameObjects.expects(:add_tag).once.with('contained', @contained_object.game_object_id, new_tag_hash) {|tag_name, contained_id, tag_hash| tag_name == 'contained' and contained_id == @contained_object.game_object_id and tag_hash == new_tag_hash}
+  @container_tester.add_to_container @contained_object, container
 end

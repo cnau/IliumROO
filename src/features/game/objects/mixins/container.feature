@@ -74,3 +74,9 @@ Feature: test the container mixin
     Then the contents of the "Test" container should contain the game object id
     When I remove an object from the container "Test" with only the game object id
     Then the object should have been removed from the container "Test"
+
+  Scenario: test add method with contained object
+    Given a new basic game object with container mixin
+    And a new basic game object with contained mixin
+    When I add a contained object to the container "Test"
+    Then the contained object should have the correct container

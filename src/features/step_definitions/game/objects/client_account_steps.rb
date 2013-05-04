@@ -76,7 +76,7 @@ end
 
 Given /^a mocked client account add_new_character call with name "([^"]*)"$/ do |char_name|
   # save new character
-  @new_class_hash = {:super => 'BasicNamedObject', :mixins => '', :game_object_id => char_name.downcase, :name => char_name}
+  @new_class_hash = {:super => 'BasicNamedObject', :mixins => 'Contained', :game_object_id => char_name.downcase, :name => char_name}
   GameObjects.expects(:get).with(is_a(String)).returns(@new_class_hash)
 
   @save_hash = []
@@ -90,6 +90,9 @@ Given /^a mocked client account add_new_character call with name "([^"]*)"$/ do 
 
   # container calls
   GameObjects.expects(:add_tag).once.with("#{@client_account.game_object_id}_characters", is_a(String), is_a(Hash)) {|tag_name, obj_id, tag_hash| @char_tag_hash = tag_hash;tag_name == "#{@client_account.game_object_id}_characters" and tag_hash['object_id'] == obj_id}
+
+  # contained calls
+  GameObjects.expects(:add_tag).with('contained', is_a(String), is_a(Hash)) {|container, contained_id, tag_hash| container == 'contained'}
 end
 
 When /^I add a new character$/ do
@@ -127,6 +130,7 @@ When /^I remove a character id$/ do
 
   SystemLogging.expects(:add_log_entry).once.with('deleted character remove_char_test', is_a(String), is_a(String)) {|msg, client_id, ch_id| msg == 'deleted character remove_char_test' and ch_id == 'new_char_id' and client_id == @client_account.game_object_id}
   GameObjects.expects(:remove_tag).once.with("#{@client_account.game_object_id}_characters", is_a(String)) {|tag_name, obj_id| tag_name == "#{@client_account.game_object_id}_characters"}
+  GameObjects.expects(:remove_tag).once.with('contained', 'new_char_id') {|tag_name, obj_id| tag_name == 'contained' and obj_id == 'new_char_id'}
 
   @client_account.remove_character 'new_char_id'
 end
@@ -158,6 +162,7 @@ Given /^a mocked client account delete_character call$/ do
   GameObjects.expects(:remove).once.with('TEST_ID') {|obj_id| obj_id == 'TEST_ID'}
   GameObjectLoader.expects(:remove_from_cache).with('TEST_ID') {|obj_id| obj_id == 'TEST_ID'}
   GameObjects.expects(:remove_tag).with('player_names', 'Test') {|tag_name, obj_id| tag_name == 'player_names' and obj_id == 'Test'}
+  GameObjects.expects(:remove_tag).once.with('contained', 'TEST_ID') {|tag_name, obj_id| tag_name == 'contained' and obj_id == 'TEST_ID'}
 end
 
 When /^I delete a character$/ do

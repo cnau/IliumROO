@@ -126,6 +126,7 @@ class ClientAccount < BasicPersistentGameObject
     # add some basic mixins for every character
     new_character_mixins = []
     new_character_mixins.push 'ClientWrapper'
+    new_character_mixins.push 'Contained'
 
     # add admin mixin if appropriate
     new_character_mixins.push 'Admin' if account_type.to_sym == :admin
@@ -143,6 +144,7 @@ class ClientAccount < BasicPersistentGameObject
     new_character = new_character_klass.new
     new_character.name = name
     new_character.object_tag = :player_names
+    new_character.container = self.game_object_id
     new_character.save
 
     # returning the game object id only

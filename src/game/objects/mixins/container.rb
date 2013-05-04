@@ -26,6 +26,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # 1. container MUST be a BasicGameObject
 # 2. contained items MUST be a BasicGameObject
 
+require 'game/objects/mixins/contained'
+
 module Container
   def add_to_container(contained, container = nil, additional = {})
     game_object_id = contained.is_a?(BasicGameObject) ? contained.game_object_id : contained # if we get an object, then pull id.  if not, then assume contained is the id
@@ -36,6 +38,8 @@ module Container
     the_container_name = container_name(container)
     GameObjects.add_tag the_container_name, game_object_id, contained_hash
     @contents[the_container_name][game_object_id] = contained.is_a?(BasicGameObject) ? contained : contained_hash
+    # set container
+    contained.container = self.game_object_id if contained.is_a?(Contained)
   end
 
   # basic return of list without object loading
@@ -56,6 +60,11 @@ module Container
     game_object_id = contained.is_a?(BasicGameObject) ? contained.game_object_id : contained # if we get an object, then pull id.  if not, then assume contained is the id
     GameObjects.remove_tag the_container_name, game_object_id
     @contents[the_container_name].delete(game_object_id) if @contents[the_container_name].has_key? game_object_id
+    if contained.is_a?(Contained)
+      contained.container = nil
+    else
+      GameObjects.remove_tag 'contained', game_object_id
+    end
   end
 
   def load_container(container = nil)
