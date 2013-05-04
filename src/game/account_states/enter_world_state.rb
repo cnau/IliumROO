@@ -31,17 +31,15 @@ class EnterWorldState
   include Colorizer
 
   def enter(entity)
-    if entity.characters.nil?
+    if entity.characters.empty?
       entity.change_state MainMenuState
       return
     end
 
     enter_menu = ''
     ctr = 1
-    c_list = entity.characters.split(',')
-    c_list.each do |character_id|
-      character_name = entity.get_player_name(character_id)
-      enter_menu << "[blue]#{ctr}.[white] #{character_name}\n"
+    entity.characters.each do |char_id, char_hash|
+      enter_menu << "[blue]#{ctr}.[white] #{char_hash['name']}\n"
       ctr += 1
     end
 
@@ -57,10 +55,19 @@ class EnterWorldState
       entity.change_state MainMenuState
     else
       c_idx = entity.last_client_data.to_i
-      c_list = entity.characters.split(',')
-      if (c_idx >= 1) and (c_idx <= c_list.length)
+      c_list = entity.characters
+      the_char_id = nil
+      if (c_idx >= 1) and (c_idx <= c_list.size)
         # attach client to a player character game object
-        p_char = GameObjectLoader.load_object c_list[c_idx - 1]
+        ctr = 1
+        c_list.each {|char_id, char_hash|
+          if ctr == c_idx
+            the_char_id = char_hash['object_id']
+            break
+          end
+          ctr += 1
+        }
+        p_char = GameObjectLoader.load_object the_char_id
 
         p_char.attach_client entity.client
         entity.detach_client

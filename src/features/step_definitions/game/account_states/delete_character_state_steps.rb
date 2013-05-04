@@ -32,7 +32,7 @@ end
 
 When /^I call the enter method of DeleteCharacterState with no characters$/ do
   entity = mock
-  entity.expects(:characters).returns(nil)
+  entity.expects(:characters).returns({})
   entity.expects(:change_state).with(is_a(Class)) {|state| @state_klass = state}
   @delete_character_state.enter entity
 end
@@ -43,16 +43,18 @@ end
 
 When /^I call the enter method of DeleteCharacterState with character list "([^"]*)" and name list "([^"]*)"$/ do |character_id_list, character_name_list|
   entity = mock
-  entity.expects(:characters).twice.returns(character_id_list)
   id_list = character_id_list.split(',')
   name_list = character_name_list.split(',')
   ctr = 0
   @expected_menu_2 = ''
+  character_list = {}
   id_list.each {|id|
-    entity.expects(:get_player_name).with(id).returns(name_list[ctr])
+    character_list[id] = {'object_id' => id, 'name' => name_list[ctr]}
     @expected_menu_2 << "#{ctr+1}. #{name_list[ctr]}\n"
     ctr += 1
   }
+
+  entity.expects(:characters).twice.returns(character_list)
   @expected_menu_2 << 'Choose a character to delete: '
   entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_2 = msg}
   entity.expects(:display_type).returns('ASCII')
@@ -66,7 +68,14 @@ end
 
 When /^I setup an entity with character list "([^"]*)" and name list "([^"]*)"$/ do |character_id_list, character_name_list|
   @entity = mock
-  @entity.expects(:characters).returns(character_id_list) unless character_id_list.empty?
+  character_list = {}
+  name_list = character_name_list.split(',')
+  ctr = 0
+  character_id_list.split(',').each {|id|
+    character_list[id] = {'object_id' => id, 'name' => name_list[ctr]}
+    ctr += 1
+  }
+  @entity.expects(:characters).returns(character_list) unless character_id_list.empty?
   @entity.expects(:change_state).with(is_a(Class)) {|state| @state_klass = state}
   @character_id_list = character_id_list
   @character_name_list = character_name_list
@@ -80,7 +89,6 @@ When /^a last_client_data of "([^"]*)"$/ do |last_client_data|
     @entity.expects(:remove_character).with(char_id)
     @entity.expects(:delete_character).with(char_id)
     char_name = @character_name_list.split(',')[last_client_data.to_i - 1]
-    @entity.expects(:get_player_name).with(char_id).returns(char_name)
     @entity.expects(:send_to_client).with(is_a(String)) {|msg| @client_msg_3 = msg}
     @expected_msg = "Deleted #{char_name}.\n"
   end

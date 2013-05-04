@@ -30,17 +30,15 @@ class DeleteCharacterState
   include Colorizer
 
   def enter(entity)
-    if entity.characters.nil?
+    if entity.characters.empty?
       entity.change_state MainMenuState
       return
     end
 
     del_menu = ''
     ctr = 1
-    c_list = entity.characters.split(',')
-    c_list.each do |character_id|
-      character_name = entity.get_player_name(character_id)
-      del_menu << "[blue]#{ctr}.[white] #{character_name}\n"
+    entity.characters.each do |char_id, char_hash|
+      del_menu << "[blue]#{ctr}.[white] #{char_hash['name']}\n"
       ctr += 1
     end
 
@@ -56,12 +54,20 @@ class DeleteCharacterState
       entity.change_state MainMenuState
     else
       c_idx = entity.last_client_data.to_i
-      c_list = entity.characters.split(',')
-      if (c_idx >= 1) and (c_idx <= c_list.length)
-        entity.remove_character c_list[c_idx - 1]
-        c_name = entity.get_player_name(c_list[c_idx - 1])
-        entity.delete_character c_list[c_idx - 1]
-        entity.send_to_client "Deleted #{c_name}.\n"
+      c_list = entity.characters
+      if (c_idx >= 1) and (c_idx <= c_list.size)
+        ctr = 1
+        the_char_hash = nil
+        c_list.each {|char_id, char_hash|
+          if ctr == c_idx
+            the_char_hash = char_hash
+            break
+          end
+          ctr += 1
+        }
+        entity.remove_character the_char_hash['object_id']
+        entity.delete_character the_char_hash['object_id']
+        entity.send_to_client "Deleted #{the_char_hash['name']}.\n"
         entity.change_state MainMenuState
       else
         entity.change_state DeleteCharacterState

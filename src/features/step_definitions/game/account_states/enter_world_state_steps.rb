@@ -32,13 +32,12 @@ end
 
 Given /^this character list "([^"]*)" with a name of "([^"]*)"$/ do |char_id, name|
   if char_id.empty?
-    @entity.expects(:characters).returns(nil)
+    @entity.expects(:characters).returns({})
   else
     @player_id = char_id
-    @entity.expects(:characters).returns(char_id) if name.empty?
+    @entity.expects(:characters).returns({char_id => {'object_id' => char_id, 'name' => char_id}}) if name.empty?
     unless name.empty?
-      @entity.expects(:characters).twice.returns(char_id)
-      @entity.expects(:get_player_name).with(char_id).returns(name)
+      @entity.expects(:characters).twice.returns({char_id => {'object_id' => char_id, 'name' => name}})
       @expected_menu = "1. #{name}\nChoose a character to play: "
       @entity.expects(:send_to_client).with(is_a(String)) {|msg| @last_client_msg = msg}
       @entity.expects(:display_type).returns('NONE')

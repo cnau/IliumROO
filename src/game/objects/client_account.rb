@@ -26,12 +26,14 @@ require 'database/system_logging'
 require 'game_objects/game_object_loader'
 require 'date'
 require 'game/objects/mixins/client_wrapper'
+require 'game/objects/mixins/container'
 
 class ClientAccount < BasicPersistentGameObject
   include ClientWrapper
+  include Container
 
-  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type].freeze
-  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :characters, :account_type
+  PROPERTIES = [:email, :password, :last_login_date, :last_login_ip, :display_type, :account_type].freeze
+  attr_accessor :email, :password, :last_login_date, :last_login_ip, :display_type, :account_type
 
   def initialize
     super
@@ -48,24 +50,16 @@ class ClientAccount < BasicPersistentGameObject
     new_character = generate_new_character(name)
 
     # add new character to our collection
-    c_list ||= []
-    c_list = @characters.split(',') unless @characters.nil?
-    c_list.push new_character
-    @characters = c_list.join(',')
-    save
+    self.add_to_container new_character, :characters, {'name' => name}
 
     # add the log entry
     SystemLogging.add_log_entry 'created new character', self.game_object_id, new_character
   end
 
   def remove_character(character_id)
-    c_list = @characters.split(',')
     c_name = get_player_name(character_id)
+    remove_from_container character_id, :characters
     SystemLogging.add_log_entry "deleted character #{c_name}", self.game_object_id, character_id
-    c_list.delete character_id
-    @characters = c_list.join(',')
-    @characters = nil if @characters.empty?
-    save
   end
 
   def name_available?(the_name)
@@ -74,8 +68,8 @@ class ClientAccount < BasicPersistentGameObject
   end
 
   def get_player_name(game_object_id)
-    player_hash = GameObjects.get game_object_id
-    player_hash[:name]
+    char_list = list_container(:characters)
+    char_list[game_object_id]['name'] if char_list.has_key?(game_object_id)
   end
 
   def delete_character(game_object_id)
@@ -83,8 +77,9 @@ class ClientAccount < BasicPersistentGameObject
     GameObjects.remove game_object_id
     GameObjectLoader.remove_from_cache game_object_id
     GameObjects.remove_tag 'player_names', c_name
+    remove_from_container game_object_id, :characters
   end
-  
+
   def set_last_login(client_ip)
     @last_login_ip = client_ip
     @last_login_date = DateTime.now.strftime
@@ -142,9 +137,7 @@ class ClientAccount < BasicPersistentGameObject
     # now build the class itself
     new_character_klass = GameObjectLoader.load_object new_class_id
 
-    #TODO: FIX exception handling for entire application
     raise "Unable to create character class C#{new_class_id}" if new_character_klass.nil?
-    log.debug {new_character_klass.included_modules.each {|mod| mod.name}}
 
     # create an instance of this new character class and save it
     new_character = new_character_klass.new
@@ -154,5 +147,10 @@ class ClientAccount < BasicPersistentGameObject
 
     # returning the game object id only
     new_character.game_object_id
+  end
+
+  def characters
+    list_container(:characters) if container(:characters).empty?
+    container(:characters)
   end
 end
