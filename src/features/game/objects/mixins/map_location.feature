@@ -19,20 +19,26 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Feature: test basic continuous game map
-  As a game I need a continuous map
-  So let's test our basic continuous game map
+Feature: test the MapLocation mixin
+  As a multi-user game I have map and players
+  So I need to test that the players keep track of their own location
 
-  Scenario: test a basic continuous map's save function
-    Given a BasicContinuousMap object
-    When I save the continuous map
-    Then I should get a correctly saved continuous map
+  Scenario: test the location setting function with an object
+    Given a new object with MapLocation mixin
+    When I set the location to an object
+    Then the location should be an object
 
-  Scenario: test a basic continuous map's player enter method
-    Given a BasicContinuousMap object
-    And a new player object
-    When a player enters the map
-    Then the player should have been updated to include his location
-    And the player save hash should include map and location
-    And the player should have been notified that he entered a map
+  Scenario: test the location setting function with a string
+    Given a new object with MapLocation mixin
+    When I set the location to a string representation of an object
+    Then the location should be an object
 
+  Scenario: test the map setting function with a string
+    Given a new object with MapLocation mixin
+    When I set the map property to a string
+    Then the map property should be set
+
+  Scenario: test the map setting function with an object
+    Given a new object with MapLocation mixin
+    When I set the map property to a basic game object
+    Then the map property should be set to the object

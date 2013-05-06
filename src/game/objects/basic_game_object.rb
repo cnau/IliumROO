@@ -31,8 +31,6 @@ class BasicGameObject
   include StateMachine
   include Logging
 
-  @game_object_id = nil
-
   def self.generate_game_object_id
     Digest::SHA1.hexdigest(UUID.new.to_guid.to_s)[8..16]
   end
@@ -84,5 +82,9 @@ class BasicGameObject
       ret[prop.to_sym] = self.instance_variable_get("@#{prop}").to_s
     end
     ret
+  end
+
+  def to_s
+    @game_object_id
   end
 end

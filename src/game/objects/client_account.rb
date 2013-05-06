@@ -127,6 +127,7 @@ class ClientAccount < BasicPersistentGameObject
     new_character_mixins = []
     new_character_mixins.push 'ClientWrapper'
     new_character_mixins.push 'Contained'
+    new_character_mixins.push 'MapLocation'
 
     # add admin mixin if appropriate
     new_character_mixins.push 'Admin' if account_type.to_sym == :admin

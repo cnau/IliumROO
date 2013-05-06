@@ -33,9 +33,10 @@ Feature: test basic game object
     When I check game object id
     Then I should get a valid game object id
     And I should be able to see that id in the object's to_h function
+    And I should be able to see that id in the object's to_s function
 
   Scenario: test a game object's state machine mixin
-    Given an instance of BasicGameObject 3
+    Given a new BasicGameObject instance
     When I mock a couple of state classes
     And I change the state of BasicGameObject
     Then I expect the state changes to take place
@@ -43,7 +44,7 @@ Feature: test basic game object
     Then I expect the state to be reverted
 
   Scenario: test a game object's global state
-    Given an instance of BasicGameObject 4
+    Given a new BasicGameObject instance
     When I mock a global state
     And I assign the global state to the game object
     Then I expect the state change to take place

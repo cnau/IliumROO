@@ -25,13 +25,19 @@ $: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
 require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/maps/basic_continuous_map'
+require 'game/objects/mixins/map_location'
+
+class PlayerTester < BasicNamedObject
+  include MapLocation
+end
 
 Given /^a BasicContinuousMap object$/ do
   @map = BasicContinuousMap.new
+  @map.name = 'TestMap'
 end
 
 When /^I save the continuous map$/ do
-  GameObjects.expects(:save).with(@map.game_object_id, is_a(Hash)) {|object_id, obj_hash| @map_hash = obj_hash}
+  GameObjects.expects(:save).with(@map.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @map_hash = obj_hash; obj_id == @map.game_object_id }
   @map.save
 end
 
@@ -40,22 +46,32 @@ Then /^I should get a correctly saved continuous map$/ do
   @map_hash.should eql @map.to_h
 end
 
-Given /^the map has objects in the world$/ do
-  @map.entities.should_not be_nil
-  @map.entities[0,0,0] = BasicGameObject.new
+When /^a player enters the map$/ do
+  GameObjects.expects(:save).once.with(@player.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @player_hash = obj_hash; obj_id == @player.game_object_id }
+  @player.expects(:send_to_client).once.with(is_a(String)) {|msg| @player_msg = msg}
+  @map.enter @player
 end
 
-Then /^the saved map should contain a list of entities$/ do
-  @map_hash.should include :entities
-  @map_hash[:entities].should_not be_nil
+Then /^the player should have been updated to include his location$/ do
+  @player.map.should eql @map.to_s
+  @player.location.should eql [0, 0, 0]
+end
 
-  entities = YAML.load(@map_hash[:entities])
-  p "STEP: #{entities}"
-  entities.should_not be_empty
-  entities.size.should eql 1
-  entity = entities[0]
-  entity.size.should eql 2
-  coords = eval(entity[0])
-  coords.should eql [0,0,0]
-  entity[1].should eql @map.entities[0,0,0].game_object_id
+Then /^the player save hash should include map and location$/ do
+  @player_hash.should_not be_nil
+  @player_hash.should_not be_empty
+  @player_hash.should include :map
+  @player_hash[:map].should eql @map.game_object_id
+
+  @player_hash.should include :location
+  @player_hash[:location].should eql [0, 0, 0].to_s
+end
+
+Given /^a new player object$/ do
+  @player = PlayerTester.new
+  @player.name = 'Jeff'
+end
+
+Then /^the player should have been notified that he entered a map$/ do
+  @player_msg.should eql 'Entering game map TestMap at location [0, 0, 0]'
 end
