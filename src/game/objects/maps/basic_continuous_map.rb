@@ -49,6 +49,11 @@ class BasicContinuousMap < BasicGameMap
   # enter is only called for players
   def enter(dobj)
     @players[*@start_location] ||= []
+
+    @players[*@start_location].each {|player|
+      player.send_to_client "#{dobj.name} has entered the map."
+    }
+
     @players[*@start_location] << dobj
     dobj.map = self.game_object_id
     dobj.location = @start_location

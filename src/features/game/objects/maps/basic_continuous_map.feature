@@ -36,3 +36,11 @@ Feature: test basic continuous game map
     And the player save hash should include map and location
     And the player should have been notified that he entered a map
 
+  Scenario: test a basic continuous maps's player enter method with other players in the room
+    Given a BasicContinuousMap object
+    And a new player object
+    And another player in the start location
+    When a player enters the map
+    Then the player should have been notified that he entered a map
+    And the other player should have been notified too
+
