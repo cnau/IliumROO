@@ -43,11 +43,12 @@ class BasicContinuousMap < BasicGameMap
     @stationary_entities = SparseMatrix.new
     @mobile_entities = SparseMatrix.new
     @players = SparseMatrix.new
-    @start_location = [0,0,0]
+    @start_location ||= [0,0,0]
   end
 
   # enter is only called for players
-  def enter(dobj)
+  def enter(player, dobj, location = nil)
+    @start_location = @start_location.is_a?(String) ? eval(@start_location) : @start_location
     @players[*@start_location] ||= []
 
     @players[*@start_location].each {|player|
@@ -56,12 +57,11 @@ class BasicContinuousMap < BasicGameMap
 
     @players[*@start_location] << dobj
     dobj.map = self.game_object_id
-    dobj.location = @start_location
+    dobj.location = (location.nil? ? @start_location : location)
     dobj.save
 
-    dobj.send_to_client "Entering game map #{self.name} at location #{@start_location}"
+    player.send_to_client "Entering game map #{self.name} at location #{dobj.location}"
 
-    # TODO: event code for other players and mobiles
-    log.debug "#{dobj} entering map #{self.game_object_id} at #{@start_location}"
+    log.debug "#{dobj} entering map #{self.game_object_id} at #{dobj.location}"
   end
 end

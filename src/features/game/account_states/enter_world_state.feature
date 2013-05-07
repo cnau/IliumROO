@@ -55,7 +55,7 @@ Feature: test EnterWorldState finite state machine state
     When I call the execute method of EnterWorldState
     Then I should get redirected to "EnterWorldState" by EnterWorldState
 
-  Scenario: test the execute method with a valid index
+  Scenario: test the execute method with a valid index and no map or startup map
     Given an instance of EnterWorldState
     And a mocked entity for EnterWorldState
     And the mocked entity has last client data of "1" for EnterWorldState
@@ -65,6 +65,37 @@ Feature: test EnterWorldState finite state machine state
     And the mocked player object is expecting to attach the entity client
     And the old entity is expecting to detach client for EnterWorldState
     And the player object is expecting a new state from EnterWorldState
+    And the player object has a map of "" and start location of ""
+    And a startup map of "" and start location of "" and expect to look for startup "true"
     When I call the execute method of EnterWorldState
     Then I should get redirected to "PlayerPromptState" by EnterWorldState
 
+  Scenario: test the execute method with a valid index and no map but a startup map
+    Given an instance of EnterWorldState
+    And a mocked entity for EnterWorldState
+    And the mocked entity has last client data of "1" for EnterWorldState
+    And the mocked entity has a mocked client for EnterWorldState
+    And this character list "char-1" with a name of ""
+    And a mocked GameObjectLoader for EnterWorldState
+    And the mocked player object is expecting to attach the entity client
+    And the old entity is expecting to detach client for EnterWorldState
+    And the player object is expecting a new state from EnterWorldState
+    And the player object has a map of "" and start location of ""
+    And a startup map of "startup_map" and start location of "[0,1,0]" and expect to look for startup "true"
+    When I call the execute method of EnterWorldState
+    Then I should get redirected to "PlayerPromptState" by EnterWorldState
+
+  Scenario: test the execute method with a valid index and a map but no startup map
+    Given an instance of EnterWorldState
+    And a mocked entity for EnterWorldState
+    And the mocked entity has last client data of "1" for EnterWorldState
+    And the mocked entity has a mocked client for EnterWorldState
+    And this character list "char-1" with a name of ""
+    And a mocked GameObjectLoader for EnterWorldState
+    And the mocked player object is expecting to attach the entity client
+    And the old entity is expecting to detach client for EnterWorldState
+    And the player object is expecting a new state from EnterWorldState
+    And the player object has a map of "player_map" and start location of "[0,1,0]"
+    And a startup map of "" and start location of "" and expect to look for startup "false"
+    When I call the execute method of EnterWorldState
+    Then I should get redirected to "PlayerPromptState" by EnterWorldState

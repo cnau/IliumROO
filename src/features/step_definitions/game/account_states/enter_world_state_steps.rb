@@ -39,7 +39,7 @@ Given /^this character list "([^"]*)" with a name of "([^"]*)"$/ do |char_id, na
     unless name.empty?
       @entity.expects(:characters).twice.returns({char_id => {'object_id' => char_id, 'name' => name}})
       @expected_menu = "1. #{name}\nChoose a character to play: "
-      @entity.expects(:send_to_client).with(is_a(String)) {|msg| @last_client_msg = msg}
+      @entity.expects(:send_to_client).with(is_a(String)) { |msg| @last_client_msg = msg }
       @entity.expects(:display_type).returns('NONE')
     end
   end
@@ -50,7 +50,7 @@ Given /^a mocked entity for EnterWorldState$/ do
 end
 
 Given /^the mocked entity is expecting a new state from EnterWorldState$/ do
-  @entity.expects(:change_state).with(is_a(Class)) {|next_state| @next_state = next_state}
+  @entity.expects(:change_state).with(is_a(Class)) { |next_state| @next_state = next_state }
 end
 
 When /^I call the enter method of EnterWorldState$/ do
@@ -96,5 +96,32 @@ Then /^the new player object should become the entity$/ do
 end
 
 Given /^the player object is expecting a new state from EnterWorldState$/ do
-  @player_object.expects(:change_state).with(is_a(Class)) {|next_state| @next_state = next_state}
+  @player_object.expects(:change_state).with(is_a(Class)) { |next_state| @next_state = next_state }
+end
+
+
+Given /^a startup map of "([^"]*)" and start location of "([^"]*)" and expect to look for startup "([^"]*)"$/ do |startup_map, start_location, expect_startup|
+  the_map_id = (startup_map.nil? or startup_map.empty? ? nil : startup_map)
+  if the_map_id.nil?
+    GameObjects.expects(:get_tag).with('startup', 'map').returns({}) if expect_startup == 'true'
+  else
+    GameObjects.expects(:get_tag).with('startup', 'map').returns({'object_id' => the_map_id})
+    @startup_map = mock
+    @startup_map.expects(:enter).with(@player_object, @player_object, nil)
+    GameObjectLoader.expects(:load_object).with(the_map_id).returns(@startup_map)
+  end
+end
+
+Given /^the player object has a map of "([^"]*)" and start location of "([^"]*)"$/ do |map_id, location|
+  the_map_id = (map_id.nil? or map_id.empty? ? nil : map_id)
+  the_location = (location.nil? or location.empty? ? nil : location)
+
+  @player_object.stubs(:map).returns(the_map_id)
+  @player_object.stubs(:location).returns(the_location)
+
+  unless the_map_id.nil?
+    @mock_map = mock
+    @mock_map.expects(:enter).with(@player_object, @player_object, the_location)
+    GameObjectLoader.expects(:load_object).with(the_map_id).returns(@mock_map)
+  end
 end

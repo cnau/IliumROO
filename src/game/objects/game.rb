@@ -68,11 +68,22 @@ class Game < BasicPersistentGameObject
     end
   end
 
+  def load_starting_map
+    starting_map_id = GameObjects.get_tag 'startup', 'map'
+    unless starting_map_id.nil? or starting_map_id.empty?
+      @starting_map = GameObjectLoader.load_object(starting_map_id['object_id'])
+      log.info {"starting map #{@starting_map.name} has been loaded"} unless @starting_map.nil?
+    end
+  end
+
   # starts the game
   def start
     begin
       log.info {'server starting up' }
       EventMachine.run do
+        log.debug { 'attempting to load starting map' }
+        load_starting_map
+
         log.debug { 'spinning up socket servers' }
         # startup the socket servers
         start_socket_servers

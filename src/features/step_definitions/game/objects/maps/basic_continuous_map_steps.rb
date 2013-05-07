@@ -49,7 +49,7 @@ end
 When /^a player enters the map$/ do
   GameObjects.expects(:save).once.with(@player.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @player_hash = obj_hash; obj_id == @player.game_object_id }
   @player.expects(:send_to_client).once.with(is_a(String)) { |msg| @player_msg = msg }
-  @map.enter @player
+  @map.enter @player, @player, nil
 end
 
 Then /^the player should have been updated to include his location$/ do
@@ -81,7 +81,7 @@ Given /^another player in the start location$/ do
   @second_player.name = 'Second'
   GameObjects.expects(:save).once.with(@second_player.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @second_player_hash = obj_hash; obj_id == @second_player.game_object_id }
   @second_player.expects(:send_to_client).twice.with(is_a(String)) { |msg| @second_player_msg = msg }
-  @map.enter @second_player
+  @map.enter @second_player, @second_player, nil
 end
 
 Then /^the other player should have been notified too$/ do

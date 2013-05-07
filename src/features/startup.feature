@@ -19,21 +19,22 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Feature: test game object
-  As a game I need to be tested
-  So I will be tested
+Feature: startup tester
+  As a game I need to startup
+  So I will test my startup code
 
-  Scenario: should create a new Game
-    Given a mocked game object in the database
-    When I load the game object
-    Then I should get the correct game object
+  Scenario: test startup with no game or map created yet and no config properties set
+    Given a mocked game config object with startup map of "" and room of ""
+    And a mocked object tag indicating no previous game object created
+    And a mocked game object
+    When I start the game
+    Then I should get map of type "BasicContinuousMap" and room of "[0,0,0]" created
+    And I should get game of type "Game" and port list of "6666" created
 
-  Scenario: test loading of default starting map
-    Given a mocked game object in the database
-    When I load the game object
-    Then the game should attempt to load the starting map
-
-  Scenario: test loading of default starting map when no such map is present
-    Given a mocked game object in the database
-    When I load the game object
-    Then the game should not attempt to load an object if there is no starting map
+  Scenario: test startup with no game or map created yet and config properties set
+    Given a mocked game config object with startup map of "BasicContinuousMap" and room of "[0,1,0]"
+    And a mocked object tag indicating no previous game object created
+    And a mocked game object
+    When I start the game
+    Then I should get map of type "BasicContinuousMap" and room of "[0,1,0]" created
+    And I should get game of type "Game" and port list of "6666" created

@@ -31,7 +31,6 @@ end
 
 # Logging mixin. Include this module to set up any class with Logging capability
 module Logging
-
   # formats a string to return a class name/object id for log entries
   def who_am_i?
     "#{self.class.name} (\##{self.object_id})"

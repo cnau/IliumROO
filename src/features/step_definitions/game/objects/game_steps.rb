@@ -27,11 +27,11 @@ require 'game_objects/game_object_loader'
 require 'game/objects/game'
 
 Given /^a mocked game object in the database$/ do
-  obj_hash = {:game_object_id   => 'game',
-              :parent           => 'Game',
-              :port_list        => '6666'}
+  obj_hash = {:game_object_id => 'game',
+              :parent => 'Game',
+              :port_list => '6666'}
 
-GameObjects.expects(:get).with('game').once.returns(obj_hash)
+  GameObjects.stubs(:get).with('game').returns(obj_hash) {|obj_id| obj_id == 'game'}
 end
 
 When /^I load the game object$/ do
@@ -42,4 +42,17 @@ end
 Then /^I should get the correct game object$/ do
   @the_game.port_list.should eql 6666
   @the_game.should be_an_instance_of Game
+end
+
+Then /^the game should attempt to load the starting map$/ do
+  starting_map = mock
+  starting_map.expects(:name).once.returns('starting_map')
+  GameObjects.expects(:get_tag).once.with('startup', 'map').returns({'object_id' => 'default_map_id'}) { |tag_name, obj_id| tag_name == 'startup' and obj_id == 'map' }
+  GameObjectLoader.expects(:load_object).once.with('default_map_id').returns(starting_map)
+  @the_game.load_starting_map
+end
+
+Then /^the game should not attempt to load an object if there is no starting map$/ do
+  GameObjects.expects(:get_tag).once.with('startup', 'map').returns({}) { |tag_name, obj_id| tag_name == 'startup' and obj_id == 'map' }
+  @the_game.load_starting_map
 end

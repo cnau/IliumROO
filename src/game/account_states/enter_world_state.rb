@@ -60,7 +60,7 @@ class EnterWorldState
       if (c_idx >= 1) and (c_idx <= c_list.size)
         # attach client to a player character game object
         ctr = 1
-        c_list.each {|char_id, char_hash|
+        c_list.each { |char_id, char_hash|
           if ctr == c_idx
             the_char_id = char_hash['object_id']
             break
@@ -72,10 +72,18 @@ class EnterWorldState
         p_char.attach_client entity.client
         entity.detach_client
 
-        #unless p_char.map.nil?
-        #  p_map = GameObjectLoader.load_object p_char.map
-        #  p_map.insert_character p_char
-        #end
+        # place the character in the last map he was in or startup map if there is no previous map
+        map = nil
+        if p_char.map.nil?
+          startup_map = GameObjects.get_tag('startup', 'map')
+          map = GameObjectLoader.load_object startup_map['object_id'] unless startup_map.nil? or startup_map.empty?
+        else
+          map = GameObjectLoader.load_object p_char.map
+        end
+
+        unless map.nil?
+          map.enter p_char, p_char, p_char.location
+        end
 
         p_char.change_state PlayerPromptState
 
