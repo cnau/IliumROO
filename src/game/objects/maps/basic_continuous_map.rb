@@ -35,7 +35,7 @@ class BasicContinuousMap < BasicGameMap
   attr_accessor :start_location
 
   def on_load
-    log.debug {"Loading map #{self.name} : #{self.game_object_id}"}
+    log.debug { "Loading map #{self.name} : #{self.game_object_id}" }
   end
 
   def initialize
@@ -43,25 +43,35 @@ class BasicContinuousMap < BasicGameMap
     @stationary_entities = SparseMatrix.new
     @mobile_entities = SparseMatrix.new
     @players = SparseMatrix.new
-    @start_location ||= [0,0,0]
+    @start_location ||= [0, 0, 0]
+  end
+
+  def enter_room(new_player, new_location, previous_location = nil)
+    @players[*new_location] ||= []
+    @players[*new_location].each { |player|
+      player.send_to_client "#{new_player.name} has entered the map."
+    }
+
+    @players[*new_location] << new_player
+    new_player.location = new_location
   end
 
   # enter is only called for players
-  def enter(player, dobj, location = nil)
+  def enter(player, location = nil)
     @start_location = @start_location.is_a?(String) ? eval(@start_location) : @start_location
-    @players[*@start_location] ||= []
+    new_location = (
+    if location.nil? then
+      @start_location
+    else
+      location.is_a?(String) ? eval(location) : location
+    end
+    )
 
-    @players[*@start_location].each {|player|
-      player.send_to_client "#{dobj.name} has entered the map."
-    }
+    player.send_to_client "Entering game map #{self.name} at location #{new_location}"
+    player.map = self.game_object_id
+    enter_room player, new_location
+    player.save
 
-    @players[*@start_location] << dobj
-    dobj.map = self.game_object_id
-    dobj.location = (location.nil? ? @start_location : location)
-    dobj.save
-
-    player.send_to_client "Entering game map #{self.name} at location #{dobj.location}"
-
-    log.debug "#{dobj} entering map #{self.game_object_id} at #{dobj.location}"
+    log.debug {"#{player} entering map #{self.game_object_id} at #{player.location}"}
   end
 end

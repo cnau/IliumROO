@@ -33,7 +33,6 @@ Feature: test basic continuous game map
     And a new player object
     When a player enters the map
     Then the player should have been updated to include his location
-    And the player save hash should include map and location
     And the player should have been notified that he entered a map
 
   Scenario: test a basic continuous maps's player enter method with other players in the room

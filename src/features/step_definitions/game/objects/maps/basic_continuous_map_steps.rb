@@ -27,10 +27,6 @@ require 'features/step_definitions/spec_helper.rb'
 require 'game/objects/maps/basic_continuous_map'
 require 'game/objects/mixins/map_location'
 
-class PlayerTester < BasicNamedObject
-  include MapLocation
-end
-
 Given /^a BasicContinuousMap object$/ do
   @map = BasicContinuousMap.new
   @map.name = 'TestMap'
@@ -38,6 +34,7 @@ end
 
 When /^I save the continuous map$/ do
   GameObjects.expects(:save).with(@map.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @map_hash = obj_hash; obj_id == @map.game_object_id }
+  GameObjects.expects(:add_tag).with('maps', @map.name, is_a(Hash)) {|tag_name, obj_id, tag_hash| tag_name == 'maps' and obj_id == @map.name}
   @map.save
 end
 
@@ -47,29 +44,24 @@ Then /^I should get a correctly saved continuous map$/ do
 end
 
 When /^a player enters the map$/ do
-  GameObjects.expects(:save).once.with(@player.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @player_hash = obj_hash; obj_id == @player.game_object_id }
   @player.expects(:send_to_client).once.with(is_a(String)) { |msg| @player_msg = msg }
-  @map.enter @player, @player, nil
+  @player.expects(:location=).once.with(is_a(Array)) {|location_array| @player_location = location_array}
+  @player.expects(:map=).once.with(@map.game_object_id) {|obj_id| obj_id == @map.game_object_id; @player_map = obj_id}
+  @player.expects(:save).once
+  @player.expects(:location).once.returns([0,0,0])
+  @map.enter @player
 end
 
 Then /^the player should have been updated to include his location$/ do
-  @player.map.should eql @map.to_s
-  @player.location.should eql [0, 0, 0]
-end
-
-Then /^the player save hash should include map and location$/ do
-  @player_hash.should_not be_nil
-  @player_hash.should_not be_empty
-  @player_hash.should include :map
-  @player_hash[:map].should eql @map.game_object_id
-
-  @player_hash.should include :location
-  @player_hash[:location].should eql [0, 0, 0].to_s
+  @player_map.should eql @map.to_s
+  @player_location.should eql [0, 0, 0]
 end
 
 Given /^a new player object$/ do
-  @player = PlayerTester.new
-  @player.name = 'First'
+  @player = mock
+  @player.stubs(:name).returns('First')
+  @player.stubs(:game_object_id).returns('first_player_id')
+  @player.stubs(:to_s).returns('first_player_id')
 end
 
 Then /^the player should have been notified that he entered a map$/ do
@@ -77,13 +69,18 @@ Then /^the player should have been notified that he entered a map$/ do
 end
 
 Given /^another player in the start location$/ do
-  @second_player = PlayerTester.new
-  @second_player.name = 'Second'
-  GameObjects.expects(:save).once.with(@second_player.game_object_id, is_a(Hash)) { |obj_id, obj_hash| @second_player_hash = obj_hash; obj_id == @second_player.game_object_id }
-  @second_player.expects(:send_to_client).twice.with(is_a(String)) { |msg| @second_player_msg = msg }
-  @map.enter @second_player, @second_player, nil
+  @second_player = mock
+  @second_player.stubs(:name).returns('Second')
+  @second_player.stubs(:game_object_id).returns('second_player_id')
+  @second_player.stubs(:to_s).returns('second_player_id')
+  @second_player.expects(:location=).once.with(is_a(Array))
+  @second_player.expects(:location).once.returns([0,0,0])
+  @second_player.expects(:map=).once.with(@map.game_object_id) {|obj_id| obj_id == @map.game_object_id}
+  @second_player.expects(:save).once
+  @second_player.expects(:send_to_client).twice.with(is_a(String)) { |msg|@second_player_msg ||= []; @second_player_msg << msg }
+  @map.enter @second_player
 end
 
 Then /^the other player should have been notified too$/ do
-  @second_player_msg.should eql 'First has entered the map.'
+  @second_player_msg.should include 'First has entered the map.'
 end
