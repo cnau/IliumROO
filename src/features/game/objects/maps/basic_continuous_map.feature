@@ -38,8 +38,43 @@ Feature: test basic continuous game map
   Scenario: test a basic continuous maps's player enter method with other players in the room
     Given a BasicContinuousMap object
     And a new player object
-    And another player in the start location
+    And a second player object
+    And the second player in the start location
     When a player enters the map
     Then the player should have been notified that he entered a map
     And the other player should have been notified too
 
+  Scenario: test a basic continuous map's calc_movement_dir function
+    Given a BasicContinuousMap object
+    When calculating directions for new location "[0,0,1]" and old location "[0,0,0]"
+    Then the text directions should be "below"
+    When calculating directions for new location "[0,0,0]" and old location "[0,0,1]"
+    Then the text directions should be "above"
+    When calculating directions for new location "[0,0,0]" and old location "[0,1,0]"
+    Then the text directions should be "the north of"
+    When calculating directions for new location "[0,1,0]" and old location "[0,0,0]"
+    Then the text directions should be "the south of"
+    When calculating directions for new location "[0,0,0]" and old location "[1,0,0]"
+    Then the text directions should be "the east of"
+    When calculating directions for new location "[1,0,0]" and old location "[0,0,0]"
+    Then the text directions should be "the west of"
+    When calculating directions for new location "[0,0,0]" and old location "[1,1,0]"
+    Then the text directions should be "the northeast of"
+    When calculating directions for new location "[1,0,0]" and old location "[0,1,0]"
+    Then the text directions should be "the northwest of"
+    When calculating directions for new location "[0,1,0]" and old location "[1,0,0]"
+    Then the text directions should be "the southeast of"
+    When calculating directions for new location "[1,1,0]" and old location "[0,0,0]"
+    Then the text directions should be "the southwest of"
+    When calculating directions for new location "[1,1,1]" and old location "[0,0,0]"
+    Then the text directions should be "below and southwest of"
+    When calculating directions for new location "[0,0,0]" and old location "[1,1,1]"
+    Then the text directions should be "above and northeast of"
+
+  Scenario: test a basic continuous map's enter room method
+    Given a BasicContinuousMap object
+    And a new player object
+    And a second player object
+    When a player enters the room at "[0,0,1]"
+    And a second player enters the room at "[0,0,1]" from "[0,0,0]"
+    Then the player should have been sent the message "Second arrives from below you."

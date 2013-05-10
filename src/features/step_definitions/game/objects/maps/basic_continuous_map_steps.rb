@@ -68,11 +68,14 @@ Then /^the player should have been notified that he entered a map$/ do
   @player_msg.should eql 'Entering game map TestMap at location [0, 0, 0]'
 end
 
-Given /^another player in the start location$/ do
+Given /^a second player object$/ do
   @second_player = mock
   @second_player.stubs(:name).returns('Second')
   @second_player.stubs(:game_object_id).returns('second_player_id')
   @second_player.stubs(:to_s).returns('second_player_id')
+end
+
+Given /^the second player in the start location$/ do
   @second_player.expects(:location=).once.with(is_a(Array))
   @second_player.expects(:location).once.returns([0,0,0])
   @second_player.expects(:map=).once.with(@map.game_object_id) {|obj_id| obj_id == @map.game_object_id}
@@ -83,4 +86,35 @@ end
 
 Then /^the other player should have been notified too$/ do
   @second_player_msg.should include 'First has entered the map.'
+end
+
+When /^calculating directions for new location "([^"]*)" and old location "([^"]*)"$/ do |new_location, old_location|
+  the_new_location = eval(new_location) unless new_location.nil? or new_location.empty?
+  the_old_location = eval(old_location) unless old_location.nil? or old_location.empty?
+
+  @movement_direction = @map.calc_movement_direction the_new_location, the_old_location
+end
+
+Then /^the text directions should be "([^"]*)"$/ do |directions|
+  @movement_direction.should eql directions
+end
+
+When /^a player enters the room at "([^"]*)"$/ do |location|
+  the_location = eval(location) unless location.nil? or location.empty?
+
+  @player.expects(:location=).once.with(the_location) {|location| location == the_location}
+  @map.enter_room @player, the_location
+end
+
+When /^a second player enters the room at "([^"]*)" from "([^"]*)"$/ do |new_location, old_location|
+  the_new_location = eval(new_location) unless new_location.nil? or new_location.empty?
+  the_old_location = eval(old_location) unless old_location.nil? or old_location.empty?
+
+  @second_player.expects(:location=).once.with(the_new_location) {|location| location = the_new_location}
+  @player.expects(:send_to_client).once.with(is_a(String)) {|msg| @player_msg = msg}
+  @map.enter_room @second_player, the_new_location, the_old_location
+end
+
+Then /^the player should have been sent the message "([^"]*)"$/ do |msg|
+  @player_msg.should eql msg
 end

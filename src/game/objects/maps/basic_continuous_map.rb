@@ -46,12 +46,73 @@ class BasicContinuousMap < BasicGameMap
     @start_location ||= [0, 0, 0]
   end
 
+  def broadcast_to_location(location, msg)
+    @players[*location].each { |player|
+      player.send_to_client msg
+    }
+  end
+
+  def calc_movement_direction(new_location, previous_location)
+    # locations are 3 length arrays [x,y,z]
+    # north = prev.y < new.y
+    # east = prev.x < new.x
+    # up = prev.z < new.z
+
+    x_dir = nil
+    y_dir = nil
+    z_dir = nil
+
+    if previous_location[0] < new_location[0]
+      x_dir = 'west'
+    elsif previous_location[0] > new_location[0]
+      x_dir = 'east'
+    end
+
+    if previous_location[1] < new_location[1]
+      y_dir = 'south'
+    elsif previous_location[1] > new_location[1]
+      y_dir = 'north'
+    end
+
+    if previous_location[2] < new_location[2]
+      z_dir = 'below'
+    elsif previous_location[2] > new_location[2]
+      z_dir = 'above'
+    end
+
+    # assemble the directions
+    final_dir = ''
+    unless z_dir.nil?
+      final_dir << z_dir
+    end
+
+    # assemble compass dir
+    suffix = nil
+    unless x_dir.nil? and y_dir.nil?
+      if z_dir.nil?
+        final_dir << 'the '
+      else
+        final_dir << ' and '
+      end
+      final_dir << y_dir unless y_dir.nil?
+      final_dir << x_dir unless x_dir.nil?
+      suffix = ' of'
+    end
+    final_dir << suffix unless suffix.nil?
+
+    final_dir
+  end
+
   def enter_room(new_player, new_location, previous_location = nil)
     @players[*new_location] ||= []
-    @players[*new_location].each { |player|
-      player.send_to_client "#{new_player.name} has entered the map."
-    }
-
+    msg = nil
+    if previous_location.nil?
+      msg = "#{new_player.name} has entered the map."
+    else
+      movement_direction = calc_movement_direction(new_location, previous_location)
+      msg = "#{new_player.name} arrives from #{movement_direction} you."
+    end
+    broadcast_to_location new_location, msg
     @players[*new_location] << new_player
     new_player.location = new_location
   end
@@ -72,6 +133,6 @@ class BasicContinuousMap < BasicGameMap
     enter_room player, new_location
     player.save
 
-    log.debug {"#{player} entering map #{self.game_object_id} at #{player.location}"}
+    log.debug { "#{player} entering map #{self.game_object_id} at #{player.location}" }
   end
 end
