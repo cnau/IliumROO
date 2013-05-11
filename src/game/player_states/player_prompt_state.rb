@@ -21,11 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
-require 'game/objects/mixins/command_parser'
-require 'logging/logging'
-
 class PlayerPromptState
   include Singleton
   include Colorizer

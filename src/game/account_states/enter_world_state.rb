@@ -21,11 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
-require 'game_objects/game_object_loader'
-require 'game/player_states/player_prompt_state'
-
 class EnterWorldState
   include Singleton
   include Colorizer
@@ -82,7 +77,7 @@ class EnterWorldState
         end
 
         unless map.nil?
-          map.enter p_char, p_char, p_char.location
+          map.enter p_char, p_char.location
         end
 
         p_char.change_state PlayerPromptState

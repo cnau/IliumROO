@@ -20,8 +20,6 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-require 'game_objects/game_object_loader'
-
 module HumanoidBody
   PROPERTIES = [:left_finger, :right_finger, :neck_1, :neck_2, :body, :head, :legs, :feet, :hands, :arms, :about_body,
                 :about_waist, :left_wrist, :right_wrist, :right_hand, :left_hand, :face, :left_ear, :right_ear].freeze

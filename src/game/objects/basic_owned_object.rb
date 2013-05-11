@@ -24,8 +24,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # this class is being taken out of the heirarchy.  not really sure how an "owned" object would work in a MUD
 
-require 'game/objects/basic_game_object'
-
 class BasicOwnedObject < BasicGameObject
   PROPERTIES = [:owner, :group, :mode].freeze
   attr_accessor :owner, :group, :mode

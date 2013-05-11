@@ -20,19 +20,6 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-require 'singleton'
-require 'logging/logging'
-require 'database/game_objects'
-require 'game/objects/basic_game_object'
-require 'game/objects/basic_owned_object'
-require 'game/objects/basic_persistent_game_object'
-require 'game/objects/client_account'
-require 'game/objects/game'
-require 'game/objects/basic_game_item'
-require 'game/objects/basic_named_object'
-require 'game/objects/mixins/admin'
-require 'game/objects/mixins/client_wrapper'
-require 'game/objects/mixins/map_location'
 
 # loads game objects and caches them
 class GameObjectLoader

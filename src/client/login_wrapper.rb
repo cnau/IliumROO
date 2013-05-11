@@ -21,10 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'game/objects/mixins/state_machine'
-require 'game/objects/mixins/client_wrapper'
-require 'game/login_states/start_login_state'
-
 class LoginWrapper
   include StateMachine
   include ClientWrapper

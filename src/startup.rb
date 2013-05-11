@@ -23,11 +23,15 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__))
+require 'facets/hash/deep_merge'
+require 'simple_uuid'
+require 'require_all'
+require 'eventmachine'
+require 'singleton'
+require 'cassandra'
+require 'yaml'
 
-require 'game_objects/game_object_loader'
-require 'game/objects/maps/basic_continuous_map'
-require 'logging/logging'
+require_all Dir.glob('**/*.rb').reject { |f| File.expand_path(f).match(/features/) != nil} unless $TEST_MODE
 
 module Startup
   def create_starting_map

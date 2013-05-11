@@ -21,12 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/login_states/verify_email_state'
-require 'game/login_states/get_password_state'
-require 'game/account_states/logout_state'
-require 'game/objects/client_account'
-
 class StartLoginState
   include Singleton
 

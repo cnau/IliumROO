@@ -20,13 +20,8 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require 'features/step_definitions/spec_helper.rb'
-require 'database/game_objects'
-require 'game_objects/game_object_loader'
-require 'game/objects/basic_game_object'
-require 'mocha'
+require_relative '../spec_helper'
 
 Given /^a mock class setup$/ do
   obj_hash = {:game_object_id => 'test_class_1',

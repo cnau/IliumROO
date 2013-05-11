@@ -20,11 +20,8 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require 'features/step_definitions/spec_helper.rb'
-require 'game_objects/game_object_loader'
-require 'game/objects/basic_persistent_game_object'
+require_relative '../../spec_helper'
 
 Given /^a persistent game object instance$/ do
   @persistent_obj_0 = BasicPersistentGameObject.new

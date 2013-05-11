@@ -15,6 +15,15 @@
 
 require 'rspec'
 require 'mocha'
+require 'eventmachine'
+require 'require_all'
+
+
+
+$TEST_MODE = true
+
+# include all game files
+require_all Dir.glob('../**/*.rb').reject { |f| File.expand_path(f).match(/features/) != nil}
 
 RSpec.configure do |config|
   config.mock_with :mocha

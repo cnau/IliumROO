@@ -21,12 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'eventmachine'
-require 'logging/logging'
-require 'client/client_master'
-require 'client/login_wrapper'
-require 'game/objects/mixins/multi_observer'
-
 class ClientConnection < EventMachine::Connection
   include Logging
   include MultiObserver

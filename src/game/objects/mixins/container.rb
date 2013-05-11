@@ -26,8 +26,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # 1. container MUST be a BasicGameObject
 # 2. contained items MUST be a BasicGameObject
 
-require 'game/objects/mixins/contained'
-
 module Container
   def add_to_container(contained, container = nil, additional = {})
     game_object_id = contained.is_a?(BasicGameObject) ? contained.game_object_id : contained # if we get an object, then pull id.  if not, then assume contained is the id

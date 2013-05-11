@@ -21,8 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'game/objects/basic_owned_object'
-
 class BasicPersistentGameObject < BasicGameObject
   PROPERTIES = [:parent].freeze
   attr_accessor :parent

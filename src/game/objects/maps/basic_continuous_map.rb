@@ -21,11 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'game/objects/maps/basic_game_map'
-require 'game/utils/sparse_matrix'
-require 'game/objects/mixins/container'
-require 'yaml'
-
 class BasicContinuousMap < BasicGameMap
   include Container
 

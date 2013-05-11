@@ -20,9 +20,8 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require 'features/step_definitions/spec_helper.rb'
+require_relative '../../../spec_helper'
 
 Given /^a mocked player object for test one$/ do
   player_klass = mock

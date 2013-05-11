@@ -21,13 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/signup_states/start_signup_state'
-require 'game/account_states/main_menu_state'
-require 'game/objects/client_account'
-require 'game/utils/password'
-
-class StartSignupState  
+class StartSignupState
   include Singleton
 
   def enter(entity)

@@ -21,10 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
-
-require 'features/step_definitions/spec_helper.rb'
-require 'game/utils/sparse_matrix'
+require_relative '../../spec_helper'
 
 Given /^an instance of SparseMatrix$/ do
   @sparse_matrix = SparseMatrix.new

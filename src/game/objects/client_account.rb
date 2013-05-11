@@ -21,13 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'database/game_objects'
-require 'database/system_logging'
-require 'game_objects/game_object_loader'
-require 'date'
-require 'game/objects/mixins/client_wrapper'
-require 'game/objects/mixins/container'
-
 class ClientAccount < BasicPersistentGameObject
   include ClientWrapper
   include Container

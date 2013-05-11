@@ -20,11 +20,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + '/../../../')
-$TEST_MODE = true
 
-require 'features/step_definitions/spec_helper.rb'
-require 'startup'
+
+require_relative 'spec_helper'
 
 Given /^a mocked game config object with startup map of "([^"]*)" and room of "([^"]*)"$/ do |map_klass_name, starting_room|
   the_map_klass_name = nil if map_klass_name.empty?

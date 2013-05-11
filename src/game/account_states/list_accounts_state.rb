@@ -21,11 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'singleton'
-require 'game/utils/colorizer'
-require 'game/account_states/main_menu_state'
-require 'game/account_states/view_account_details_state'
-
 class ListAccountsState
   include Singleton
   include Colorizer

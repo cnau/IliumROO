@@ -21,11 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
-
-require 'features/step_definitions/spec_helper.rb'
-require 'game_objects/game_object_loader'
-require 'game/objects/basic_named_object'
+require_relative '../../spec_helper'
 
 Given /^a named game object instance 1/ do
   @named_obj_1 = BasicNamedObject.new

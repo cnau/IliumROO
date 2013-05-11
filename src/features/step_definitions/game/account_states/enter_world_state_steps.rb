@@ -20,10 +20,8 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
 
-require 'features/step_definitions/spec_helper.rb'
-require 'game/account_states/enter_world_state'
+require_relative '../../spec_helper'
 
 Given /^an instance of EnterWorldState$/ do
   @enter_world_state = EnterWorldState.instance
@@ -107,7 +105,7 @@ Given /^a startup map of "([^"]*)" and start location of "([^"]*)" and expect to
   else
     GameObjects.expects(:get_tag).with('startup', 'map').returns({'object_id' => the_map_id})
     @startup_map = mock
-    @startup_map.expects(:enter).with(@player_object, @player_object, nil)
+    @startup_map.expects(:enter).with(@player_object, nil)
     GameObjectLoader.expects(:load_object).with(the_map_id).returns(@startup_map)
   end
 end
@@ -121,7 +119,7 @@ Given /^the player object has a map of "([^"]*)" and start location of "([^"]*)"
 
   unless the_map_id.nil?
     @mock_map = mock
-    @mock_map.expects(:enter).with(@player_object, @player_object, the_location)
+    @mock_map.expects(:enter).with(@player_object, the_location)
     GameObjectLoader.expects(:load_object).with(the_map_id).returns(@mock_map)
   end
 end

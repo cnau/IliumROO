@@ -21,12 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'logging/logging'
-require 'eventmachine'
-require 'database/game_objects'
-require 'client/client_connection'
-require 'game/objects/basic_persistent_game_object'
-
 class Game < BasicPersistentGameObject
   include Logging
 

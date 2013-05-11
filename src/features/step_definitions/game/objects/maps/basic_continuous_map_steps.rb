@@ -21,11 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-$: << File.expand_path(File.dirname(__FILE__) + '/../../')
-
-require 'features/step_definitions/spec_helper.rb'
-require 'game/objects/maps/basic_continuous_map'
-require 'game/objects/mixins/map_location'
+require_relative '../../../spec_helper'
 
 Given /^a BasicContinuousMap object$/ do
   @map = BasicContinuousMap.new
