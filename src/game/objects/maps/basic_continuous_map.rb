@@ -102,10 +102,10 @@ class BasicContinuousMap < BasicGameMap
     @players[*new_location] ||= []
     msg = nil
     if previous_location.nil?
-      msg = "#{new_player.name} has entered the map."
+      msg = "#{new_player.name} has entered the map.\n"
     else
       movement_direction = calc_movement_direction(new_location, previous_location)
-      msg = "#{new_player.name} arrives from #{movement_direction} you."
+      msg = "#{new_player.name} arrives from #{movement_direction} you.\n"
     end
     broadcast_to_location new_location, msg
     @players[*new_location] << new_player
@@ -123,11 +123,30 @@ class BasicContinuousMap < BasicGameMap
     end
     )
 
-    player.send_to_client "Entering game map #{self.name} at location #{new_location}"
+    player.send_to_client "Entering game map #{self.name} at location #{new_location}\n"
     player.map = self.game_object_id
     enter_room player, new_location
     player.save
 
     log.debug { "#{player} entering map #{self.game_object_id} at #{player.location}" }
+  end
+
+  def exit(player)
+    location = player.location
+    if location.nil?
+      @players.each { |loc, entities|
+        if entities.include? player
+          location = loc
+          break
+        end
+      }
+    end
+
+    unless location.nil?
+      player.send_to_client "Exiting game map #{self.name} from location #{location}.\n"
+      log.debug { "#{player} exiting map #{self.game_object_id} from #{location}" }
+      @players[*location].delete player
+      broadcast_to_location location, "#{player.name} has exited the map.\n"
+    end
   end
 end

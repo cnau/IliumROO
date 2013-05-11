@@ -78,3 +78,13 @@ Feature: test basic continuous game map
     When a player enters the room at "[0,0,1]"
     And a second player enters the room at "[0,0,1]" from "[0,0,0]"
     Then the player should have been sent the message "Second arrives from below you."
+
+  Scenario: test a basic continuous map's exit method
+    Given a BasicContinuousMap object
+    And a new player object
+    And a second player object
+    And the second player in the start location
+    When a player enters the map
+    And the player exits the map
+    Then the player should have been notified that he exited the map
+    And the second player should have been notified that he exited the map

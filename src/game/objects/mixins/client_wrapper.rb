@@ -28,14 +28,18 @@ module ClientWrapper
 
   def quit(player)
     player.send_to_client "bye.\n"
-    save if self.methods.include?(:save)
+    player.save if player.methods.include?(:save)
+    if player.is_a? MapLocation and !player.map.nil?
+      map = GameObjectLoader.load_object player.map
+      map.exit player
+    end
     disconnect
   end
 
   def list_verbs(player)
     ret = ''
     verb_list = self.class.verbs
-    verb_list.each do |verb,prepositions|
+    verb_list.each do |verb, prepositions|
       ret << ', ' if ret.length > 0
       ret << verb.to_s
     end
@@ -45,12 +49,12 @@ module ClientWrapper
   def what_am_i?(player)
     player.send_to_client "You are an instance of #{player.class.name}.\n"
   end
-  
+
   def attach_client(client)
     @client = client
     @client.add_observer(:client_data, self) { |data|
-                                                @last_client_data = data
-                                                self.update}
+      @last_client_data = data
+      self.update }
   end
 
   def send_to_client(message)

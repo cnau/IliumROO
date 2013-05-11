@@ -61,7 +61,7 @@ Given /^a new player object$/ do
 end
 
 Then /^the player should have been notified that he entered a map$/ do
-  @player_msg.should eql 'Entering game map TestMap at location [0, 0, 0]'
+  @player_msg.chomp.should eql 'Entering game map TestMap at location [0, 0, 0]'
 end
 
 Given /^a second player object$/ do
@@ -81,7 +81,7 @@ Given /^the second player in the start location$/ do
 end
 
 Then /^the other player should have been notified too$/ do
-  @second_player_msg.should include 'First has entered the map.'
+  @second_player_msg.should include "First has entered the map.\n"
 end
 
 When /^calculating directions for new location "([^"]*)" and old location "([^"]*)"$/ do |new_location, old_location|
@@ -112,5 +112,20 @@ When /^a second player enters the room at "([^"]*)" from "([^"]*)"$/ do |new_loc
 end
 
 Then /^the player should have been sent the message "([^"]*)"$/ do |msg|
-  @player_msg.should eql msg
+  @player_msg.chomp.should eql msg
+end
+
+When /^the player exits the map$/ do
+  @player.expects(:location).once.returns([0,0,0])
+  @player.expects(:send_to_client).once.with(is_a(String)) {|msg| @player_exit_msg = msg}
+  @second_player.expects(:send_to_client).once.with(is_a(String)) {|msg| @second_player_exit_msg = msg}
+  @map.exit @player
+end
+
+Then /^the player should have been notified that he exited the map$/ do
+  @player_exit_msg.chomp.should eql "Exiting game map #{@map.name} from location [0, 0, 0]."
+end
+
+Then /^the second player should have been notified that he exited the map$/ do
+  @second_player_exit_msg.chomp.should eql 'First has exited the map.'
 end
