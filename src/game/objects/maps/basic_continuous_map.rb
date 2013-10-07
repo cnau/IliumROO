@@ -22,11 +22,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
 class BasicContinuousMap < BasicGameMap
-  include Container
-
-  VERBS = {:enter => nil}.freeze
+  VERBS = {:north => nil, :n => {:aliasname => :north}, :south => nil, :s => {:aliasname => :south}, :east => nil, :e => {:aliasname => :east}, :west => nil, :w => {:aliasname => :west}}.freeze
   PROPERTIES = [:start_location].freeze
-
   attr_accessor :start_location
 
   def on_load
@@ -47,7 +44,7 @@ class BasicContinuousMap < BasicGameMap
     }
   end
 
-  def calc_movement_direction(new_location, previous_location)
+  def calc_movement_direction(new_location, previous_location, exiting = false)
     # locations are 3 length arrays [x,y,z]
     # north = prev.y < new.y
     # east = prev.x < new.x
@@ -58,42 +55,38 @@ class BasicContinuousMap < BasicGameMap
     z_dir = nil
 
     if previous_location[0] < new_location[0]
-      x_dir = 'west'
+      x_dir = (exiting ? 'east' : 'west')
     elsif previous_location[0] > new_location[0]
-      x_dir = 'east'
+      x_dir = (exiting ? 'west' : 'east')
     end
 
     if previous_location[1] < new_location[1]
-      y_dir = 'south'
+      y_dir = (exiting ? 'north' : 'south')
     elsif previous_location[1] > new_location[1]
-      y_dir = 'north'
+      y_dir = (exiting ? 'south' : 'north')
     end
 
     if previous_location[2] < new_location[2]
-      z_dir = 'below'
+      z_dir = (exiting ? 'up' : 'below')
     elsif previous_location[2] > new_location[2]
-      z_dir = 'above'
+      z_dir = (exiting ? 'down' : 'above')
     end
 
     # assemble the directions
     final_dir = ''
+    final_dir = 'the ' unless exiting or !z_dir.nil?
     unless z_dir.nil?
       final_dir << z_dir
     end
 
     # assemble compass dir
-    suffix = nil
     unless x_dir.nil? and y_dir.nil?
-      if z_dir.nil?
-        final_dir << 'the '
-      else
+      unless z_dir.nil?
         final_dir << ' and '
       end
       final_dir << y_dir unless y_dir.nil?
       final_dir << x_dir unless x_dir.nil?
-      suffix = ' of'
     end
-    final_dir << suffix unless suffix.nil?
 
     final_dir
   end
@@ -105,23 +98,26 @@ class BasicContinuousMap < BasicGameMap
       msg = "#{new_player.name} has entered the map.\n"
     else
       movement_direction = calc_movement_direction(new_location, previous_location)
-      msg = "#{new_player.name} arrives from #{movement_direction} you.\n"
+      msg = "#{new_player.name} arrives from #{movement_direction}.\n"
     end
     broadcast_to_location new_location, msg
     @players[*new_location] << new_player
     new_player.location = new_location
   end
 
+  def exit_room(player, old_location, new_location)
+    @players[*old_location].delete player
+    movement_direction = calc_movement_direction(new_location, old_location, true)
+    broadcast_to_location old_location, "#{player.name} leaves #{movement_direction}.\n"
+  end
+
   # enter is only called for players
   def enter(player, location = nil)
     @start_location = @start_location.is_a?(String) ? eval(@start_location) : @start_location
-    new_location = (
-    if location.nil? then
-      @start_location
-    else
-      location.is_a?(String) ? eval(location) : location
+    new_location = @start_location
+    unless location.nil? then
+      new_location = (location.is_a?(String) ? eval(location) : location)
     end
-    )
 
     player.send_to_client "Entering game map #{self.name} at location #{new_location}\n"
     player.map = self.game_object_id
@@ -148,5 +144,34 @@ class BasicContinuousMap < BasicGameMap
       @players[*location].delete player
       broadcast_to_location location, "#{player.name} has exited the map.\n"
     end
+  end
+
+  def north(player)
+    new_loc = player.location.clone   #strictly a shallow copy here
+    new_loc[1] += 1
+    move player, player.location, new_loc
+  end
+
+  def south(player)
+    new_loc = player.location.clone   #strictly a shallow copy here
+    new_loc[1] -= 1
+    move player, player.location, new_loc
+  end
+
+  def east(player)
+    new_loc = player.location.clone   #strictly a shallow copy here
+    new_loc[0] += 1
+    move player, player.location, new_loc
+  end
+
+  def west(player)
+    new_loc = player.location.clone   #strictly a shallow copy here
+    new_loc[0] -= 1
+    move player, player.location, new_loc
+  end
+
+  def move(player, old_location, new_location)
+    exit_room player, old_location, new_location
+    enter_room player, new_location, old_location
   end
 end

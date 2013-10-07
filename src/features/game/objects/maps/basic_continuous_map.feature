@@ -40,6 +40,7 @@ Feature: test basic continuous game map
     And a new player object
     And a second player object
     And the second player in the start location
+    And the player is entering in the start location
     When a player enters the map
     Then the player should have been notified that he entered a map
     And the other player should have been notified too
@@ -51,25 +52,49 @@ Feature: test basic continuous game map
     When calculating directions for new location "[0,0,0]" and old location "[0,0,1]"
     Then the text directions should be "above"
     When calculating directions for new location "[0,0,0]" and old location "[0,1,0]"
-    Then the text directions should be "the north of"
+    Then the text directions should be "the north"
     When calculating directions for new location "[0,1,0]" and old location "[0,0,0]"
-    Then the text directions should be "the south of"
+    Then the text directions should be "the south"
     When calculating directions for new location "[0,0,0]" and old location "[1,0,0]"
-    Then the text directions should be "the east of"
+    Then the text directions should be "the east"
     When calculating directions for new location "[1,0,0]" and old location "[0,0,0]"
-    Then the text directions should be "the west of"
+    Then the text directions should be "the west"
     When calculating directions for new location "[0,0,0]" and old location "[1,1,0]"
-    Then the text directions should be "the northeast of"
+    Then the text directions should be "the northeast"
     When calculating directions for new location "[1,0,0]" and old location "[0,1,0]"
-    Then the text directions should be "the northwest of"
+    Then the text directions should be "the northwest"
     When calculating directions for new location "[0,1,0]" and old location "[1,0,0]"
-    Then the text directions should be "the southeast of"
+    Then the text directions should be "the southeast"
     When calculating directions for new location "[1,1,0]" and old location "[0,0,0]"
-    Then the text directions should be "the southwest of"
+    Then the text directions should be "the southwest"
     When calculating directions for new location "[1,1,1]" and old location "[0,0,0]"
-    Then the text directions should be "below and southwest of"
+    Then the text directions should be "below and southwest"
     When calculating directions for new location "[0,0,0]" and old location "[1,1,1]"
-    Then the text directions should be "above and northeast of"
+    Then the text directions should be "above and northeast"
+    When calculating directions for new location "[0,0,1]" and old location "[0,0,0]" and exiting
+    Then the text directions should be "up"
+    When calculating directions for new location "[0,0,0]" and old location "[0,0,1]" and exiting
+    Then the text directions should be "down"
+    When calculating directions for new location "[0,0,0]" and old location "[0,1,0]" and exiting
+    Then the text directions should be "south"
+    When calculating directions for new location "[0,1,0]" and old location "[0,0,0]" and exiting
+    Then the text directions should be "north"
+    When calculating directions for new location "[0,0,0]" and old location "[1,0,0]" and exiting
+    Then the text directions should be "west"
+    When calculating directions for new location "[1,0,0]" and old location "[0,0,0]" and exiting
+    Then the text directions should be "east"
+    When calculating directions for new location "[0,0,0]" and old location "[1,1,0]" and exiting
+    Then the text directions should be "southwest"
+    When calculating directions for new location "[1,0,0]" and old location "[0,1,0]" and exiting
+    Then the text directions should be "southeast"
+    When calculating directions for new location "[0,1,0]" and old location "[1,0,0]" and exiting
+    Then the text directions should be "northwest"
+    When calculating directions for new location "[1,1,0]" and old location "[0,0,0]" and exiting
+    Then the text directions should be "northeast"
+    When calculating directions for new location "[1,1,1]" and old location "[0,0,0]" and exiting
+    Then the text directions should be "up and northeast"
+    When calculating directions for new location "[0,0,0]" and old location "[1,1,1]" and exiting
+    Then the text directions should be "down and southwest"
 
   Scenario: test a basic continuous map's enter room method
     Given a BasicContinuousMap object
@@ -77,14 +102,44 @@ Feature: test basic continuous game map
     And a second player object
     When a player enters the room at "[0,0,1]"
     And a second player enters the room at "[0,0,1]" from "[0,0,0]"
-    Then the player should have been sent the message "Second arrives from below you."
+    Then the player should have been sent the message "Second arrives from below."
+
+  Scenario: test a basic continuous map's exit room method
+    Given a BasicContinuousMap object
+    And a new player object
+    And a second player object
+    And the second player in the start location
+    And the player is entering in the start location
+    When a player enters the map
+    And a second player exits the room at "[0,0,0]" to "[0,0,1]"
+    Then the player should have been sent the message "Second leaves up."
 
   Scenario: test a basic continuous map's exit method
     Given a BasicContinuousMap object
     And a new player object
     And a second player object
     And the second player in the start location
+    And the player is entering in the start location
     When a player enters the map
     And the player exits the map
     Then the player should have been notified that he exited the map
     And the second player should have been notified that he exited the map
+
+  Scenario: test a basic continuous map's direction methods
+    Given a BasicContinuousMap object
+    And a new player object
+    And a second player object
+    And the second player in the start location
+    And the player is entering in the start location
+    When a player enters the map
+    And the second player exits the room to the "north"
+    Then the player should have been sent the message "Second leaves north."
+
+  Scenario: test a basic continuous map's direction methods on arrival
+    Given a BasicContinuousMap object
+    And a new player object
+    And a second player object
+    And the second player in the start location
+    When a player enters the room at "[0,1,0]"
+    And the second player exits the room to the "north"
+    Then the player should have been sent the message "Second arrives from the south."
