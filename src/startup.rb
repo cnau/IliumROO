@@ -31,7 +31,7 @@ require 'singleton'
 require 'cassandra'
 require 'yaml'
 
-require_all Dir.glob('**/*.rb').reject { |f| File.expand_path(f).match(/features/) != nil} unless $TEST_MODE
+require_all Dir.glob('**/*.rb').reject { |f| File.expand_path(f).match(/features/) != nil or File.expand_path(f) == __FILE__} unless $TEST_MODE
 
 module Startup
   def create_starting_map
