@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'cql-rb', '~>1.1.1'
 gem 'cassandra', '~>0.12.1'
 gem 'facets', '~>2.9.2'
 gem 'eventmachine', '~>0.12.10'

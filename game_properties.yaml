@@ -1,6 +1,7 @@
 cassandra:
-  server:   127.0.0.1
-  port:     9160
+  server: 127.0.0.1
+  thrift_port: 9160
+  cql_port: 9042
   keyspace: IliumROO
 
 startup:
