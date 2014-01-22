@@ -31,7 +31,7 @@ class CassandraDao
   def initialize
     if (!GameConfig.instance.config.nil?) && (!GameConfig.instance.config.empty?) && (!GameConfig.instance.config['cassandra'].nil?) && (!GameConfig.instance.config['cassandra'].empty?)
       keyspace = GameConfig.instance['cassandra']['keyspace']
-      server = GameConfig.instance['cassandra']['server']
+      server = GameConfig.instance['cassandra']['host']
       port = GameConfig.instance['cassandra']['port']
     else
       keyspace = 'IliumROO'

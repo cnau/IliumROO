@@ -38,19 +38,19 @@ end
 Given /^a test keyspace$/ do
   game_config = mock
   GameConfig.stubs(:instance).returns(game_config)
-  game_config.stubs(:config).returns({'cassandra' => {'server' => '127.0.0.1',
+  game_config.stubs(:config).returns({'cassandra' => {'host' => '127.0.0.1',
                                                       'thrift_port' => 9160,
                                                       'cql_port' => 9042,
                                                       'keyspace' => 'TestIliumKeyspace'}})
 
-  game_config.stubs(:[]).with('cassandra').returns({'server' => '127.0.0.1',
+  game_config.stubs(:[]).with('cassandra').returns({'host' => '127.0.0.1',
                                                     'thrift_port' => 9160,
                                                     'cql_port' => 9042,
                                                     'keyspace' => 'TestIliumKeyspace'})
 end
 
 Then /^the database should be cleaned up$/ do
-  @cql_dao.clear_database 'TestIliumKeyspace'
+  @cql_dao.clear_database
 end
 
 Then /^the database should not be valid$/ do
@@ -78,4 +78,9 @@ Then /^the records should be returned$/ do
   @resultset.first.should have_key 'data'
   @resultset.first['id'].should eql 1
   @resultset.first['data'].should eql 'some test data'
+end
+
+Given /^a clean database$/ do
+  cql_dao = CQLDao.new
+  cql_dao.clear_database
 end

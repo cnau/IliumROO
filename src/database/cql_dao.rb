@@ -25,21 +25,24 @@ require 'cql'
 class CQLDao
   include Logging
 
+  attr_reader :keyspace, :host, :port
+
   def initialize
     if (!GameConfig.instance.config.nil?) && (!GameConfig.instance.config.empty?) && (!GameConfig.instance.config['cassandra'].nil?) && (!GameConfig.instance.config['cassandra'].empty?)
-      keyspace = GameConfig.instance['cassandra']['keyspace']
-      server = GameConfig.instance['cassandra']['server']
-      port = GameConfig.instance['cassandra']['cql_port']
+      @keyspace = GameConfig.instance['cassandra']['keyspace']
+      @host = GameConfig.instance['cassandra']['host']
+      @port = GameConfig.instance['cassandra']['cql_port']
     else
-      keyspace = 'IliumROO'
-      server = 'localhost'
-      port = '9042'
+      @keyspace = 'IliumROO'
+      @host = 'localhost'
+      @port = '9042'
     end
-    log.info { "attaching to cassandra server: #{keyspace}@#{server}:#{port}" }
-    @dao = Cql::Client.connect({:host => server, :port => port})
-    if !validate_database(keyspace)
-      build_database keyspace
+    log.info { "attaching to cassandra server: #{@keyspace}@#{@host}:#{@port}" }
+    @dao = Cql::Client.connect({:host => @host, :port => @port})
+    if !validate_database
+      build_database
     end
+    @dao.execute "USE #{@keyspace.downcase}"
   end
 
   def connected?
@@ -54,24 +57,23 @@ class CQLDao
     @dao.execute cql, options
   end
 
-  def build_database(keyspace)
-    log.debug { "creating keyspace #{keyspace}" }
+  def build_database
+    log.debug { "creating keyspace #{@keyspace}" }
     # no keyspace, so create one
     # change replication factor if you're using more than one cassandra node
-    @dao.execute "CREATE KEYSPACE #{keyspace.downcase} WITH replication = {'class':'SimpleStrategy', 'replication_factor':1}"
-    @dao.execute "USE #{keyspace.downcase}"
+    @dao.execute "CREATE KEYSPACE #{@keyspace.downcase} WITH replication = {'class':'SimpleStrategy', 'replication_factor':1}"
     @valid = true
   end
 
-  def validate_database(keyspace)
+  def validate_database
     @valid = false
-    result = @dao.execute "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name = '#{keyspace.downcase}'"
+    result = @dao.execute "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name = '#{@keyspace.downcase}'"
     @valid = !(result.nil? or result.empty?)
     @valid
   end
 
-  def clear_database(keyspace)
+  def clear_database
     @valid = false
-    @dao.execute "DROP KEYSPACE #{keyspace.downcase}"
+    @dao.execute "DROP KEYSPACE #{@keyspace.downcase}"
   end
 end

@@ -23,21 +23,43 @@ Feature: system logging
   As a game I need to log activity
   So player's can't mess with me
 
+  Scenario: system logging table creation and validation
+    Given a test keyspace
+    And a clean database
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Given a new system logging object
+    Then that system logging object should be valid
+    Then the database should be cleaned up
+    And the database should not be valid
+
   Scenario: basic system logging
-    Given a known number of log entries
+    Given a test keyspace
+    And a clean database
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Given a new system logging object
+    Then that system logging object should be valid
     When I insert a log
     Then I should see my log entry
-    And I should see one more log entry
-    Then I should clean up my test log
+    Then the database should be cleaned up
+    And the database should not be valid
 
-   Scenario: multiple object target logging
-     Given a start count for system log
-     And a clean log entry for "test_source_id_1"
-     And a clean log entry for "test_target_id_1"
-     And a clean log entry for "test_object_id_1"
-     And there are no test log entries for "test_source_id_1"
-     When I insert a log entry for "test_source_id_1" and "test_target_id_1" and "test_object_id_1"
-     Then make sure a log entry was added for "test_source_id_1"
-     And make sure log entries for "test_source_id_1" and "test_target_id_1" and "test_object_id_1" were inserted correctly
-     And make sure one log entries for "test_source_id_1" exist
-     Then clean up the test log entries for "test_source_id_1" and "test_target_id_1" and "test_object_id_1"
+  Scenario: multiple object target logging
+    Given a test keyspace
+    And a clean database
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Given a new system logging object
+    Then that system logging object should be valid
+
+    When I insert a log entry for "test_source_id_1" and "test_target_id_1" and "test_object_id_1"
+    Then make sure a source log entry was added for "test_source_id_1"
+    And make sure a target log entry was added for "test_target_id_1"
+    And make sure an object log entry was added for "test_object_id_1"
+
+    Then the database should be cleaned up
+    And the database should not be valid

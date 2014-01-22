@@ -25,6 +25,7 @@ Feature: cql database
 
   Scenario: test initialize and connection with test keyspace
     Given a test keyspace
+    And a clean database
     And a new CQLDao object
     Then that dao should be connected to the database
     And the database should be valid
@@ -33,6 +34,7 @@ Feature: cql database
 
   Scenario: test execute method on a test keyspace
     Given a test keyspace
+    And a clean database
     And a new CQLDao object
     Then that dao should be connected to the database
     And the database should be valid
