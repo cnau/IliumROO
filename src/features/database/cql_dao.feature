@@ -23,6 +23,22 @@ Feature: cql database
   As a game I want a database
   So that I can persist data
 
-  Scenario: test initialize and connection
-    Given a new CQLDao object
+  Scenario: test initialize and connection with test keyspace
+    Given a test keyspace
+    And a new CQLDao object
     Then that dao should be connected to the database
+    And the database should be valid
+    Then the database should be cleaned up
+    And the database should not be valid
+
+  Scenario: test execute method on a test keyspace
+    Given a test keyspace
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Then create a new table
+    And insert a few records
+    Then select those records
+    And the records should be returned
+    Then the database should be cleaned up
+    And the database should not be valid

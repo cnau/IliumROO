@@ -23,7 +23,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 require 'cql'
 
 class CQLDao
-  include Singleton
   include Logging
 
   def initialize
@@ -38,21 +37,41 @@ class CQLDao
     end
     log.info { "attaching to cassandra server: #{keyspace}@#{server}:#{port}" }
     @dao = Cql::Client.connect({:host => server, :port => port})
+    if !validate_database(keyspace)
+      build_database keyspace
+    end
   end
 
   def connected?
     @dao.connected?
   end
 
-  def self.connected?
-    CQLDao.instance.connected?
+  def valid?
+    @valid
   end
 
-  def execute(cql, options)
+  def execute(cql, options = nil)
     @dao.execute cql, options
   end
 
-  def self.execute(cql, options)
-    CQLDao.instance.execute cql, options
+  def build_database(keyspace)
+    log.debug { "creating keyspace #{keyspace}" }
+    # no keyspace, so create one
+    # change replication factor if you're using more than one cassandra node
+    @dao.execute "CREATE KEYSPACE #{keyspace.downcase} WITH replication = {'class':'SimpleStrategy', 'replication_factor':1}"
+    @dao.execute "USE #{keyspace.downcase}"
+    @valid = true
+  end
+
+  def validate_database(keyspace)
+    @valid = false
+    result = @dao.execute "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name = '#{keyspace.downcase}'"
+    @valid = !(result.nil? or result.empty?)
+    @valid
+  end
+
+  def clear_database(keyspace)
+    @valid = false
+    @dao.execute "DROP KEYSPACE #{keyspace.downcase}"
   end
 end
