@@ -23,8 +23,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require_relative '../spec_helper'
 
-
-
 Given /^a new system logging object$/ do
   @system_logging = SystemLogging.new(@cql_dao)
   @system_logging.should_not be_nil

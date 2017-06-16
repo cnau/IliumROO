@@ -25,29 +25,16 @@ require_relative '../spec_helper'
 
 OBJECT_ID = 'test_object_id_1'
 
-Given /^a clean test object id$/ do
-  GameObjects.remove OBJECT_ID
-
-  obj = GameObjects.get OBJECT_ID
-  obj.length.should eql 0
-end
-
 When /^I insert an object hash$/ do
-  object_hash_1 = {:object_id => OBJECT_ID, :name => 'name'}
-  GameObjects.save OBJECT_ID, object_hash_1
+  object_hash_1 = {:object_id => OBJECT_ID, :name => 'first name'}
+  @game_object_dao.save OBJECT_ID, object_hash_1
 end
 
 Then /^I expect that the object hash was inserted$/ do
-  obj = GameObjects.get OBJECT_ID
+  obj = @game_object_dao.get OBJECT_ID
   obj.length.should eql 2
   obj[:object_id].should eql OBJECT_ID
-  obj[:name].should eql 'name'
-end
-
-And /^I clean up the test object id$/ do
-  GameObjects.remove OBJECT_ID
-  obj = GameObjects.get OBJECT_ID
-  obj.length.should eql 0
+  obj[:name].should eql 'first name'
 end
 
 When /^I insert an object hash with different columns$/ do
@@ -56,11 +43,11 @@ When /^I insert an object hash with different columns$/ do
                   :properties => 'foo,bar',
                   :foo_bar    => 'foo + bar'}
 
-  GameObjects.save OBJECT_ID, @obj_hash_2
+  @game_object_dao.save OBJECT_ID, @obj_hash_2
 end
 
 Then /^I expect that the object hash was inserted and is identical$/ do
-  obj = GameObjects.get OBJECT_ID
+  obj = @game_object_dao.get OBJECT_ID
   obj.should eql @obj_hash_2
 end
 
@@ -89,4 +76,13 @@ Then /^that I clean up object "([^"]*)"$/ do |arg1|
   GameObjects.remove_tag 'game_objects_steps', "test_object_name_#{arg1}"
   obj = GameObjects.get_tag 'game_objects_steps', "test_object_name_#{arg1}"
   obj.length.should eql 0
+end
+
+Given /^a new game objects object$/ do
+  @game_object_dao = GameObjects.new(@cql_dao)
+  @game_object_dao.should_not be_nil
+end
+
+Then /^that game objects object should be valid$/ do
+  @game_object_dao.valid?.should be_true
 end

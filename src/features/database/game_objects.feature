@@ -22,18 +22,37 @@
 Feature: game objects
   As a game I need objects
   So that there will be something in the world
-  
+
   Scenario: basic objects
-    Given a clean test object id
+    Given a test keyspace
+    And a clean database
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Given a new game objects object
+    Then that game objects object should be valid
+
     When I insert an object hash
     Then I expect that the object hash was inserted
-    Then I clean up the test object id
+
+    Then the database should be cleaned up
+    And the database should not be valid
 
   Scenario: different columns
-    Given a clean test object id
-    When I insert an object hash with different columns
+    Given a test keyspace
+    And a clean database
+    And a new CQLDao object
+    Then that dao should be connected to the database
+    And the database should be valid
+    Given a new game objects object
+    Then that game objects object should be valid
+
+    When I insert an object hash
+    And I insert an object hash with different columns
     Then I expect that the object hash was inserted and is identical
-    Then I clean up the test object id
+
+    Then the database should be cleaned up
+    And the database should not be valid
 
   Scenario: object tags
     Given a clean tag for object "1"
